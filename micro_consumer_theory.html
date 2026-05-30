@@ -161,6 +161,17 @@
     gap: 10px;
   }
   .panel-header .icon { font-size: 18px; }
+  .panel-header .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 800;
+  }
   .panel-header h3 {
     font-size: 14px;
     font-weight: 700;
@@ -207,15 +218,19 @@
 
   /* ── Canvas wrapper ── */
   .canvas-wrap {
+    background: #111521;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 10px;
     position: relative;
-    margin-top: 20px;
   }
   canvas {
-    width: 100%;
     max-width: 100%;
+    height: auto;
     display: block;
     border-radius: 8px;
-    background: #0a0d16;
+    background: #151a28;
   }
 
   /* ── Result display ── */
@@ -253,7 +268,7 @@
   /* ── Two-column layout for chart + controls ── */
   .two-col {
     display: grid;
-    grid-template-columns: 1fr 280px;
+    grid-template-columns: minmax(280px, 500px) minmax(240px, 1fr);
     gap: 24px;
     align-items: start;
   }
@@ -379,7 +394,7 @@
   <!-- Interactive: Budget Constraint -->
   <div class="interactive-panel">
     <div class="panel-header">
-      <span class="icon">📊</span>
+      <span class="icon">B</span>
       <h3>Interactive: Adjust the Budget Line</h3>
     </div>
     <div class="panel-body">
@@ -483,7 +498,7 @@
   <!-- Interactive: Utility Maximization -->
   <div class="interactive-panel">
     <div class="panel-header">
-      <span class="icon">🎯</span>
+      <span class="icon">U</span>
       <h3>Interactive: Utility Maximization &amp; Indifference Curves</h3>
     </div>
     <div class="panel-body">
@@ -565,7 +580,7 @@
     <!-- Interactive: Elasticity visualizer -->
     <div class="interactive-panel" style="margin-top:20px">
       <div class="panel-header">
-        <span class="icon">📈</span>
+        <span class="icon">D</span>
         <h3>Interactive: Demand Curve &amp; Elasticity</h3>
       </div>
       <div class="panel-body">
@@ -612,17 +627,11 @@
 <!-- ═══════════════════════════════════════════════ COLAB LINK -->
 <div class="section">
   <div class="card">
-    <div class="section-title" style="margin-bottom:14px">🔗 Try It in Google Colab</div>
+    <div class="section-title" style="margin-bottom:14px">Try It in Google Colab</div>
     <p style="font-size:14px;color:var(--muted)">
       Open the Google Colab notebook below to derive demand functions, plot graphs, and compute elasticities yourself in Python.
     </p>
-    <a class="colab-link" href="https://colab.research.google.com/drive/1Ez0a2h8eYNp70rOKSvElTY9wSliUBlet?usp=sharing" target="_blank" rel="noopener">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="#F9AB00"/>
-        <path d="M9 8l7 4-7 4V8z" fill="#000"/>
-      </svg>
-      Open in Google Colab
-    </a>
+    <a class="colab-link" href="micro_consumer_theory_colab.ipynb">Open the Chapter 4 Colab notebook file</a>
   </div>
 </div>
 
@@ -791,8 +800,10 @@ function drawUtil() {
 
   uctx.clearRect(0, 0, UW, UH);
 
-  const xmax = Math.max(40, Math.ceil(w / p1 * 1.6 / 10) * 10);
-  const ymax = Math.max(40, Math.ceil(w / p2 * 1.6 / 10) * 10);
+  // Keep the graph stable for typical parameter changes, while avoiding a
+  // scale so large that the budget line is compressed near the origin.
+  const xmax = Math.max(60, Math.ceil((w / p1) * 1.15 / 10) * 10);
+  const ymax = Math.max(60, Math.ceil((w / p2) * 1.15 / 10) * 10);
 
   drawAxes(uctx, UW, UH, xmax, ymax);
 
