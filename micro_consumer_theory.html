@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consumer Theory | Introductory Microeconomics</title>
+
+<!-- KaTeX for math rendering -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters:[
+    {left:'$$',right:'$$',display:true},
+    {left:'$',right:'$',display:false}
+  ]})">
+</script>
+
+<style>
+  /* ── Design tokens ── */
+  :root {
+    --bg:       #0f1117;
+    --surface:  #181c27;
+    --card:     #1e2336;
+    --border:   #2a3050;
+    --accent:   #5b8af5;
+    --accent2:  #f5a623;
+    --accent3:  #4ecb8d;
+    --text:     #e8ecf5;
+    --muted:    #7b85a3;
+    --radius:   12px;
+    --font-head: 'Georgia', 'Palatino Linotype', serif;
+    --font-body: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    --shadow:   0 4px 24px rgba(0,0,0,0.45);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 0 0 60px;
+  }
+
+  /* ── Hero banner ── */
+  .hero {
+    background: linear-gradient(135deg, #0d1b3e 0%, #1a2a5e 50%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 52px 32px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 80% 20%, rgba(91,138,245,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .chapter-badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: var(--font-head);
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    max-width: 640px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ── Layout ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── Section headings ── */
+  .section { margin-top: 48px; }
+  .section-title {
+    font-family: var(--font-head);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+    margin-bottom: 20px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  /* ── Definition / Theorem boxes ── */
+  .def-box {
+    background: rgba(91,138,245,0.07);
+    border: 1px solid rgba(91,138,245,0.3);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin: 18px 0;
+  }
+  .def-box .label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .thm-box {
+    background: rgba(78,203,141,0.06);
+    border: 1px solid rgba(78,203,141,0.3);
+    border-left: 3px solid var(--accent3);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin: 18px 0;
+  }
+  .thm-box .label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  /* ── Interactive panel ── */
+  .interactive-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 24px 0;
+    box-shadow: var(--shadow);
+  }
+  .panel-header {
+    background: rgba(91,138,245,0.1);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .panel-header .icon { font-size: 18px; }
+  .panel-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+  .panel-body { padding: 24px; }
+
+  /* ── Sliders ── */
+  .controls { display: flex; flex-direction: column; gap: 16px; }
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .control-row label {
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 110px;
+  }
+  .control-row .math-label {
+    font-style: italic;
+    color: var(--text);
+    font-size: 14px;
+    min-width: 30px;
+  }
+  input[type=range] {
+    flex: 1;
+    accent-color: var(--accent);
+    cursor: pointer;
+    height: 4px;
+  }
+  .val-badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+    min-width: 52px;
+    text-align: center;
+  }
+
+  /* ── Canvas wrapper ── */
+  .canvas-wrap {
+    position: relative;
+    margin-top: 20px;
+  }
+  canvas {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    border-radius: 8px;
+    background: #0a0d16;
+  }
+
+  /* ── Result display ── */
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .result-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .result-card .r-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .result-card .r-val {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .result-card .r-eq {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── Two-column layout for chart + controls ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 680px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  /* ── Tab selector ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ── Collapsible proof ── */
+  details {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-top: 16px;
+  }
+  summary {
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--muted);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  summary::before { content: '▶'; font-size: 10px; transition: transform 0.2s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  details .proof-body { padding: 0 18px 18px; font-size: 14px; color: var(--muted); }
+
+  /* ── Inline note ── */
+  .note {
+    font-size: 13px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+  .note strong { color: var(--accent2); }
+
+  /* ── Google Colab link ── */
+  .colab-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f9ab00;
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    margin-top: 16px;
+  }
+  .colab-link:hover { opacity: 0.85; }
+
+  /* ── Responsive tweak ── */
+  @media (max-width: 500px) {
+    .hero { padding: 36px 20px 28px; }
+    .card { padding: 18px 16px; }
+    .panel-body { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="chapter-badge">Chapter 4</div>
+    <h1>Consumer Behavior</h1>
+    <p>Explore budget constraints, utility functions, and utility maximization interactively. Adjust the sliders to change parameters and develop intuition for how demand functions respond.</p>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════ SECTION 1 -->
+<div class="section">
+  <div class="section-title">4.1 Consumption Bundles and Budget Constraints</div>
+
+  <div class="card">
+    <p>With $L$ goods, a consumer's spending pattern is described by a <strong>consumption bundle</strong> $x = (x_1, x_2, \ldots, x_L)$. Given prices $p = (p_1, p_2, \ldots, p_L)$ and income $w > 0$, the set of bundles the consumer can afford is determined by the following condition.</p>
+
+    <div class="def-box">
+      <div class="label">Definition 4.1.1 — Budget Constraint</div>
+      <p>A consumption bundle $x$ is <strong>feasible (affordable)</strong> if it satisfies the <strong>budget constraint</strong>:</p>
+      $$p_1 x_1 + p_2 x_2 + \cdots + p_L x_L \leq w \quad \Longleftrightarrow \quad p \cdot x \leq w$$
+      <p style="margin-top:8px;font-size:13px;color:var(--muted)">
+        The set of all feasible bundles is the <strong>budget set</strong>; its upper-right boundary is the <strong>budget line</strong>.
+      </p>
+    </div>
+
+    <p style="margin-top:12px">In the two-good case the budget line can be written as:</p>
+    $$p_1 x_1 + p_2 x_2 = w \quad \Longleftrightarrow \quad x_2 = -\frac{p_1}{p_2}\,x_1 + \frac{w}{p_2}$$
+  </div>
+
+  <!-- Interactive: Budget Constraint -->
+  <div class="interactive-panel">
+    <div class="panel-header">
+      <span class="icon">📊</span>
+      <h3>Interactive: Adjust the Budget Line</h3>
+    </div>
+    <div class="panel-body">
+      <div class="two-col">
+        <div class="canvas-wrap">
+          <canvas id="budgetCanvas" width="500" height="440"></canvas>
+        </div>
+        <div class="controls">
+          <div class="control-row">
+            <label>Price of good 1 <span class="math-label">$p_1$</span></label>
+            <input type="range" id="p1" min="1" max="10" step="0.5" value="2">
+            <span class="val-badge" id="p1val">2</span>
+          </div>
+          <div class="control-row">
+            <label>Price of good 2 <span class="math-label">$p_2$</span></label>
+            <input type="range" id="p2" min="1" max="10" step="0.5" value="3">
+            <span class="val-badge" id="p2val">3</span>
+          </div>
+          <div class="control-row">
+            <label>Income <span class="math-label">$w$</span></label>
+            <input type="range" id="w" min="10" max="100" step="5" value="60">
+            <span class="val-badge" id="wval">60</span>
+          </div>
+          <div class="note">
+            <strong>Slope of budget line</strong> = $-p_1/p_2$.<br>
+            Vertical intercept $= w/p_2$, horizontal intercept $= w/p_1$.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 2 -->
+<div class="section">
+  <div class="section-title">4.3 Preferences and Utility Functions</div>
+
+  <div class="card">
+    <div class="def-box">
+      <div class="label">Definition 4.3.1 — Utility Function</div>
+      <p>A <strong>utility function</strong> $u(x)$ assigns a number to each consumption bundle so as to represent the preference ordering. That is,</p>
+      $$x \succ y \iff u(x) > u(y)$$
+    </div>
+
+    <p style="margin-top:14px">Common examples of utility functions:</p>
+
+    <div class="tabs" style="margin-top:16px">
+      <button class="tab-btn active" data-tab="cd">Cobb–Douglas</button>
+      <button class="tab-btn" data-tab="linear">Linear</button>
+      <button class="tab-btn" data-tab="leontief">Leontief</button>
+    </div>
+
+    <div class="tab-pane active" id="tab-cd">
+      $$u(x_1, x_2) = x_1^\alpha\, x_2^{1-\alpha}, \quad \alpha \in (0,1)$$
+      <p style="margin-top:8px;font-size:14px">Indifference curves are convex toward the origin. Larger $\alpha$ reflects a stronger preference for good 1.</p>
+    </div>
+    <div class="tab-pane" id="tab-linear">
+      $$u(x_1, x_2) = ax_1 + bx_2, \quad a, b > 0$$
+      <p style="margin-top:8px;font-size:14px">Indifference curves are straight lines (perfect substitutes). The MRS is constant.</p>
+    </div>
+    <div class="tab-pane" id="tab-leontief">
+      $$u(x_1, x_2) = \min\{ax_1,\, bx_2\}, \quad a, b > 0$$
+      <p style="margin-top:8px;font-size:14px">Indifference curves are L-shaped (perfect complements). The optimal bundle always satisfies $ax_1 = bx_2$.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 3 -->
+<div class="section">
+  <div class="section-title">4.4 Utility-Maximization Problem — Cobb–Douglas Case</div>
+
+  <div class="card">
+    <p>Given the utility function $u(x_1,x_2) = x_1^\alpha x_2^{1-\alpha}$ and budget constraint $p_1 x_1 + p_2 x_2 = w$, the consumer solves:</p>
+    $$\max_{x_1,x_2}\; x_1^\alpha x_2^{1-\alpha} \quad \text{s.t.}\quad p_1 x_1 + p_2 x_2 \leq w$$
+
+    <p style="margin-top:10px">Applying the Lagrangian method, the optimality condition is <strong>MRS = price ratio</strong>:</p>
+    $$\frac{u_1}{u_2} = \frac{p_1}{p_2} \quad \Longrightarrow \quad \frac{\alpha}{1-\alpha}\,\frac{x_2}{x_1} = \frac{p_1}{p_2}$$
+
+    <div class="thm-box">
+      <div class="label">Walrasian Demand Functions (Cobb–Douglas)</div>
+      $$x_1^* = \frac{\alpha\, w}{p_1}, \qquad x_2^* = \frac{(1-\alpha)\, w}{p_2}$$
+      <p style="font-size:13px;color:var(--muted);margin-top:8px">
+        The consumer spends fraction $\alpha$ of income on good 1 and $(1-\alpha)$ on good 2 — the <em>constant expenditure-share rule</em>.
+      </p>
+    </div>
+
+    <details>
+      <summary>Show derivation</summary>
+      <div class="proof-body">
+        <p>From the first-order conditions:</p>
+        $$\frac{\partial u}{\partial x_1} = \lambda p_1 \;\Rightarrow\; \alpha x_1^{\alpha-1}x_2^{1-\alpha} = \lambda p_1$$
+        $$\frac{\partial u}{\partial x_2} = \lambda p_2 \;\Rightarrow\; (1-\alpha)x_1^{\alpha}x_2^{-\alpha} = \lambda p_2$$
+        <p>Dividing the two equations gives:</p>
+        $$\frac{\alpha}{1-\alpha}\frac{x_2}{x_1} = \frac{p_1}{p_2} \;\Rightarrow\; x_2 = \frac{1-\alpha}{\alpha}\frac{p_1}{p_2}x_1$$
+        <p>Substituting into the budget constraint $p_1 x_1 + p_2 x_2 = w$:</p>
+        $$p_1 x_1 + \frac{1-\alpha}{\alpha}p_1 x_1 = w \;\Rightarrow\; \frac{p_1 x_1}{\alpha} = w \;\Rightarrow\; x_1^* = \frac{\alpha w}{p_1}$$
+      </div>
+    </details>
+  </div>
+
+  <!-- Interactive: Utility Maximization -->
+  <div class="interactive-panel">
+    <div class="panel-header">
+      <span class="icon">🎯</span>
+      <h3>Interactive: Utility Maximization &amp; Indifference Curves</h3>
+    </div>
+    <div class="panel-body">
+      <div class="two-col">
+        <div class="canvas-wrap">
+          <canvas id="utilCanvas" width="500" height="440"></canvas>
+        </div>
+        <div>
+          <div class="controls">
+            <div class="control-row">
+              <label>$p_1$ (price of good 1)</label>
+              <input type="range" id="up1" min="1" max="10" step="0.5" value="2">
+              <span class="val-badge" id="up1val">2</span>
+            </div>
+            <div class="control-row">
+              <label>$p_2$ (price of good 2)</label>
+              <input type="range" id="up2" min="1" max="10" step="0.5" value="3">
+              <span class="val-badge" id="up2val">3</span>
+            </div>
+            <div class="control-row">
+              <label>$w$ (income)</label>
+              <input type="range" id="uw" min="10" max="100" step="5" value="60">
+              <span class="val-badge" id="uwval">60</span>
+            </div>
+            <div class="control-row">
+              <label>$\alpha$ (preference for good 1)</label>
+              <input type="range" id="alpha" min="0.1" max="0.9" step="0.05" value="0.4">
+              <span class="val-badge" id="alphaval">0.4</span>
+            </div>
+          </div>
+
+          <div class="result-grid" style="margin-top:20px">
+            <div class="result-card">
+              <div class="r-label">Optimal demand $x_1^*$</div>
+              <div class="r-val" id="rx1">—</div>
+              <div class="r-eq" id="rx1eq"></div>
+            </div>
+            <div class="result-card">
+              <div class="r-label">Optimal demand $x_2^*$</div>
+              <div class="r-val" id="rx2">—</div>
+              <div class="r-eq" id="rx2eq"></div>
+            </div>
+            <div class="result-card">
+              <div class="r-label">Indirect utility $v$</div>
+              <div class="r-val" id="rv">—</div>
+              <div class="r-eq" id="rveq"></div>
+            </div>
+          </div>
+
+          <div class="note" style="margin-top:14px">
+            <strong style="color:var(--accent)">●</strong> Blue = budget line &nbsp;
+            <strong style="color:var(--accent3)">●</strong> Green = indifference curves<br>
+            <strong style="color:var(--accent2)">●</strong> Yellow = optimal bundle (MRS = price ratio)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 4 -->
+<div class="section">
+  <div class="section-title">4.5 Comparative Statics of Demand: Elasticities</div>
+
+  <div class="card">
+    <p>To measure changes in demand independently of units, we use <strong>elasticities</strong>.</p>
+
+    <div class="def-box">
+      <div class="label">Definition 4.5.3 — Elasticities of Demand</div>
+      $$\varepsilon_w = \frac{\partial x_i}{\partial w}\cdot\frac{w}{x_i} \quad\text{(income elasticity)}$$
+      $$\varepsilon_{ii} = -\frac{\partial x_i}{\partial p_i}\cdot\frac{p_i}{x_i} \quad\text{(own-price elasticity)}$$
+      $$\varepsilon_{ij} = \frac{\partial x_i}{\partial p_j}\cdot\frac{p_j}{x_i} \quad\text{(cross-price elasticity, } j\neq i\text{)}$$
+    </div>
+
+    <p style="margin-top:12px"><strong>Cobb–Douglas results:</strong>
+    Since $x_1^* = \alpha w / p_1$, we have $\log x_1 = \log\alpha + \log w - \log p_1$, giving:</p>
+    $$\varepsilon_w = 1, \quad \varepsilon_{11} = 1, \quad \varepsilon_{12} = 0$$
+
+    <!-- Interactive: Elasticity visualizer -->
+    <div class="interactive-panel" style="margin-top:20px">
+      <div class="panel-header">
+        <span class="icon">📈</span>
+        <h3>Interactive: Demand Curve &amp; Elasticity</h3>
+      </div>
+      <div class="panel-body">
+        <div class="two-col">
+          <div class="canvas-wrap">
+            <canvas id="elasticCanvas" width="500" height="380"></canvas>
+          </div>
+          <div>
+            <div class="controls">
+              <div class="control-row">
+                <label>Display mode</label>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+                <button class="tab-btn active" id="modeP1" onclick="setElasticMode('p1')">Vary $p_1$</button>
+                <button class="tab-btn" id="modeW" onclick="setElasticMode('w')">Vary $w$</button>
+              </div>
+              <div class="control-row">
+                <label>$\alpha$</label>
+                <input type="range" id="ealpha" min="0.1" max="0.9" step="0.05" value="0.4">
+                <span class="val-badge" id="ealphaval">0.4</span>
+              </div>
+              <div class="control-row">
+                <label id="eVarLabel">$p_2$ (fixed)</label>
+                <input type="range" id="evar" min="1" max="10" step="0.5" value="3">
+                <span class="val-badge" id="evarval">3</span>
+              </div>
+              <div class="control-row">
+                <label id="eFixLabel">$w$ (fixed)</label>
+                <input type="range" id="efix" min="10" max="100" step="5" value="60">
+                <span class="val-badge" id="efixval">60</span>
+              </div>
+            </div>
+            <div class="note" style="margin-top:16px">
+              The Cobb–Douglas demand curve $x_1 = \alpha w / p_1$ is a <strong>rectangular hyperbola</strong>.<br>
+              Both the income and own-price elasticities equal <strong>1</strong> (unit elastic).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ COLAB LINK -->
+<div class="section">
+  <div class="card">
+    <div class="section-title" style="margin-bottom:14px">🔗 Try It in Google Colab</div>
+    <p style="font-size:14px;color:var(--muted)">
+      Open the Google Colab notebook below to derive demand functions, plot graphs, and compute elasticities yourself in Python. (Set the notebook URL once it is published.)
+    </p>
+    <a class="colab-link" href="#" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="#F9AB00"/>
+        <path d="M9 8l7 4-7 4V8z" fill="#000"/>
+      </svg>
+      Open in Google Colab
+    </a>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- ═══════════════════════════════════════════════ SCRIPTS -->
+<script>
+// ─────────────────────────────────────────────────
+// Shared utility: device pixel ratio scaling
+function setupHDCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const w = canvas.width;
+  const h = canvas.height;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+// ─────────────────────────────────────────────────
+// CHART 1 — Budget Line
+const bc = document.getElementById('budgetCanvas');
+const { ctx: bctx, w: BW, h: BH } = setupHDCanvas(bc);
+
+const PAD = { t: 30, r: 20, b: 50, l: 55 };
+
+function getSlider(id) { return parseFloat(document.getElementById(id).value); }
+
+function drawAxes(ctx, W, H, xmax, ymax, color='#2a3050') {
+  const pw = W - PAD.l - PAD.r;
+  const ph = H - PAD.t - PAD.b;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+
+  // Grid
+  ctx.setLineDash([3, 5]);
+  ctx.strokeStyle = '#1e2336';
+  for (let i = 1; i <= 5; i++) {
+    const gx = PAD.l + (pw / 5) * i;
+    const gy = PAD.t + (ph / 5) * i;
+    ctx.beginPath(); ctx.moveTo(gx, PAD.t); ctx.lineTo(gx, H - PAD.b); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PAD.l, gy); ctx.lineTo(W - PAD.r, gy); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // Axes
+  ctx.strokeStyle = '#3a4060';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(PAD.l, PAD.t); ctx.lineTo(PAD.l, H - PAD.b); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(PAD.l, H - PAD.b); ctx.lineTo(W - PAD.r, H - PAD.b); ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = '#7b85a3';
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'center';
+  const steps = 5;
+  for (let i = 0; i <= steps; i++) {
+    const val = Math.round(xmax * i / steps);
+    const gx = PAD.l + pw * i / steps;
+    ctx.fillText(val, gx, H - PAD.b + 18);
+    const valy = Math.round(ymax * i / steps);
+    const gy = H - PAD.b - ph * i / steps;
+    ctx.textAlign = 'right';
+    ctx.fillText(valy, PAD.l - 6, gy + 4);
+    ctx.textAlign = 'center';
+  }
+
+  // Axis labels
+  ctx.fillStyle = '#a0aac0';
+  ctx.font = 'italic 13px serif';
+  ctx.fillText('x₁', W - PAD.r + 4, H - PAD.b + 2);
+  ctx.textAlign = 'left';
+  ctx.fillText('x₂', PAD.l - 2, PAD.t - 8);
+  ctx.textAlign = 'center';
+
+  return { pw, ph, xmax, ymax };
+}
+
+function toCanvasXY(x, y, W, H, xmax, ymax) {
+  const pw = W - PAD.l - PAD.r;
+  const ph = H - PAD.t - PAD.b;
+  return [
+    PAD.l + (x / xmax) * pw,
+    H - PAD.b - (y / ymax) * ph
+  ];
+}
+
+function drawBudget() {
+  const p1 = getSlider('p1'), p2 = getSlider('p2'), w = getSlider('w');
+  document.getElementById('p1val').textContent = p1;
+  document.getElementById('p2val').textContent = p2;
+  document.getElementById('wval').textContent = w;
+
+  bctx.clearRect(0, 0, BW, BH);
+
+  const xmax = Math.max(40, Math.ceil(w / p1 * 1.4 / 10) * 10);
+  const ymax = Math.max(40, Math.ceil(w / p2 * 1.4 / 10) * 10);
+
+  drawAxes(bctx, BW, BH, xmax, ymax);
+
+  // Budget set fill
+  const x0 = w / p1, y0 = w / p2;
+  const [cx0, cy0] = toCanvasXY(0, 0, BW, BH, xmax, ymax);
+  const [cxx, cyy] = toCanvasXY(x0, 0, BW, BH, xmax, ymax);
+  const [cyx, cyy2] = toCanvasXY(0, y0, BW, BH, xmax, ymax);
+
+  bctx.beginPath();
+  bctx.moveTo(cx0, cy0);
+  bctx.lineTo(cxx, cyy);
+  bctx.lineTo(cyx, cyy2);
+  bctx.closePath();
+  bctx.fillStyle = 'rgba(91,138,245,0.10)';
+  bctx.fill();
+
+  // Budget line
+  bctx.beginPath();
+  bctx.moveTo(cxx, cyy);
+  bctx.lineTo(cyx, cyy2);
+  bctx.strokeStyle = '#5b8af5';
+  bctx.lineWidth = 2.5;
+  bctx.stroke();
+
+  // Intercept labels
+  bctx.fillStyle = '#5b8af5';
+  bctx.font = '12px sans-serif';
+  bctx.textAlign = 'center';
+  bctx.fillText(`w/p₁ = ${(w/p1).toFixed(1)}`, cxx, cyy + 18);
+  bctx.textAlign = 'right';
+  bctx.fillText(`w/p₂ = ${(w/p2).toFixed(1)}`, cyx - 6, cyy2 - 6);
+
+  // Slope annotation
+  bctx.fillStyle = '#f5a623';
+  bctx.font = '12px sans-serif';
+  bctx.textAlign = 'left';
+  bctx.fillText(`Slope = −p₁/p₂ = −${(p1/p2).toFixed(2)}`, PAD.l + 10, PAD.t + 22);
+}
+
+// ─────────────────────────────────────────────────
+// CHART 2 — Utility Maximization
+const uc = document.getElementById('utilCanvas');
+const { ctx: uctx, w: UW, h: UH } = setupHDCanvas(uc);
+
+function drawUtil() {
+  const p1 = getSlider('up1'), p2 = getSlider('up2'),
+        w  = getSlider('uw'),  al = getSlider('alpha');
+
+  document.getElementById('up1val').textContent = p1;
+  document.getElementById('up2val').textContent = p2;
+  document.getElementById('uwval').textContent = w;
+  document.getElementById('alphaval').textContent = al;
+
+  const x1s = al * w / p1;
+  const x2s = (1 - al) * w / p2;
+  const ustar = Math.pow(x1s, al) * Math.pow(x2s, 1 - al);
+
+  document.getElementById('rx1').textContent = x1s.toFixed(2);
+  document.getElementById('rx1eq').textContent = `αw/p₁ = ${al}×${w}/${p1}`;
+  document.getElementById('rx2').textContent = x2s.toFixed(2);
+  document.getElementById('rx2eq').textContent = `(1−α)w/p₂ = ${(1-al).toFixed(2)}×${w}/${p2}`;
+  document.getElementById('rv').textContent = ustar.toFixed(3);
+  document.getElementById('rveq').textContent = `u(x₁*,x₂*)`;
+
+  uctx.clearRect(0, 0, UW, UH);
+
+  const xmax = Math.max(40, Math.ceil(w / p1 * 1.6 / 10) * 10);
+  const ymax = Math.max(40, Math.ceil(w / p2 * 1.6 / 10) * 10);
+
+  drawAxes(uctx, UW, UH, xmax, ymax);
+
+  // Indifference curves
+  const levels = [ustar * 0.4, ustar * 0.7, ustar, ustar * 1.35];
+  const colors = ['rgba(78,203,141,0.25)','rgba(78,203,141,0.4)','#4ecb8d','rgba(78,203,141,0.55)'];
+
+  levels.forEach((U, i) => {
+    uctx.beginPath();
+    let first = true;
+    for (let ix = 0.4; ix <= xmax; ix += xmax / 300) {
+      const iy = Math.pow(U / Math.pow(ix, al), 1 / (1 - al));
+      if (iy > 0 && iy <= ymax * 1.05) {
+        const [cx, cy] = toCanvasXY(ix, iy, UW, UH, xmax, ymax);
+        first ? uctx.moveTo(cx, cy) : uctx.lineTo(cx, cy);
+        first = false;
+      }
+    }
+    uctx.strokeStyle = colors[i];
+    uctx.lineWidth = i === 2 ? 2.5 : 1.2;
+    uctx.setLineDash(i === 2 ? [] : [4, 4]);
+    uctx.stroke();
+    uctx.setLineDash([]);
+  });
+
+  // Budget line
+  const bx0 = w / p1, by0 = w / p2;
+  const [bcx0, bcy0] = toCanvasXY(bx0, 0, UW, UH, xmax, ymax);
+  const [bcx1, bcy1] = toCanvasXY(0, by0, UW, UH, xmax, ymax);
+  uctx.beginPath();
+  uctx.moveTo(bcx0, bcy0);
+  uctx.lineTo(bcx1, bcy1);
+  uctx.strokeStyle = '#5b8af5';
+  uctx.lineWidth = 2;
+  uctx.stroke();
+
+  // Optimal point
+  const [ox, oy] = toCanvasXY(x1s, x2s, UW, UH, xmax, ymax);
+  uctx.beginPath();
+  uctx.arc(ox, oy, 7, 0, Math.PI * 2);
+  uctx.fillStyle = '#f5a623';
+  uctx.fill();
+  uctx.strokeStyle = '#fff';
+  uctx.lineWidth = 1.5;
+  uctx.stroke();
+
+  // Dashed lines to axes
+  uctx.setLineDash([4, 4]);
+  uctx.strokeStyle = 'rgba(245,166,35,0.4)';
+  uctx.lineWidth = 1;
+  const [axisX, axisY] = toCanvasXY(x1s, 0, UW, UH, xmax, ymax);
+  const [axisX2, axisY2] = toCanvasXY(0, x2s, UW, UH, xmax, ymax);
+  uctx.beginPath(); uctx.moveTo(ox, oy); uctx.lineTo(axisX, axisY); uctx.stroke();
+  uctx.beginPath(); uctx.moveTo(ox, oy); uctx.lineTo(axisX2, axisY2); uctx.stroke();
+  uctx.setLineDash([]);
+
+  // Label
+  uctx.fillStyle = '#f5a623';
+  uctx.font = '12px sans-serif';
+  uctx.textAlign = 'left';
+  uctx.fillText(`Optimal (${x1s.toFixed(1)}, ${x2s.toFixed(1)})`, ox + 10, oy - 8);
+}
+
+// ─────────────────────────────────────────────────
+// CHART 3 — Elasticity / Demand curve
+const ec = document.getElementById('elasticCanvas');
+const { ctx: ectx, w: EW, h: EH } = setupHDCanvas(ec);
+
+let elasticMode = 'p1';
+
+function setElasticMode(m) {
+  elasticMode = m;
+  document.getElementById('modeP1').classList.toggle('active', m === 'p1');
+  document.getElementById('modeW').classList.toggle('active', m === 'w');
+  if (m === 'p1') {
+    document.getElementById('eVarLabel').textContent = 'p₂ (fixed)';
+    document.getElementById('eFixLabel').textContent = 'w (fixed)';
+  } else {
+    document.getElementById('eVarLabel').textContent = 'p₁ (fixed)';
+    document.getElementById('eFixLabel').textContent = 'p₂ (fixed)';
+  }
+  drawElastic();
+}
+
+function drawElastic() {
+  const al = getSlider('ealpha');
+  const evar = getSlider('evar');
+  const efix = getSlider('efix');
+
+  document.getElementById('ealphaval').textContent = al;
+  document.getElementById('evarval').textContent = evar;
+  document.getElementById('efixval').textContent = efix;
+
+  ectx.clearRect(0, 0, EW, EH);
+
+  let xLabel, yLabel, xmax, ymax, curveFn;
+
+  if (elasticMode === 'p1') {
+    // x-axis = p1, y-axis = x1*
+    xLabel = 'p₁ (price of good 1)'; yLabel = 'x₁* (quantity demanded)';
+    const w = efix, p2 = evar;
+    xmax = 12; ymax = al * w / 1 * 1.3;
+    curveFn = p1 => al * w / p1;
+  } else {
+    // x-axis = w, y-axis = x1*
+    xLabel = 'w (income)'; yLabel = 'x₁* (quantity demanded)';
+    const p1 = evar, p2 = efix;
+    xmax = 110; ymax = al * 110 / p1 * 1.1;
+    curveFn = w => al * w / p1;
+  }
+
+  const PAD2 = { t: 30, r: 20, b: 55, l: 60 };
+  const pw = EW - PAD2.l - PAD2.r;
+  const ph = EH - PAD2.t - PAD2.b;
+
+  // Grid
+  ectx.setLineDash([3, 5]);
+  ectx.strokeStyle = '#1e2336';
+  ectx.lineWidth = 1;
+  for (let i = 1; i <= 5; i++) {
+    const gx = PAD2.l + pw * i / 5;
+    const gy = PAD2.t + ph * i / 5;
+    ectx.beginPath(); ectx.moveTo(gx, PAD2.t); ectx.lineTo(gx, EH - PAD2.b); ectx.stroke();
+    ectx.beginPath(); ectx.moveTo(PAD2.l, gy); ectx.lineTo(EW - PAD2.r, gy); ectx.stroke();
+  }
+  ectx.setLineDash([]);
+
+  // Axes
+  ectx.strokeStyle = '#3a4060';
+  ectx.lineWidth = 1.5;
+  ectx.beginPath(); ectx.moveTo(PAD2.l, PAD2.t); ectx.lineTo(PAD2.l, EH - PAD2.b); ectx.stroke();
+  ectx.beginPath(); ectx.moveTo(PAD2.l, EH - PAD2.b); ectx.lineTo(EW - PAD2.r, EH - PAD2.b); ectx.stroke();
+
+  // Tick labels
+  ectx.fillStyle = '#7b85a3';
+  ectx.font = '11px sans-serif';
+  ectx.textAlign = 'center';
+  for (let i = 0; i <= 5; i++) {
+    const vx = Math.round(xmax * i / 5);
+    const vy = (ymax * i / 5).toFixed(1);
+    ectx.fillText(vx, PAD2.l + pw * i / 5, EH - PAD2.b + 16);
+    ectx.textAlign = 'right';
+    ectx.fillText(vy, PAD2.l - 5, EH - PAD2.b - ph * i / 5 + 4);
+    ectx.textAlign = 'center';
+  }
+
+  // Axis name labels
+  ectx.fillStyle = '#a0aac0';
+  ectx.font = '12px sans-serif';
+  ectx.fillText(xLabel, PAD2.l + pw / 2, EH - 8);
+  ectx.save();
+  ectx.translate(14, PAD2.t + ph / 2);
+  ectx.rotate(-Math.PI / 2);
+  ectx.fillText(yLabel, 0, 0);
+  ectx.restore();
+
+  function toEXY(x, y) {
+    return [
+      PAD2.l + (x / xmax) * pw,
+      EH - PAD2.b - (y / ymax) * ph
+    ];
+  }
+
+  // Demand curve
+  ectx.beginPath();
+  let first = true;
+  const minX = xmax / 100;
+  for (let i = 1; i <= 300; i++) {
+    const xi = minX + (xmax - minX) * i / 300;
+    const yi = curveFn(xi);
+    if (yi >= 0 && yi <= ymax * 1.05) {
+      const [cx, cy] = toEXY(xi, yi);
+      first ? ectx.moveTo(cx, cy) : ectx.lineTo(cx, cy);
+      first = false;
+    }
+  }
+  ectx.strokeStyle = '#f5a623';
+  ectx.lineWidth = 2.5;
+  ectx.stroke();
+
+  // Current point marker
+  const curX = elasticMode === 'p1' ? evar : efix;
+  const curY = curveFn(curX);
+  if (curY >= 0 && curY <= ymax) {
+    const [px_, py_] = toEXY(curX, curY);
+    ectx.beginPath(); ectx.arc(px_, py_, 6, 0, Math.PI * 2);
+    ectx.fillStyle = '#5b8af5'; ectx.fill();
+    ectx.strokeStyle = '#fff'; ectx.lineWidth = 1.5; ectx.stroke();
+    // Dashed lines
+    ectx.setLineDash([4, 4]);
+    ectx.strokeStyle = 'rgba(91,138,245,0.4)';
+    ectx.lineWidth = 1;
+    ectx.beginPath(); ectx.moveTo(px_, py_); ectx.lineTo(px_, EH - PAD2.b); ectx.stroke();
+    ectx.beginPath(); ectx.moveTo(px_, py_); ectx.lineTo(PAD2.l, py_); ectx.stroke();
+    ectx.setLineDash([]);
+
+    // Label
+    ectx.fillStyle = '#5b8af5';
+    ectx.font = '12px sans-serif';
+    ectx.textAlign = 'left';
+    ectx.fillText(`(${curX.toFixed(1)}, ${curY.toFixed(2)})`, px_ + 10, py_ - 6);
+  }
+
+  // Elasticity annotation
+  ectx.fillStyle = '#4ecb8d';
+  ectx.font = '13px sans-serif';
+  ectx.textAlign = 'left';
+  const elastLabel = elasticMode === 'p1'
+    ? 'ε₁₁ = 1 (unit elastic)'
+    : 'εw = 1 (unit elastic)';
+  ectx.fillText(elastLabel, PAD2.l + 10, PAD2.t + 20);
+}
+
+// ─────────────────────────────────────────────────
+// Tab UI
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + target).classList.add('active');
+  });
+});
+
+// ─────────────────────────────────────────────────
+// Wire up sliders
+['p1','p2','w'].forEach(id => {
+  document.getElementById(id).addEventListener('input', drawBudget);
+});
+['up1','up2','uw','alpha'].forEach(id => {
+  document.getElementById(id).addEventListener('input', drawUtil);
+});
+['ealpha','evar','efix'].forEach(id => {
+  document.getElementById(id).addEventListener('input', drawElastic);
+});
+
+// Initial renders (after KaTeX loads)
+window.addEventListener('load', () => {
+  drawBudget();
+  drawUtil();
+  drawElastic();
+});
+</script>
+
+</body>
+</html>
