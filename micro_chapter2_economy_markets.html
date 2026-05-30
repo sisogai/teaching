@@ -405,8 +405,10 @@
     function setupCanvas(canvas, xMax, yMax, xMin = 0, yMin = 0) {
       const ctx = canvas.getContext("2d");
       const dpr = window.devicePixelRatio || 1;
-      const cssW = Number(canvas.getAttribute("width"));
-      const cssH = Number(canvas.getAttribute("height"));
+      const cssW = Number(canvas.dataset.cssWidth || canvas.getAttribute("width"));
+      const cssH = Number(canvas.dataset.cssHeight || canvas.getAttribute("height"));
+      canvas.dataset.cssWidth = cssW;
+      canvas.dataset.cssHeight = cssH;
       canvas.style.width = cssW + "px";
       canvas.style.height = cssH + "px";
       canvas.width = cssW * dpr;
