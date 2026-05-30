@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Microeconomics</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #181c27;
+      --card: #1e2336;
+      --border: #2a3050;
+      --accent: #5b8af5;
+      --accent2: #f5a623;
+      --accent3: #4ecb8d;
+      --text: #e8ecf5;
+      --muted: #7b85a3;
+      --radius: 12px;
+      --font-head: Georgia, "Palatino Linotype", serif;
+      --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.75;
+      min-height: 100vh;
+      padding-bottom: 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0d1b3e 0%, #1a2a5e 50%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 56px 32px 44px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(60% 80% at 80% 20%, rgba(91, 138, 245, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      margin: 0 auto;
+      max-width: 980px;
+      position: relative;
+    }
+
+    .badge {
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      color: var(--accent);
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      margin-bottom: 16px;
+      padding: 3px 10px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      color: #fff;
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .container {
+      margin: 0 auto;
+      max-width: 980px;
+      padding: 0 24px;
+    }
+
+    .section {
+      margin-top: 42px;
+    }
+
+    .section-title {
+      border-left: 3px solid var(--accent);
+      color: var(--text);
+      font-family: var(--font-head);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      padding-left: 14px;
+    }
+
+    .notice {
+      background: rgba(245, 166, 35, 0.08);
+      border: 1px solid rgba(245, 166, 35, 0.35);
+      border-left: 3px solid var(--accent2);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      padding: 18px 22px;
+    }
+
+    .notice strong {
+      color: var(--accent2);
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chapter-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 12px;
+      min-height: 190px;
+      padding: 22px;
+    }
+
+    .chapter-meta {
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .chapter-card h2 {
+      color: #fff;
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      line-height: 1.3;
+    }
+
+    .chapter-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .chapter-card a {
+      align-self: end;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: #fff;
+      display: inline-flex;
+      font-weight: 700;
+      justify-content: center;
+      min-height: 40px;
+      padding: 8px 14px;
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .chapter-card a:hover,
+    .chapter-card a:focus {
+      background: #729bf7;
+      outline: none;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 36px;
+    }
+
+    @media (max-width: 760px) {
+      .hero { padding: 42px 22px 34px; }
+      .container { padding: 0 16px; }
+      .grid { grid-template-columns: 1fr; }
+      .chapter-card { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="badge">Introductory Microeconomics</span>
+      <h1>Interactive Microeconomics</h1>
+      <p>
+        This site provides interactive materials that follow the lecture notes for introductory microeconomics.
+        Each page uses sliders, graphs, and simple calculations to help students explore the main ideas visually.
+      </p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <div class="notice">
+        <strong>Prototype notice.</strong>
+        These pages are still experimental. Some explanations, calculations, graphs, or links may contain mistakes and may be revised later.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Chapters</h2>
+      <div class="grid">
+        <article class="chapter-card">
+          <div class="chapter-meta">Chapter 1</div>
+          <h2>Introduction</h2>
+          <p>Review the purpose of microeconomics and the basic mathematical tools used later: functions, graphs, and derivatives.</p>
+          <a href="https://sisogai.github.io/teaching/micro_chapter1_introduction.html#">Open Chapter 1</a>
+        </article>
+
+        <article class="chapter-card">
+          <div class="chapter-meta">Chapter 2</div>
+          <h2>Economy and Markets</h2>
+          <p>Explore goods, agents, markets, demand, supply, and the adjustment logic behind market-clearing prices.</p>
+          <a href="https://sisogai.github.io/teaching/micro_chapter2_economy_markets.html#">Open Chapter 2</a>
+        </article>
+
+        <article class="chapter-card">
+          <div class="chapter-meta">Chapter 3</div>
+          <h2>Producer Theory</h2>
+          <p>Interact with production, cost curves, profit maximization, short-run supply, and cost minimization.</p>
+          <a href="https://sisogai.github.io/teaching/micro_producer_theory.html#">Open Chapter 3</a>
+        </article>
+
+        <article class="chapter-card">
+          <div class="chapter-meta">Chapter 4</div>
+          <h2>Consumer Behavior</h2>
+          <p>Visualize budget constraints, preferences, utility maximization, demand, and comparative statics.</p>
+          <a href="https://sisogai.github.io/teaching/micro_consumer_theory.html#">Open Chapter 4</a>
+        </article>
+
+        <article class="chapter-card">
+          <div class="chapter-meta">Chapter 5</div>
+          <h2>Partial Equilibrium Analysis</h2>
+          <p>Compare competitive markets, taxes, price regulation, surplus changes, and monopoly outcomes.</p>
+          <a href="https://sisogai.github.io/teaching/micro_chapter5_partial_equilibrium.html#">Open Chapter 5</a>
+        </article>
+
+        <article class="chapter-card">
+          <div class="chapter-meta">Chapter 6</div>
+          <h2>General Equilibrium Framework</h2>
+          <p>Use an Edgeworth box to study exchange, market clearing, equilibrium prices, and Pareto efficiency.</p>
+          <a href="https://sisogai.github.io/teaching/micro_chapter6_general_equilibrium.html#">Open Chapter 6</a>
+        </article>
+
+        <article class="chapter-card">
+          <div class="chapter-meta">Chapter 7</div>
+          <h2>Market Failure</h2>
+          <p>Study externalities, Pigouvian taxation, public goods, Lindahl shares, and free-riding incentives.</p>
+          <a href="https://sisogai.github.io/teaching/micro_chapter7_market_failure.html#">Open Chapter 7</a>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">
+      These materials are designed as companions to the lecture notes, not as replacements for the full notes or class discussion.
+    </p>
+  </main>
+</body>
+</html>
