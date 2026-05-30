@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Partial Equilibrium Analysis | Introductory Microeconomics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <style>
+
+    :root {
+      --bg: #0f1117;
+      --surface: #181c27;
+      --card: #1e2336;
+      --border: #2a3050;
+      --accent: #5b8af5;
+      --accent2: #f5a623;
+      --accent3: #4ecb8d;
+      --danger: #e05c6a;
+      --text: #e8ecf5;
+      --muted: #7b85a3;
+      --radius: 12px;
+      --font-head: Georgia, "Palatino Linotype", serif;
+      --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    }
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.75;
+      padding: 0 0 60px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0d1b3e 0%, #1a2a5e 50%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 32px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(60% 80% at 80% 20%, rgba(91, 138, 245, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .chapter-badge {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .hero p {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 14px;
+      position: relative;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .section { margin-top: 48px; }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    p { margin-bottom: 14px; }
+    .muted { color: var(--muted); }
+    .def-box, .thm-box {
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin: 18px 0;
+    }
+    .def-box {
+      background: rgba(91, 138, 245, 0.07);
+      border: 1px solid rgba(91, 138, 245, 0.3);
+      border-left: 3px solid var(--accent);
+    }
+    .thm-box {
+      background: rgba(78, 203, 141, 0.06);
+      border: 1px solid rgba(78, 203, 141, 0.3);
+      border-left: 3px solid var(--accent3);
+    }
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .def-box .label { color: var(--accent); }
+    .thm-box .label { color: var(--accent3); }
+    .math-block { overflow-x: auto; padding: 8px 0; }
+    .interactive-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 24px 0;
+      box-shadow: var(--shadow);
+    }
+    .panel-header {
+      background: rgba(91, 138, 245, 0.1);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-header .icon {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .panel-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+    .panel-body { padding: 22px; }
+    .formula-strip {
+      background: rgba(91, 138, 245, 0.07);
+      border: 1px solid rgba(91, 138, 245, 0.22);
+      border-radius: 10px;
+      color: var(--text);
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      overflow-x: auto;
+    }
+    .formula-strip .katex-display { margin: 0; }
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(280px, 500px) minmax(240px, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .canvas-wrap {
+      background: #111521;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #151a28;
+      border-radius: 8px;
+    }
+    .controls { display: grid; gap: 12px; }
+    .control-row { display: grid; gap: 5px; }
+    .control-row label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .control-row output {
+      color: var(--accent2);
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+    input[type="range"], select {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      min-height: 38px;
+      padding: 6px 10px;
+    }
+    .surplus-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .surplus-btn {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      min-height: 38px;
+      padding: 7px 8px;
+    }
+    .surplus-btn:hover,
+    .surplus-btn:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .surplus-btn.active {
+      background: rgba(91, 138, 245, 0.16);
+      border-color: var(--accent);
+    }
+    .surplus-btn[data-area="cs"].active,
+    .surplus-btn[data-policy-area="cs"].active,
+    .surplus-btn[data-monopoly-area="cs"].active {
+      background: rgba(245, 166, 35, 0.18);
+      border-color: var(--accent2);
+    }
+    .surplus-btn[data-area="ps"].active,
+    .surplus-btn[data-policy-area="ps"].active,
+    .surplus-btn[data-monopoly-area="ps"].active {
+      background: rgba(91, 138, 245, 0.18);
+      border-color: var(--accent);
+    }
+    .surplus-btn[data-area="dwl"].active,
+    .surplus-btn[data-policy-area="dwl"].active,
+    .surplus-btn[data-monopoly-area="dwl"].active {
+      background: rgba(224, 92, 106, 0.18);
+      border-color: var(--danger);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 82px;
+    }
+    .stat .name {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .stat .value {
+      color: var(--text);
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .explain {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 14px;
+    }
+    .link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-top: 8px;
+      min-height: 42px;
+      padding: 10px 16px;
+      text-decoration: none;
+    }
+    @media (max-width: 820px) {
+      .hero { padding: 42px 22px 34px; }
+      .container { padding: 0 16px; }
+      .card, .panel-body { padding: 18px; }
+      .two-col, .stats { grid-template-columns: 1fr; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <span class="chapter-badge">Chapter 5</span>
+    <h1>Partial Equilibrium Analysis</h1>
+    <p>Analyze one market at a time: perfect competition, taxes, price regulation, and monopoly.</p>
+  </div>
+  <main class="container">
+
+    <div class="section">
+      <h2 class="section-title">5.1 Perfect Competition and Policy</h2>
+      <div class="card">
+        <p>Partial equilibrium analysis focuses on one market. In a perfectly competitive benchmark, equilibrium is where demand intersects marginal cost, and total surplus is maximized under the maintained assumptions.</p>
+        <p>Commodity taxes and binding price regulations move the market away from the efficient quantity and create deadweight loss.</p>
+      </div>
+      <div class="interactive-panel">
+        <div class="panel-header"><span class="icon">P</span><h3>Interactive: Tax, Price Floor, and Price Cap</h3></div>
+        <div class="panel-body">
+          <div class="formula-strip">$$ P_D(Q)=a-bQ,\qquad MC(Q)=c+dQ. $$</div>
+          <div class="two-col">
+            <div class="canvas-wrap"><canvas id="policyCanvas" width="500" height="420"></canvas></div>
+            <div>
+              <div class="controls">
+                <div class="control-row"><label>Policy</label><select id="policy"><option value="none">No intervention</option><option value="tax">Unit tax</option><option value="floor">Price floor</option><option value="cap">Price cap</option></select></div>
+                <div class="control-row"><label>Demand intercept \(a\) <output id="paOut"></output></label><input id="pa" type="range" min="40" max="120" step="1" value="90"></div>
+                <div class="control-row"><label>Demand slope \(b\) <output id="pbOut"></output></label><input id="pb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
+                <div class="control-row"><label>MC intercept \(c\) <output id="pcOut"></output></label><input id="pc" type="range" min="0" max="40" step="1" value="10"></div>
+                <div class="control-row"><label>MC slope \(d\) <output id="pdOut"></output></label><input id="pd" type="range" min="0.2" max="2.5" step="0.1" value="0.8"></div>
+                <div class="control-row"><label>Policy size <output id="sizeOut"></output></label><input id="policySize" type="range" min="0" max="100" step="0.5" value="14"></div>
+              </div>
+              <div class="surplus-buttons" aria-label="Policy graph area display">
+                <button class="surplus-btn active" type="button" data-policy-area="none">None</button>
+                <button class="surplus-btn" type="button" data-policy-area="cs">CS</button>
+                <button class="surplus-btn" type="button" data-policy-area="ps">PS</button>
+                <button class="surplus-btn" type="button" data-policy-area="dwl">DWL</button>
+              </div>
+              <div class="stats">
+                <div class="stat"><span class="name">Quantity</span><span class="value" id="qPolicyOut"></span></div>
+                <div class="stat"><span class="name">Consumer price</span><span class="value" id="pcPolicyOut"></span></div>
+                <div class="stat"><span class="name">Producer price</span><span class="value" id="ppPolicyOut"></span></div>
+                <div class="stat"><span class="name">Consumer surplus</span><span class="value" id="csPolicyOut"></span></div>
+                <div class="stat"><span class="name">Producer surplus</span><span class="value" id="psPolicyOut"></span></div>
+                <div class="stat"><span class="name">Welfare loss</span><span class="value" id="dwlPolicyOut"></span></div>
+              </div>
+              <p class="explain" id="policyText"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">5.2 Monopoly</h2>
+      <div class="card">
+        <p>A monopolist recognizes that selling more units lowers the market price. Therefore marginal revenue lies below the demand curve, and the monopoly quantity solves \(MR(Q)=MC(Q)\).</p>
+      </div>
+      <div class="interactive-panel">
+        <div class="panel-header"><span class="icon">MR</span><h3>Interactive: Monopoly versus Competition</h3></div>
+        <div class="panel-body">
+          <div class="formula-strip">$$ \pi(Q)=P(Q)Q-C(Q),\qquad MR(Q)=P(Q)+P'(Q)Q. $$</div>
+          <div class="two-col">
+            <div class="canvas-wrap"><canvas id="monopolyCanvas" width="500" height="420"></canvas></div>
+            <div>
+              <div class="controls">
+                <div class="control-row"><label>Demand intercept \(a\) <output id="maOut"></output></label><input id="ma" type="range" min="40" max="120" step="1" value="90"></div>
+                <div class="control-row"><label>Demand slope \(b\) <output id="mbOut"></output></label><input id="mb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
+                <div class="control-row"><label>MC intercept \(c\) <output id="mcOut"></output></label><input id="mc" type="range" min="0" max="40" step="1" value="10"></div>
+                <div class="control-row"><label>MC slope \(d\) <output id="mdOut"></output></label><input id="md" type="range" min="0.2" max="2.5" step="0.1" value="0.8"></div>
+              </div>
+              <div class="surplus-buttons" aria-label="Monopoly graph area display">
+                <button class="surplus-btn active" type="button" data-monopoly-area="none">None</button>
+                <button class="surplus-btn" type="button" data-monopoly-area="cs">CS</button>
+                <button class="surplus-btn" type="button" data-monopoly-area="ps">PS</button>
+                <button class="surplus-btn" type="button" data-monopoly-area="dwl">DWL</button>
+              </div>
+              <div class="stats">
+                <div class="stat"><span class="name">Competitive \(Q\)</span><span class="value" id="qcOut"></span></div>
+                <div class="stat"><span class="name">Monopoly \(Q\)</span><span class="value" id="qmOut"></span></div>
+                <div class="stat"><span class="name">Monopoly price</span><span class="value" id="pmOut"></span></div>
+                <div class="stat"><span class="name">Markup</span><span class="value" id="markupOut"></span></div>
+                <div class="stat"><span class="name">Consumer surplus</span><span class="value" id="csMonopolyOut"></span></div>
+                <div class="stat"><span class="name">Producer surplus</span><span class="value" id="psMonopolyOut"></span></div>
+                <div class="stat"><span class="name">Welfare loss</span><span class="value" id="dwlMonopolyOut"></span></div>
+              </div>
+              <p class="explain">The monopoly outcome has a higher price and lower quantity than the competitive benchmark when demand is downward sloping.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section"><div class="card"><a class="link-button" href="micro_chapter5_partial_equilibrium_colab.ipynb">Open the Chapter 5 Colab notebook file</a></div></div>
+
+  </main>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <script>
+
+    const $ = (id) => document.getElementById(id);
+    const fmt = (x, n = 2) => Number.isFinite(x) ? Number(x).toFixed(n).replace(/\.?0+$/, "") : "n/a";
+    const val = (id) => parseFloat($(id).value);
+    const colors = { blue: "#5b8af5", orange: "#f5a623", green: "#4ecb8d", red: "#e05c6a", text: "#e8ecf5", muted: "#7b85a3" };
+    let policyArea = "none";
+    let monopolyArea = "none";
+
+    function setupCanvas(canvas, xMax, yMax, xMin = 0, yMin = 0) {
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const cssW = Number(canvas.getAttribute("width"));
+      const cssH = Number(canvas.getAttribute("height"));
+      canvas.style.width = cssW + "px";
+      canvas.style.height = cssH + "px";
+      canvas.width = cssW * dpr;
+      canvas.height = cssH * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const m = { l: 48, r: 18, t: 22, b: 42 };
+      const w = cssW - m.l - m.r;
+      const h = cssH - m.t - m.b;
+      const sx = (x) => m.l + ((x - xMin) / (xMax - xMin)) * w;
+      const sy = (y) => m.t + ((yMax - y) / (yMax - yMin)) * h;
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#151a28";
+      ctx.fillRect(0, 0, cssW, cssH);
+      ctx.strokeStyle = "#27304a";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = colors.muted;
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "center";
+      for (let i = 0; i <= 5; i++) {
+        const x = xMin + (xMax - xMin) * i / 5;
+        const px = sx(x);
+        ctx.beginPath(); ctx.moveTo(px, m.t); ctx.lineTo(px, m.t + h); ctx.stroke();
+        ctx.fillText(fmt(x), px, cssH - 18);
+      }
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 5; i++) {
+        const y = yMin + (yMax - yMin) * i / 5;
+        const py = sy(y);
+        ctx.beginPath(); ctx.moveTo(m.l, py); ctx.lineTo(m.l + w, py); ctx.stroke();
+        ctx.fillText(fmt(y), m.l - 8, py + 4);
+      }
+      ctx.strokeStyle = colors.muted;
+      ctx.lineWidth = 1.5;
+      if (yMin <= 0 && yMax >= 0) { ctx.beginPath(); ctx.moveTo(m.l, sy(0)); ctx.lineTo(m.l + w, sy(0)); ctx.stroke(); }
+      if (xMin <= 0 && xMax >= 0) { ctx.beginPath(); ctx.moveTo(sx(0), m.t); ctx.lineTo(sx(0), m.t + h); ctx.stroke(); }
+      return { ctx, sx, sy, m, w, h, cssW, cssH };
+    }
+
+    function drawPath(ctx, xs, f, sx, sy, color, dashed = false, width = 2.5) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash(dashed ? [7, 6] : []);
+      ctx.beginPath();
+      let started = false;
+      xs.forEach((x) => {
+        const y = f(x);
+        if (!Number.isFinite(y)) return;
+        if (!started) { ctx.moveTo(sx(x), sy(y)); started = true; }
+        else ctx.lineTo(sx(x), sy(y));
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function dot(ctx, x, y, sx, sy, label, color = colors.orange) {
+      ctx.fillStyle = color;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(sx(x), sy(y), 5, 0, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+      if (label) {
+        ctx.fillStyle = colors.text;
+        ctx.font = "12px Segoe UI";
+        ctx.textAlign = "left";
+        ctx.fillText(label, sx(x) + 8, sy(y) - 8);
+      }
+    }
+
+    function lineLabel(ctx, text, x, y, sx, sy, color) {
+      ctx.fillStyle = color;
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "left";
+      ctx.fillText(text, sx(x), sy(y));
+    }
+
+    function fillBetween(ctx, sx, sy, x0, x1, topFn, bottomFn, color) {
+      if (!(x1 > x0)) return;
+      const steps = 80;
+      const xs = Array.from({ length: steps + 1 }, (_, i) => x0 + (x1 - x0) * i / steps);
+      ctx.save();
+      ctx.beginPath();
+      xs.forEach((x, i) => {
+        const y = topFn(x);
+        if (i === 0) ctx.moveTo(sx(x), sy(y));
+        else ctx.lineTo(sx(x), sy(y));
+      });
+      xs.slice().reverse().forEach((x) => ctx.lineTo(sx(x), sy(bottomFn(x))));
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.34;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function updateAreaButtons(group, activeArea) {
+      document.querySelectorAll(`[data-${group}-area]`).forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset[`${group}Area`] === activeArea);
+      });
+    }
+
+
+    function marketParams(prefix) {
+      return { a: val(prefix + "a"), b: val(prefix + "b"), c: val(prefix + "c"), d: val(prefix + "d") };
+    }
+    function competitive(a, b, c, d) {
+      const q = Math.max(0, (a - c) / (b + d));
+      return { q, p: a - b * q };
+    }
+    function consumerSurplus(a, b, q, price) {
+      return Math.max(0, a * q - 0.5 * b * q * q - price * q);
+    }
+    function producerSurplus(c, d, q, price) {
+      return Math.max(0, price * q - c * q - 0.5 * d * q * q);
+    }
+    function totalSurplus(a, b, c, d, q) {
+      return (a - c) * q - 0.5 * (b + d) * q * q;
+    }
+    function drawPolicy() {
+      const { a, b, c, d } = marketParams("p");
+      const size = val("policySize");
+      const mode = $("policy").value;
+      const base = competitive(a, b, c, d);
+      let q = base.q, pc = base.p, pp = base.p, text = "The benchmark clears where demand equals marginal cost.";
+      if (mode === "tax") {
+        q = Math.max(0, (a - c - size) / (b + d)); pc = a - b * q; pp = c + d * q;
+        text = "A unit tax opens a wedge between the consumer price and producer price.";
+      } else if (mode === "floor") {
+        const floor = size;
+        const qd = Math.max(0, (a - floor) / b);
+        const qs = Math.max(0, (floor - c) / d);
+        if (floor > base.p) { q = qd; pc = floor; pp = floor; text = "A binding price floor creates excess supply; the traded quantity is demand-constrained."; }
+      } else if (mode === "cap") {
+        const cap = size;
+        const qd = Math.max(0, (a - cap) / b);
+        const qs = Math.max(0, (cap - c) / d);
+        if (cap < base.p) { q = qs; pc = cap; pp = cap; text = "A binding price cap creates excess demand; allocation becomes a separate problem."; }
+      }
+      const cs = consumerSurplus(a, b, q, pc);
+      const ps = producerSurplus(c, d, q, pp);
+      const dwl = Math.max(0, totalSurplus(a, b, c, d, base.q) - totalSurplus(a, b, c, d, q));
+      const qMax = Math.max(80, a / b * 1.05, base.q * 1.4);
+      const pMax = Math.max(100, a * 1.05, pc + 10);
+      const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
+      const demand = (x) => Math.max(0, a - b * x);
+      const mc = (x) => c + d * x;
+      const { ctx, sx, sy } = setupCanvas($("policyCanvas"), qMax, pMax);
+      if (policyArea === "cs") {
+        fillBetween(ctx, sx, sy, 0, q, demand, () => pc, colors.orange);
+      } else if (policyArea === "ps") {
+        fillBetween(ctx, sx, sy, 0, q, () => pp, mc, colors.blue);
+      } else if (policyArea === "dwl") {
+        fillBetween(ctx, sx, sy, q, base.q, demand, mc, colors.red);
+      }
+      drawPath(ctx, xs, demand, sx, sy, colors.blue);
+      drawPath(ctx, xs, mc, sx, sy, colors.green);
+      if (mode === "tax") drawPath(ctx, xs, (x) => mc(x) + size, sx, sy, colors.orange, true);
+      drawPath(ctx, xs, () => pc, sx, sy, colors.orange, true);
+      dot(ctx, base.q, base.p, sx, sy, "E0", colors.green);
+      dot(ctx, q, pc, sx, sy, "E1", colors.orange);
+      lineLabel(ctx, "D", qMax * 0.72, demand(qMax * 0.72), sx, sy, colors.blue);
+      lineLabel(ctx, "MC", qMax * 0.58, mc(qMax * 0.58), sx, sy, colors.green);
+      $("paOut").textContent = fmt(a); $("pbOut").textContent = fmt(b); $("pcOut").textContent = fmt(c); $("pdOut").textContent = fmt(d); $("sizeOut").textContent = fmt(size);
+      $("qPolicyOut").textContent = fmt(q); $("pcPolicyOut").textContent = fmt(pc); $("ppPolicyOut").textContent = fmt(pp); $("csPolicyOut").textContent = fmt(cs); $("psPolicyOut").textContent = fmt(ps); $("dwlPolicyOut").textContent = fmt(dwl);
+      $("policyText").textContent = text;
+      updateAreaButtons("policy", policyArea);
+    }
+    function drawMonopoly() {
+      const { a, b, c, d } = marketParams("m");
+      const qc = Math.max(0, (a - c) / (b + d));
+      const pc = a - b * qc;
+      const qm = Math.max(0, (a - c) / (2 * b + d));
+      const pm = a - b * qm;
+      const mcAtM = c + d * qm;
+      const csM = consumerSurplus(a, b, qm, pm);
+      const psM = producerSurplus(c, d, qm, pm);
+      const dwlM = Math.max(0, totalSurplus(a, b, c, d, qc) - totalSurplus(a, b, c, d, qm));
+      const qMax = Math.max(80, a / b * 1.05, qc * 1.35);
+      const pMax = Math.max(100, a * 1.05);
+      const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
+      const { ctx, sx, sy } = setupCanvas($("monopolyCanvas"), qMax, pMax);
+      const demand = (x) => Math.max(0, a - b * x);
+      const mr = (x) => Math.max(0, a - 2 * b * x);
+      const mc = (x) => c + d * x;
+      if (monopolyArea === "cs") {
+        fillBetween(ctx, sx, sy, 0, qm, demand, () => pm, colors.orange);
+      } else if (monopolyArea === "ps") {
+        fillBetween(ctx, sx, sy, 0, qm, () => pm, mc, colors.blue);
+      } else if (monopolyArea === "dwl") {
+        fillBetween(ctx, sx, sy, qm, qc, demand, mc, colors.red);
+      }
+      drawPath(ctx, xs, demand, sx, sy, colors.blue);
+      drawPath(ctx, xs, mr, sx, sy, colors.orange, true);
+      drawPath(ctx, xs, mc, sx, sy, colors.green);
+      dot(ctx, qc, pc, sx, sy, "Competition", colors.green);
+      dot(ctx, qm, pm, sx, sy, "Monopoly", colors.orange);
+      lineLabel(ctx, "D", qMax * 0.7, a - b * qMax * 0.7, sx, sy, colors.blue);
+      lineLabel(ctx, "MR", qMax * 0.35, a - 2 * b * qMax * 0.35, sx, sy, colors.orange);
+      lineLabel(ctx, "MC", qMax * 0.62, c + d * qMax * 0.62, sx, sy, colors.green);
+      $("maOut").textContent = fmt(a); $("mbOut").textContent = fmt(b); $("mcOut").textContent = fmt(c); $("mdOut").textContent = fmt(d);
+      $("qcOut").textContent = fmt(qc); $("qmOut").textContent = fmt(qm); $("pmOut").textContent = fmt(pm); $("markupOut").textContent = fmt(pm - mcAtM); $("csMonopolyOut").textContent = fmt(csM); $("psMonopolyOut").textContent = fmt(psM); $("dwlMonopolyOut").textContent = fmt(dwlM);
+      updateAreaButtons("monopoly", monopolyArea);
+    }
+    function initPage() {
+      ["pa", "pb", "pc", "pd", "policySize", "policy"].forEach((id) => $(id).addEventListener("input", drawPolicy));
+      ["ma", "mb", "mc", "md"].forEach((id) => $(id).addEventListener("input", drawMonopoly));
+      document.querySelectorAll("[data-policy-area]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          policyArea = btn.dataset.policyArea;
+          drawPolicy();
+        });
+      });
+      document.querySelectorAll("[data-monopoly-area]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          monopolyArea = btn.dataset.monopolyArea;
+          drawMonopoly();
+        });
+      });
+      drawPolicy(); drawMonopoly();
+    }
+
+    window.addEventListener("load", () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ]
+        });
+      }
+      if (typeof initPage === "function") initPage();
+    });
+  </script>
+</body>
+</html>

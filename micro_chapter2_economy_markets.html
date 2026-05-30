@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Economy and Markets | Introductory Microeconomics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <style>
+
+    :root {
+      --bg: #0f1117;
+      --surface: #181c27;
+      --card: #1e2336;
+      --border: #2a3050;
+      --accent: #5b8af5;
+      --accent2: #f5a623;
+      --accent3: #4ecb8d;
+      --danger: #e05c6a;
+      --text: #e8ecf5;
+      --muted: #7b85a3;
+      --radius: 12px;
+      --font-head: Georgia, "Palatino Linotype", serif;
+      --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    }
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.75;
+      padding: 0 0 60px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0d1b3e 0%, #1a2a5e 50%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 32px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(60% 80% at 80% 20%, rgba(91, 138, 245, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .chapter-badge {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .hero p {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 14px;
+      position: relative;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .section { margin-top: 48px; }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    p { margin-bottom: 14px; }
+    .muted { color: var(--muted); }
+    .def-box, .thm-box {
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin: 18px 0;
+    }
+    .def-box {
+      background: rgba(91, 138, 245, 0.07);
+      border: 1px solid rgba(91, 138, 245, 0.3);
+      border-left: 3px solid var(--accent);
+    }
+    .thm-box {
+      background: rgba(78, 203, 141, 0.06);
+      border: 1px solid rgba(78, 203, 141, 0.3);
+      border-left: 3px solid var(--accent3);
+    }
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .def-box .label { color: var(--accent); }
+    .thm-box .label { color: var(--accent3); }
+    .math-block { overflow-x: auto; padding: 8px 0; }
+    .interactive-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 24px 0;
+      box-shadow: var(--shadow);
+    }
+    .panel-header {
+      background: rgba(91, 138, 245, 0.1);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-header .icon {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .panel-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+    .panel-body { padding: 22px; }
+    .formula-strip {
+      background: rgba(91, 138, 245, 0.07);
+      border: 1px solid rgba(91, 138, 245, 0.22);
+      border-radius: 10px;
+      color: var(--text);
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      overflow-x: auto;
+    }
+    .formula-strip .katex-display { margin: 0; }
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(280px, 500px) minmax(240px, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .canvas-wrap {
+      background: #111521;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #151a28;
+      border-radius: 8px;
+    }
+    .controls { display: grid; gap: 12px; }
+    .control-row { display: grid; gap: 5px; }
+    .control-row label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .control-row output {
+      color: var(--accent2);
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+    input[type="range"], select {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      min-height: 38px;
+      padding: 6px 10px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 82px;
+    }
+    .stat .name {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .stat .value {
+      color: var(--text);
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .explain {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 14px;
+    }
+    .link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-top: 8px;
+      min-height: 42px;
+      padding: 10px 16px;
+      text-decoration: none;
+    }
+    @media (max-width: 820px) {
+      .hero { padding: 42px 22px 34px; }
+      .container { padding: 0 16px; }
+      .card, .panel-body { padding: 18px; }
+      .two-col, .stats { grid-template-columns: 1fr; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <span class="chapter-badge">Chapter 2</span>
+    <h1>Economy and Markets</h1>
+    <p>Explore goods, markets, consumers, producers, and the demand-supply equilibrium adjustment logic.</p>
+  </div>
+  <main class="container">
+
+    <div class="section">
+      <h2 class="section-title">2.1-2.3 Goods, Markets, and Agents</h2>
+      <div class="card">
+        <p>An economic agent is any person or entity making a decision. Goods and services are objects of choice and trade, including location-specific, time-specific, and state-contingent goods.</p>
+        <div class="def-box">
+          <div class="label">Market</div>
+          <p>A market is a place, institution, or mechanism through which agents interact and trade a good. Consumers are usually on the demand side of goods markets, while producers are on the supply side.</p>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">2.4 Demand, Supply, and Equilibrium</h2>
+      <div class="card">
+        <p>Equilibrium occurs where the quantity demanded equals the quantity supplied. If the price is too high, excess supply creates downward pressure; if it is too low, excess demand creates upward pressure.</p>
+      </div>
+      <div class="interactive-panel">
+        <div class="panel-header"><span class="icon">M</span><h3>Interactive: Market-Clearing Price</h3></div>
+        <div class="panel-body">
+          <div class="formula-strip">$$ Q_D(p)=A-Bp,\qquad Q_S(p)=C+Dp,\qquad Q_D(p^*)=Q_S(p^*). $$</div>
+          <div class="two-col">
+            <div class="canvas-wrap"><canvas id="marketCanvas" width="500" height="420"></canvas></div>
+            <div>
+              <div class="controls">
+                <div class="control-row"><label>Demand intercept \(A\) <output id="dAOut"></output></label><input id="dA" type="range" min="20" max="120" step="1" value="90"></div>
+                <div class="control-row"><label>Demand slope \(B\) <output id="dBOut"></output></label><input id="dB" type="range" min="0.5" max="5" step="0.1" value="2"></div>
+                <div class="control-row"><label>Supply intercept \(C\) <output id="sCOut"></output></label><input id="sC" type="range" min="-20" max="40" step="1" value="10"></div>
+                <div class="control-row"><label>Supply slope \(D\) <output id="sDOut"></output></label><input id="sD" type="range" min="0.5" max="5" step="0.1" value="2"></div>
+                <div class="control-row"><label>Trial price \(p\) <output id="trialOut"></output></label><input id="trialP" type="range" min="0" max="40" step="0.5" value="15"></div>
+              </div>
+              <div class="stats">
+                <div class="stat"><span class="name">Equilibrium price</span><span class="value" id="pStarOut"></span></div>
+                <div class="stat"><span class="name">Equilibrium quantity</span><span class="value" id="qStarOut"></span></div>
+                <div class="stat"><span class="name">At trial price</span><span class="value" id="gapOut"></span></div>
+                <div class="stat"><span class="name">Pressure</span><span class="value" id="pressureOut"></span></div>
+              </div>
+              <p class="explain">The graph treats price as the vertical axis, matching the usual demand-supply diagram in the lecture note.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section"><div class="card"><a class="link-button" href="micro_chapter2_economy_markets_colab.ipynb">Open the Chapter 2 Colab notebook file</a></div></div>
+
+  </main>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <script>
+
+    const $ = (id) => document.getElementById(id);
+    const fmt = (x, n = 2) => Number.isFinite(x) ? Number(x).toFixed(n).replace(/\.?0+$/, "") : "n/a";
+    const val = (id) => parseFloat($(id).value);
+    const colors = { blue: "#5b8af5", orange: "#f5a623", green: "#4ecb8d", red: "#e05c6a", text: "#e8ecf5", muted: "#7b85a3" };
+
+    function setupCanvas(canvas, xMax, yMax, xMin = 0, yMin = 0) {
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const cssW = Number(canvas.getAttribute("width"));
+      const cssH = Number(canvas.getAttribute("height"));
+      canvas.style.width = cssW + "px";
+      canvas.style.height = cssH + "px";
+      canvas.width = cssW * dpr;
+      canvas.height = cssH * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const m = { l: 48, r: 18, t: 22, b: 42 };
+      const w = cssW - m.l - m.r;
+      const h = cssH - m.t - m.b;
+      const sx = (x) => m.l + ((x - xMin) / (xMax - xMin)) * w;
+      const sy = (y) => m.t + ((yMax - y) / (yMax - yMin)) * h;
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#151a28";
+      ctx.fillRect(0, 0, cssW, cssH);
+      ctx.strokeStyle = "#27304a";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = colors.muted;
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "center";
+      for (let i = 0; i <= 5; i++) {
+        const x = xMin + (xMax - xMin) * i / 5;
+        const px = sx(x);
+        ctx.beginPath(); ctx.moveTo(px, m.t); ctx.lineTo(px, m.t + h); ctx.stroke();
+        ctx.fillText(fmt(x), px, cssH - 18);
+      }
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 5; i++) {
+        const y = yMin + (yMax - yMin) * i / 5;
+        const py = sy(y);
+        ctx.beginPath(); ctx.moveTo(m.l, py); ctx.lineTo(m.l + w, py); ctx.stroke();
+        ctx.fillText(fmt(y), m.l - 8, py + 4);
+      }
+      ctx.strokeStyle = colors.muted;
+      ctx.lineWidth = 1.5;
+      if (yMin <= 0 && yMax >= 0) { ctx.beginPath(); ctx.moveTo(m.l, sy(0)); ctx.lineTo(m.l + w, sy(0)); ctx.stroke(); }
+      if (xMin <= 0 && xMax >= 0) { ctx.beginPath(); ctx.moveTo(sx(0), m.t); ctx.lineTo(sx(0), m.t + h); ctx.stroke(); }
+      return { ctx, sx, sy, m, w, h, cssW, cssH };
+    }
+
+    function drawPath(ctx, xs, f, sx, sy, color, dashed = false, width = 2.5) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash(dashed ? [7, 6] : []);
+      ctx.beginPath();
+      let started = false;
+      xs.forEach((x) => {
+        const y = f(x);
+        if (!Number.isFinite(y)) return;
+        if (!started) { ctx.moveTo(sx(x), sy(y)); started = true; }
+        else ctx.lineTo(sx(x), sy(y));
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function dot(ctx, x, y, sx, sy, label, color = colors.orange) {
+      ctx.fillStyle = color;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(sx(x), sy(y), 5, 0, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+      if (label) {
+        ctx.fillStyle = colors.text;
+        ctx.font = "12px Segoe UI";
+        ctx.textAlign = "left";
+        ctx.fillText(label, sx(x) + 8, sy(y) - 8);
+      }
+    }
+
+    function lineLabel(ctx, text, x, y, sx, sy, color) {
+      ctx.fillStyle = color;
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "left";
+      ctx.fillText(text, sx(x), sy(y));
+    }
+
+
+    function drawMarket() {
+      const A = val("dA"), B = val("dB"), C = val("sC"), D = val("sD"), trial = val("trialP");
+      const pStar = (A - C) / (B + D);
+      const qStar = A - B * pStar;
+      const qd = (p) => Math.max(0, A - B * p);
+      const qs = (p) => Math.max(0, C + D * p);
+      const pMax = 42;
+      const qMax = Math.max(100, A + 10, C + D * pMax + 10);
+      const ps = Array.from({ length: 240 }, (_, i) => pMax * i / 239);
+      const { ctx, sx, sy } = setupCanvas($("marketCanvas"), qMax, pMax);
+      function inversePath(qOfP, color) {
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.beginPath();
+        ps.forEach((p, i) => { const x = sx(qOfP(p)), y = sy(p); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+        ctx.stroke(); ctx.restore();
+      }
+      inversePath(qd, colors.blue);
+      inversePath(qs, colors.green);
+      drawPath(ctx, Array.from({ length: 80 }, (_, i) => qMax * i / 79), () => trial, sx, sy, colors.orange, true);
+      dot(ctx, qStar, pStar, sx, sy, "E");
+      lineLabel(ctx, "D", qd(6), 6, sx, sy, colors.blue);
+      lineLabel(ctx, "S", qs(35), 35, sx, sy, colors.green);
+      const gap = qd(trial) - qs(trial);
+      $("dAOut").textContent = fmt(A);
+      $("dBOut").textContent = fmt(B);
+      $("sCOut").textContent = fmt(C);
+      $("sDOut").textContent = fmt(D);
+      $("trialOut").textContent = fmt(trial);
+      $("pStarOut").textContent = fmt(pStar);
+      $("qStarOut").textContent = fmt(qStar);
+      $("gapOut").textContent = gap > 0 ? "Excess demand " + fmt(gap) : gap < 0 ? "Excess supply " + fmt(-gap) : "Clears";
+      $("pressureOut").textContent = gap > 0.5 ? "Price rises" : gap < -0.5 ? "Price falls" : "Stable";
+    }
+    function initPage() {
+      ["dA", "dB", "sC", "sD", "trialP"].forEach((id) => $(id).addEventListener("input", drawMarket));
+      drawMarket();
+    }
+
+    window.addEventListener("load", () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ]
+        });
+      }
+      if (typeof initPage === "function") initPage();
+    });
+  </script>
+</body>
+</html>

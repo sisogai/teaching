@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Market Failure | Introductory Microeconomics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <style>
+
+    :root {
+      --bg: #0f1117;
+      --surface: #181c27;
+      --card: #1e2336;
+      --border: #2a3050;
+      --accent: #5b8af5;
+      --accent2: #f5a623;
+      --accent3: #4ecb8d;
+      --danger: #e05c6a;
+      --text: #e8ecf5;
+      --muted: #7b85a3;
+      --radius: 12px;
+      --font-head: Georgia, "Palatino Linotype", serif;
+      --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    }
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.75;
+      padding: 0 0 60px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0d1b3e 0%, #1a2a5e 50%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 32px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(60% 80% at 80% 20%, rgba(91, 138, 245, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .chapter-badge {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .hero p {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 14px;
+      position: relative;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .section { margin-top: 48px; }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 14px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    p { margin-bottom: 14px; }
+    .muted { color: var(--muted); }
+    .def-box, .thm-box {
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin: 18px 0;
+    }
+    .def-box {
+      background: rgba(91, 138, 245, 0.07);
+      border: 1px solid rgba(91, 138, 245, 0.3);
+      border-left: 3px solid var(--accent);
+    }
+    .thm-box {
+      background: rgba(78, 203, 141, 0.06);
+      border: 1px solid rgba(78, 203, 141, 0.3);
+      border-left: 3px solid var(--accent3);
+    }
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .def-box .label { color: var(--accent); }
+    .thm-box .label { color: var(--accent3); }
+    .math-block { overflow-x: auto; padding: 8px 0; }
+    .interactive-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 24px 0;
+      box-shadow: var(--shadow);
+    }
+    .panel-header {
+      background: rgba(91, 138, 245, 0.1);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-header .icon {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .panel-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+    .panel-body { padding: 22px; }
+    .formula-strip {
+      background: rgba(91, 138, 245, 0.07);
+      border: 1px solid rgba(91, 138, 245, 0.22);
+      border-radius: 10px;
+      color: var(--text);
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      overflow-x: auto;
+    }
+    .formula-strip .katex-display { margin: 0; }
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(280px, 500px) minmax(240px, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .canvas-wrap {
+      background: #111521;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #151a28;
+      border-radius: 8px;
+    }
+    .controls { display: grid; gap: 12px; }
+    .control-row { display: grid; gap: 5px; }
+    .control-row label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .control-row output {
+      color: var(--accent2);
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+    input[type="range"], select {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      min-height: 38px;
+      padding: 6px 10px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .stat {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 82px;
+    }
+    .stat .name {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .stat .value {
+      color: var(--text);
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .explain {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 14px;
+    }
+    .link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-top: 8px;
+      min-height: 42px;
+      padding: 10px 16px;
+      text-decoration: none;
+    }
+    @media (max-width: 820px) {
+      .hero { padding: 42px 22px 34px; }
+      .container { padding: 0 16px; }
+      .card, .panel-body { padding: 18px; }
+      .two-col, .stats { grid-template-columns: 1fr; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <span class="chapter-badge">Chapter 7</span>
+    <h1>Market Failure</h1>
+    <p>Visualize why externalities and public goods can prevent markets from achieving efficient outcomes.</p>
+  </div>
+  <main class="container">
+
+    <div class="section">
+      <h2 class="section-title">7.1 Externality</h2>
+      <div class="card">
+        <p>An externality occurs when an economic activity affects other agents' welfare without passing through the market mechanism. The key distinction is between private marginal cost and social marginal cost.</p>
+      </div>
+      <div class="interactive-panel">
+        <div class="panel-header"><span class="icon">EX</span><h3>Interactive: External Cost and Pigouvian Tax</h3></div>
+        <div class="panel-body">
+          <div class="formula-strip">$$ P_D(Q)=a-bQ,\quad PMC(Q)=c+dQ,\quad SMC(Q)=PMC(Q)+mQ. $$</div>
+          <div class="two-col">
+            <div class="canvas-wrap"><canvas id="externalCanvas" width="500" height="420"></canvas></div>
+            <div>
+              <div class="controls">
+                <div class="control-row"><label>Demand intercept \(a\) <output id="eaOut"></output></label><input id="ea" type="range" min="40" max="120" step="1" value="90"></div>
+                <div class="control-row"><label>Demand slope \(b\) <output id="ebOut"></output></label><input id="eb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
+                <div class="control-row"><label>Private MC intercept \(c\) <output id="ecOut"></output></label><input id="ec" type="range" min="0" max="40" step="1" value="10"></div>
+                <div class="control-row"><label>Private MC slope \(d\) <output id="edOut"></output></label><input id="ed" type="range" min="0.2" max="2.5" step="0.1" value="0.6"></div>
+                <div class="control-row"><label>Marginal damage \(m\) <output id="emOut"></output></label><input id="em" type="range" min="0" max="2.5" step="0.1" value="0.8"></div>
+              </div>
+              <div class="stats">
+                <div class="stat"><span class="name">Private quantity</span><span class="value" id="qPrivateOut"></span></div>
+                <div class="stat"><span class="name">Social quantity</span><span class="value" id="qSocialOut"></span></div>
+                <div class="stat"><span class="name">Pigouvian tax</span><span class="value" id="taxOut"></span></div>
+                <div class="stat"><span class="name">Overproduction</span><span class="value" id="overOut"></span></div>
+              </div>
+              <p class="explain">The Pigouvian tax equals marginal external damage at the socially optimal quantity in this linear example.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">7.2 Public Goods</h2>
+      <div class="card">
+        <p>Public goods are non-rival and non-excludable. Efficient provision vertically sums individual marginal values and compares that social marginal value with marginal cost.</p>
+      </div>
+      <div class="interactive-panel">
+        <div class="panel-header"><span class="icon">PG</span><h3>Interactive: Lindahl Shares and Free Riding</h3></div>
+        <div class="panel-body">
+          <div class="formula-strip">$$ V(Q)=V_1(Q)+V_2(Q),\qquad V(Q^*)=MC. $$</div>
+          <div class="two-col">
+            <div class="canvas-wrap"><canvas id="publicCanvas" width="500" height="420"></canvas></div>
+            <div>
+              <div class="controls">
+                <div class="control-row"><label>Consumer 1 value \(v_1\) <output id="v1Out"></output></label><input id="v1" type="range" min="5" max="80" step="1" value="55"></div>
+                <div class="control-row"><label>Consumer 2 value \(v_2\) <output id="v2Out"></output></label><input id="v2" type="range" min="5" max="80" step="1" value="45"></div>
+                <div class="control-row"><label>Reported share of \(v_1\) <output id="reportOut"></output></label><input id="report1" type="range" min="0" max="1" step="0.05" value="0.55"></div>
+                <div class="control-row"><label>Marginal cost \(MC\) <output id="pgMcOut"></output></label><input id="pgMc" type="range" min="10" max="80" step="1" value="35"></div>
+              </div>
+              <div class="stats">
+                <div class="stat"><span class="name">Efficient \(Q^*\)</span><span class="value" id="qEffOut"></span></div>
+                <div class="stat"><span class="name">Reported \(Q\)</span><span class="value" id="qRepOut"></span></div>
+                <div class="stat"><span class="name">Lindahl share 1</span><span class="value" id="share1Out"></span></div>
+                <div class="stat"><span class="name">Lindahl share 2</span><span class="value" id="share2Out"></span></div>
+              </div>
+              <p class="explain">Lower reported valuation shifts the social marginal value curve down and can lead to underprovision.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section"><div class="card"><a class="link-button" href="micro_chapter7_market_failure_colab.ipynb">Open the Chapter 7 Colab notebook file</a></div></div>
+
+  </main>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <script>
+
+    const $ = (id) => document.getElementById(id);
+    const fmt = (x, n = 2) => Number.isFinite(x) ? Number(x).toFixed(n).replace(/\.?0+$/, "") : "n/a";
+    const val = (id) => parseFloat($(id).value);
+    const colors = { blue: "#5b8af5", orange: "#f5a623", green: "#4ecb8d", red: "#e05c6a", text: "#e8ecf5", muted: "#7b85a3" };
+
+    function setupCanvas(canvas, xMax, yMax, xMin = 0, yMin = 0) {
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const cssW = Number(canvas.getAttribute("width"));
+      const cssH = Number(canvas.getAttribute("height"));
+      canvas.style.width = cssW + "px";
+      canvas.style.height = cssH + "px";
+      canvas.width = cssW * dpr;
+      canvas.height = cssH * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const m = { l: 48, r: 18, t: 22, b: 42 };
+      const w = cssW - m.l - m.r;
+      const h = cssH - m.t - m.b;
+      const sx = (x) => m.l + ((x - xMin) / (xMax - xMin)) * w;
+      const sy = (y) => m.t + ((yMax - y) / (yMax - yMin)) * h;
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#151a28";
+      ctx.fillRect(0, 0, cssW, cssH);
+      ctx.strokeStyle = "#27304a";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = colors.muted;
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "center";
+      for (let i = 0; i <= 5; i++) {
+        const x = xMin + (xMax - xMin) * i / 5;
+        const px = sx(x);
+        ctx.beginPath(); ctx.moveTo(px, m.t); ctx.lineTo(px, m.t + h); ctx.stroke();
+        ctx.fillText(fmt(x), px, cssH - 18);
+      }
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 5; i++) {
+        const y = yMin + (yMax - yMin) * i / 5;
+        const py = sy(y);
+        ctx.beginPath(); ctx.moveTo(m.l, py); ctx.lineTo(m.l + w, py); ctx.stroke();
+        ctx.fillText(fmt(y), m.l - 8, py + 4);
+      }
+      ctx.strokeStyle = colors.muted;
+      ctx.lineWidth = 1.5;
+      if (yMin <= 0 && yMax >= 0) { ctx.beginPath(); ctx.moveTo(m.l, sy(0)); ctx.lineTo(m.l + w, sy(0)); ctx.stroke(); }
+      if (xMin <= 0 && xMax >= 0) { ctx.beginPath(); ctx.moveTo(sx(0), m.t); ctx.lineTo(sx(0), m.t + h); ctx.stroke(); }
+      return { ctx, sx, sy, m, w, h, cssW, cssH };
+    }
+
+    function drawPath(ctx, xs, f, sx, sy, color, dashed = false, width = 2.5) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash(dashed ? [7, 6] : []);
+      ctx.beginPath();
+      let started = false;
+      xs.forEach((x) => {
+        const y = f(x);
+        if (!Number.isFinite(y)) return;
+        if (!started) { ctx.moveTo(sx(x), sy(y)); started = true; }
+        else ctx.lineTo(sx(x), sy(y));
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function dot(ctx, x, y, sx, sy, label, color = colors.orange) {
+      ctx.fillStyle = color;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(sx(x), sy(y), 5, 0, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+      if (label) {
+        ctx.fillStyle = colors.text;
+        ctx.font = "12px Segoe UI";
+        ctx.textAlign = "left";
+        ctx.fillText(label, sx(x) + 8, sy(y) - 8);
+      }
+    }
+
+    function lineLabel(ctx, text, x, y, sx, sy, color) {
+      ctx.fillStyle = color;
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "left";
+      ctx.fillText(text, sx(x), sy(y));
+    }
+
+
+    function drawExternality() {
+      const a = val("ea"), b = val("eb"), c = val("ec"), d = val("ed"), m = val("em");
+      const qPrivate = Math.max(0, (a - c) / (b + d));
+      const qSocial = Math.max(0, (a - c) / (b + d + m));
+      const tax = m * qSocial;
+      const qMax = Math.max(80, a / b * 1.05, qPrivate * 1.35);
+      const pMax = Math.max(100, a * 1.05);
+      const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
+      const { ctx, sx, sy } = setupCanvas($("externalCanvas"), qMax, pMax);
+      drawPath(ctx, xs, (q) => Math.max(0, a - b * q), sx, sy, colors.blue);
+      drawPath(ctx, xs, (q) => c + d * q, sx, sy, colors.green);
+      drawPath(ctx, xs, (q) => c + (d + m) * q, sx, sy, colors.red);
+      dot(ctx, qPrivate, a - b * qPrivate, sx, sy, "private", colors.orange);
+      dot(ctx, qSocial, a - b * qSocial, sx, sy, "social", colors.red);
+      lineLabel(ctx, "D", qMax * 0.68, a - b * qMax * 0.68, sx, sy, colors.blue);
+      lineLabel(ctx, "PMC", qMax * 0.56, c + d * qMax * 0.56, sx, sy, colors.green);
+      lineLabel(ctx, "SMC", qMax * 0.5, c + (d + m) * qMax * 0.5, sx, sy, colors.red);
+      $("eaOut").textContent = fmt(a); $("ebOut").textContent = fmt(b); $("ecOut").textContent = fmt(c); $("edOut").textContent = fmt(d); $("emOut").textContent = fmt(m);
+      $("qPrivateOut").textContent = fmt(qPrivate); $("qSocialOut").textContent = fmt(qSocial); $("taxOut").textContent = fmt(tax); $("overOut").textContent = fmt(qPrivate - qSocial);
+    }
+    function drawPublicGood() {
+      const v1 = val("v1"), v2 = val("v2"), report = val("report1"), mc = val("pgMc");
+      const slope1 = 3, slope2 = 2.4;
+      const V1 = (q) => Math.max(0, v1 - slope1 * q);
+      const V2 = (q) => Math.max(0, v2 - slope2 * q);
+      const R1 = (q) => Math.max(0, report * v1 - slope1 * q);
+      const social = (q) => V1(q) + V2(q);
+      const reported = (q) => R1(q) + V2(q);
+      const qs = Array.from({ length: 220 }, (_, i) => 30 * i / 219);
+      const qEff = qs.reduce((best, q) => Math.abs(social(q) - mc) < Math.abs(social(best) - mc) ? q : best, 0);
+      const qRep = qs.reduce((best, q) => Math.abs(reported(q) - mc) < Math.abs(reported(best) - mc) ? q : best, 0);
+      const pMax = Math.max(100, v1 + v2 + 10);
+      const { ctx, sx, sy } = setupCanvas($("publicCanvas"), 30, pMax);
+      drawPath(ctx, qs, V1, sx, sy, colors.blue, true);
+      drawPath(ctx, qs, V2, sx, sy, colors.green, true);
+      drawPath(ctx, qs, social, sx, sy, colors.orange);
+      drawPath(ctx, qs, reported, sx, sy, colors.red, true);
+      drawPath(ctx, qs, () => mc, sx, sy, colors.text, true);
+      dot(ctx, qEff, mc, sx, sy, "Q*", colors.orange);
+      dot(ctx, qRep, mc, sx, sy, "reported", colors.red);
+      lineLabel(ctx, "V1+V2", 4, social(4), sx, sy, colors.orange);
+      lineLabel(ctx, "reported", 8, reported(8), sx, sy, colors.red);
+      $("v1Out").textContent = fmt(v1); $("v2Out").textContent = fmt(v2); $("reportOut").textContent = fmt(report); $("pgMcOut").textContent = fmt(mc);
+      $("qEffOut").textContent = fmt(qEff); $("qRepOut").textContent = fmt(qRep);
+      $("share1Out").textContent = fmt(V1(qEff));
+      $("share2Out").textContent = fmt(V2(qEff));
+    }
+    function initPage() {
+      ["ea", "eb", "ec", "ed", "em"].forEach((id) => $(id).addEventListener("input", drawExternality));
+      ["v1", "v2", "report1", "pgMc"].forEach((id) => $(id).addEventListener("input", drawPublicGood));
+      drawExternality(); drawPublicGood();
+    }
+
+    window.addEventListener("load", () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ]
+        });
+      }
+      if (typeof initPage === "function") initPage();
+    });
+  </script>
+</body>
+</html>
