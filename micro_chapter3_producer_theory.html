@@ -138,7 +138,17 @@
       align-items: center;
       gap: 10px;
     }
-    .panel-header .icon { font-size: 18px; }
+    .panel-header .icon {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
     .panel-header h3 {
       font-size: 14px;
       font-weight: 700;
@@ -163,6 +173,25 @@
       grid-template-columns: minmax(280px, 500px) minmax(240px, 1fr);
       gap: 24px;
       align-items: start;
+    }
+    .graph-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .slice-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 280px);
+      gap: 24px;
+      align-items: start;
+    }
+    .graph-title {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
     }
     .canvas-wrap {
       background: #111521;
@@ -279,7 +308,7 @@
       .hero { padding: 42px 22px 34px; }
       .container { padding: 0 16px; }
       .card, .panel-body { padding: 18px; }
-      .two-col, .stats { grid-template-columns: 1fr; }
+      .two-col, .slice-layout, .graph-pair, .stats { grid-template-columns: 1fr; }
     }
   
     .site-nav {
@@ -325,6 +354,41 @@
       .site-nav { padding: 0 16px; }
       .site-nav-inner { gap: 6px; }
       .site-nav a { font-size: 12px; padding: 7px 8px; }
+    }
+
+    .remark-box {
+      background: rgba(245, 166, 35, 0.07);
+      border: 1px solid rgba(245, 166, 35, 0.3);
+      border-left: 3px solid var(--accent2);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin: 18px 0;
+    }
+    .remark-box .label { color: var(--accent2); }
+    .proof {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 22px;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+    .proof-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .subsection-title {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 3px solid var(--accent2);
+      padding-left: 14px;
+      margin-bottom: 20px;
     }
 
   </style>
@@ -381,7 +445,7 @@
 
       <div class="interactive-panel">
         <div class="panel-header">
-          <span class="icon">📊</span>
+          <span class="icon">C</span>
           <h3>Interactive: Cost Curves</h3>
         </div>
         <div class="panel-body">
@@ -409,7 +473,8 @@
                 <div class="stat"><span class="name">Break-even price</span><span class="value" id="beOut"></span></div>
                 <div class="stat"><span class="name">Shutdown price</span><span class="value" id="sdOut"></span></div>
               </div>
-              <p class="explain">When \(a=0\), marginal cost is constant at \(b\). This is the constant-returns benchmark often used in applied models.</p>
+              <p class="explain">When \(a=0\), marginal cost is constant at \(b\) — the constant-returns benchmark. When \(a>0\), MC is increasing.<br>
+              <strong style="color:var(--accent2)">Key relationships:</strong> MC crosses AVC and AC each at their respective minimum. The gap between AC and AVC equals \(FC/Q\), which shrinks as \(Q\) increases.</p>
             </div>
           </div>
         </div>
@@ -431,7 +496,7 @@
 
       <div class="interactive-panel">
         <div class="panel-header">
-          <span class="icon">🎯</span>
+          <span class="icon">π</span>
           <h3>Interactive: Profit Maximization</h3>
         </div>
         <div class="panel-body">
@@ -472,6 +537,16 @@
           </div>
         </div>
       </div>
+
+      <div class="card">
+        <div class="def-box">
+          <div class="label">Definition 3.3.3 — Supply Function (Long Run)</div>
+          <p>Suppose the production horizon is the long run, i.e., \(FC = 0\). The <strong>supply function</strong> \(s(p)\) gives the profit-maximizing output for each price \(p\):</p>
+          <div class="math-block">$$ s(p) = \arg\max_{Q\geq 0}\; pQ - C(Q). $$</div>
+          <p>The maximized profit, expressed as a function of \(p\), is called the <strong>profit function</strong>:</p>
+          <div class="math-block">$$ \pi(p) = \max_{Q\geq 0}\; pQ - C(Q) = ps(p) - C(s(p)). $$</div>
+        </div>
+      </div>
     </div>
 
     <div class="section">
@@ -486,7 +561,7 @@
 
       <div class="interactive-panel">
         <div class="panel-header">
-          <span class="icon">🧭</span>
+          <span class="icon">S</span>
           <h3>Interactive: Shutdown and Break-Even</h3>
         </div>
         <div class="panel-body">
@@ -530,6 +605,110 @@
     </div>
 
     <div class="section">
+      <h2 class="section-title">3.5 Two Production Case</h2>
+      <div class="card">
+        <p>Consider a firm producing two goods \(Q_1\) and \(Q_2\) with prices \(p_1, p_2\) and joint cost \(C(Q_1,Q_2)\). The profit maximization problem is</p>
+        <div class="math-block">$$ \max_{Q_1,Q_2}\; p_1 Q_1 + p_2 Q_2 - C(Q_1, Q_2). $$</div>
+        <div class="thm-box">
+          <div class="label">Proposition 3.5.1 — First-Order Conditions (Two Goods)</div>
+          <p>If \((Q_1^*, Q_2^*)\) with \(Q_i^* > 0\) attains maximum profit, then</p>
+          <div class="math-block">$$
+            [Q_1]\quad p_1 = \frac{\partial C}{\partial Q_1}(Q_1^*, Q_2^*), \qquad
+            [Q_2]\quad p_2 = \frac{\partial C}{\partial Q_2}(Q_1^*, Q_2^*).
+          $$</div>
+          <p>Here \(\partial C/\partial Q_i\) is the <strong>partial derivative</strong> — the derivative with respect to \(Q_i\) holding the other good fixed. Geometrically, at the maximum the profit surface \(\pi(Q_1,Q_2)\) has a flat tangent plane: both partial derivatives vanish simultaneously (drag the graph below to see this).</p>
+        </div>
+      </div>
+
+      <div class="interactive-panel">
+        <div class="panel-header">
+          <span class="icon">∂</span>
+          <h3>Interactive: Partial Derivative from a Slice</h3>
+        </div>
+        <div class="panel-body">
+          <div class="formula-strip">$$
+            F(x_1,x_2)=18x_1+18x_2-x_1^2-x_1x_2-x_2^2,\qquad
+            \frac{\partial F}{\partial x_2}(x_1,x_2)=18-x_1-2x_2.
+          $$</div>
+          <div class="slice-layout">
+            <div class="graph-pair">
+              <div>
+                <div class="graph-title">3D concave production surface</div>
+                <div class="canvas-wrap">
+                  <canvas id="concave3d" width="300" height="270"></canvas>
+                </div>
+              </div>
+              <div>
+                <div class="graph-title">2D slice at fixed \(x_1\)</div>
+                <div class="canvas-wrap">
+                  <canvas id="concaveSlice" width="300" height="270"></canvas>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="controls">
+                <div class="control-row">
+                  <label>Fixed input \(x_1\) <output id="sliceX1Out"></output></label>
+                  <input id="sliceX1" type="range" min="0" max="12" step="0.25" value="6">
+                </div>
+                <div class="control-row">
+                  <label>Point on slice \(x_2\) <output id="sliceX2Out"></output></label>
+                  <input id="sliceX2" type="range" min="0" max="12" step="0.25" value="6">
+                </div>
+              </div>
+              <div class="stats">
+                <div class="stat"><span class="name">Output \(F(x_1,x_2)\)</span><span class="value" id="sliceFOut"></span></div>
+                <div class="stat"><span class="name">Partial derivative</span><span class="value" id="slicePartialOut"></span></div>
+              </div>
+              <p class="explain">
+                This concave function reaches its maximum at \((x_1,x_2)=(6,6)\). The left graph fixes \(x_1\) with an amber slice through the surface. The right graph shows that slice as a function of \(x_2\); the tangent line's slope is \(\partial F/\partial x_2\), holding \(x_1\) constant.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="interactive-panel">
+        <div class="panel-header">
+          <span class="icon" style="font-size:9px;font-weight:900;">3D</span>
+          <h3>Interactive: Profit Surface and Flat Tangent Plane</h3>
+        </div>
+        <div class="panel-body">
+          <div class="formula-strip">$$
+            \pi(Q_1,Q_2)=p_1 Q_1+p_2 Q_2-Q_1^2-Q_1 Q_2-Q_2^2,\qquad
+            Q_1^*=\frac{2p_1-p_2}{3},\quad Q_2^*=\frac{2p_2-p_1}{3}
+          $$</div>
+          <div class="two-col">
+            <div class="canvas-wrap" style="position:relative;">
+              <canvas id="surface3d" width="500" height="420" style="cursor:grab;width:500px;height:420px;"></canvas>
+              <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:11px;pointer-events:none;white-space:nowrap;">drag to rotate</div>
+            </div>
+            <div>
+              <div class="controls">
+                <div class="control-row">
+                  <label>Price \(p_1\) <output id="p1Out"></output></label>
+                  <input id="p1Slider" type="range" min="2" max="12" step="0.5" value="6">
+                </div>
+                <div class="control-row">
+                  <label>Price \(p_2\) <output id="p2Out"></output></label>
+                  <input id="p2Slider" type="range" min="2" max="12" step="0.5" value="6">
+                </div>
+              </div>
+              <button id="resetViewBtn" type="button" style="margin-top:10px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text);border-radius:8px;padding:6px 14px;cursor:pointer;font:inherit;font-size:12px;font-weight:600;">Reset view</button>
+              <div class="stats" style="margin-top:14px;">
+                <div class="stat"><span class="name">Optimal \(Q_1^*\)</span><span class="value" id="q1StarOut"></span></div>
+                <div class="stat"><span class="name">Optimal \(Q_2^*\)</span><span class="value" id="q2StarOut"></span></div>
+                <div class="stat" style="grid-column:1/-1"><span class="name">Max profit \(\pi^*\)</span><span class="value" id="piStarOut"></span></div>
+              </div>
+              <p class="explain" id="surfaceExplain" style="margin-top:12px;"></p>
+              <p class="explain" style="margin-top:6px;"><span style="color:var(--accent2);">■</span> Amber plane: tangent plane at \((Q_1^*,Q_2^*)\). It is flat because \(\nabla\pi=0\) there.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
       <h2 class="section-title">3.6 Deriving Cost Functions</h2>
       <div class="card">
         <p>Cost functions can be derived from a cost-minimization problem. With labor \(L\), capital \(K\), wage \(w\), and rental rate \(r\), the firm solves</p>
@@ -542,8 +721,8 @@
 
       <div class="interactive-panel">
         <div class="panel-header">
-          <span class="icon">📐</span>
-          <h3>Interactive: Cobb-Douglas Cost Minimization</h3>
+          <span class="icon">K</span>
+          <h3>Interactive: Cobb–Douglas Cost Minimization</h3>
         </div>
         <div class="panel-body">
           <div class="formula-strip">$$ \min_{L,K}wL+rK\ \text{s.t.}\ L^\alpha K^{1-\alpha}\geq\bar Q,\qquad \frac{w}{r}=\frac{f_L(L,K)}{f_K(L,K)}. $$</div>
@@ -574,8 +753,67 @@
                 <div class="stat"><span class="name">Labor \(L\)</span><span class="value" id="lOut"></span></div>
                 <div class="stat"><span class="name">Capital \(K\)</span><span class="value" id="kOut"></span></div>
                 <div class="stat"><span class="name">Minimum cost</span><span class="value" id="costMinOut"></span></div>
-                <div class="stat"><span class="name">MRT</span><span class="value" id="mrtOut"></span></div>
+                <div class="stat"><span class="name">MRT = w/r</span><span class="value" id="mrtOut"></span></div>
               </div>
+              <p class="explain">
+                <strong style="color:var(--accent)">Blue curve</strong>: isoquant \(L^\alpha K^{1-\alpha}=\bar Q\).<br>
+                <strong style="color:var(--accent2)">Orange line</strong>: isocost \(wL+rK=\text{min cost}\).<br>
+                The tangency point gives the cheapest input mix: at optimum, the marginal rate of technical substitution equals the input price ratio, \(\frac{f_L}{f_K}=\frac{w}{r}\).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="interactive-panel">
+        <div class="panel-header">
+          <span class="icon">∂</span>
+          <h3>Visualization: Partial and Total Differentiation</h3>
+        </div>
+        <div class="panel-body">
+          <div class="formula-strip">$$
+            f(L,K)=L^\alpha K^{1-\alpha},\qquad
+            df=f_L(L,K)dL+f_K(L,K)dK.
+          $$</div>
+          <div class="two-col">
+            <div class="canvas-wrap">
+              <canvas id="diffCanvas" width="500" height="420"></canvas>
+            </div>
+            <div>
+              <div class="controls">
+                <div class="control-row">
+                  <label>Labor \(L\) <output id="diffLOut"></output></label>
+                  <input id="diffL" type="range" min="5" max="20" step="0.5" value="10">
+                </div>
+                <div class="control-row">
+                  <label>Capital \(K\) <output id="diffKOut"></output></label>
+                  <input id="diffK" type="range" min="5" max="20" step="0.5" value="10">
+                </div>
+                <div class="control-row">
+                  <label>Labor share \(\alpha\) <output id="diffAlphaOut"></output></label>
+                  <input id="diffAlpha" type="range" min="0.15" max="0.85" step="0.01" value="0.55">
+                </div>
+                <div class="control-row">
+                  <label>Small change \(dL\) <output id="diffDLOut"></output></label>
+                  <input id="diffDL" type="range" min="-4" max="4" step="0.25" value="2">
+                </div>
+                <div class="control-row">
+                  <label>Small change \(dK\) <output id="diffDKOut"></output></label>
+                  <input id="diffDK" type="range" min="-4" max="4" step="0.25" value="-1">
+                </div>
+              </div>
+              <div class="stats">
+                <div class="stat"><span class="name">Partial \(f_L\)</span><span class="value" id="flOut"></span></div>
+                <div class="stat"><span class="name">Partial \(f_K\)</span><span class="value" id="fkOut"></span></div>
+                <div class="stat"><span class="name">Linear \(df\)</span><span class="value" id="dfOut"></span></div>
+                <div class="stat"><span class="name">Exact \(\Delta f\)</span><span class="value" id="exactDfOut"></span></div>
+              </div>
+              <p class="explain" id="diffExplain"></p>
+              <p class="explain" style="margin-top:6px;">
+                <strong style="color:var(--accent)">Blue</strong>: change \(L\) while \(K\) is held fixed.
+                <strong style="color:var(--accent3)">Green</strong>: change \(K\) while \(L\) is held fixed.
+                <strong style="color:var(--accent2)">Orange</strong>: total movement using both changes.
+              </p>
             </div>
           </div>
         </div>
@@ -592,7 +830,7 @@
 
       <div class="interactive-panel">
         <div class="panel-header">
-          <span class="icon">📈</span>
+          <span class="icon">Σ</span>
           <h3>Interactive: Market Supply as Horizontal Sum</h3>
         </div>
         <div class="panel-body">
@@ -647,7 +885,7 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
-    const fmt = (x) => Number.isFinite(x) ? Number(x).toFixed(2).replace(/\\.00$/, "") : "n/a";
+    const fmt = (x, n = 2) => Number.isFinite(x) ? Number(x).toFixed(n).replace(/\.?0+$/, "") : "n/a";
     const val = (id) => parseFloat($(id).value);
     let profitMode = "profit";
 
@@ -699,7 +937,20 @@
       ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(m.l, sy(0)); ctx.lineTo(m.l + w, sy(0)); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(m.l, m.t); ctx.lineTo(m.l, m.t + h); ctx.stroke();
-      return { ctx, sx, sy, m, w, h };
+      return { ctx, sx, sy, m, w, h, cssW, cssH };
+    }
+
+    function addAxisLabels(ctx, m, w, h, cssW, cssH, xLabel, yLabel) {
+      ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
+      if (xLabel) {
+        ctx.textAlign = "right";
+        ctx.fillText(xLabel, cssW - m.r + 2, cssH - m.b + 14);
+      }
+      if (yLabel) {
+        ctx.save(); ctx.textAlign = "center";
+        ctx.translate(12, m.t + h / 2); ctx.rotate(-Math.PI / 2);
+        ctx.fillText(yLabel, 0, 0); ctx.restore();
+      }
     }
 
     function drawLine(ctx, xs, f, sx, sy, color, dashed = false) {
@@ -734,19 +985,20 @@
     function drawCost() {
       const { a, b, fc } = getCostParams("cost");
       const qMax = 18;
+      const yMax = 120; // fixed scale — axis does not shift with sliders
       const xs = Array.from({ length: 180 }, (_, i) => qMax * (i + 1) / 180);
       const mc = (q) => 2 * a * q + b;
       const avc = (q) => a * q + b;
       const ac = (q) => a * q + b + fc / q;
-      const yMax = Math.max(32, ...xs.map(ac).filter((x) => x < 90), mc(qMax));
-      const { ctx, sx, sy } = setupCanvas($("costCanvas"), qMax, yMax);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("costCanvas"), qMax, yMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (output)", "Cost");
       drawLine(ctx, xs, mc, sx, sy, "#f5a623");
       drawLine(ctx, xs, avc, sx, sy, "#5b8af5");
       drawLine(ctx, xs, ac, sx, sy, "#4ecb8d");
       ctx.fillStyle = "#e8ecf5"; ctx.font = "12px Segoe UI";
-      ctx.fillText("MC", sx(14), sy(mc(14)) - 8);
-      ctx.fillText("AVC", sx(12), sy(avc(12)) + 18);
-      ctx.fillText("AC", sx(7), sy(ac(7)) - 8);
+      if (mc(14) <= yMax) ctx.fillText("MC", sx(14), sy(mc(14)) - 8);
+      if (avc(12) <= yMax) ctx.fillText("AVC", sx(12), sy(avc(12)) + 18);
+      if (ac(7) <= yMax) ctx.fillText("AC", sx(7), sy(ac(7)) - 8);
       $("costAOut").textContent = fmt(a);
       $("costBOut").textContent = fmt(b);
       $("costFcOut").textContent = fmt(fc);
@@ -762,31 +1014,32 @@
       const profit = (q) => q <= 0 ? 0 : p * q - (a * q * q + b * q + fc);
       const qStar = constantMC ? (p > b ? Infinity : 0) : (profit(candidate) > 0 ? candidate : 0);
       const piStar = qStar === Infinity ? Infinity : profit(qStar);
-      const qMax = constantMC ? 18 : Math.max(18, candidate * 1.8 + 5);
+      // Fixed axis ranges — do not change with sliders
+      const qMax = 25;
       const xs = Array.from({ length: 180 }, (_, i) => qMax * i / 179);
       if (profitMode === "profit") {
-        const ys = xs.map(profit);
-        const yMin = Math.min(-20, ...ys) * 1.05;
-        const yMax = Math.max(20, ...ys) * 1.12;
-        const { ctx, sx, sy } = setupCanvas($("profitCanvas"), qMax, yMax, yMin);
+        const yMin = -80, yMax = 120;
+        const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("profitCanvas"), qMax, yMax, yMin);
+        addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (output)", "π (profit)");
         drawLine(ctx, xs, profit, sx, sy, "#5b8af5");
-        if (qStar !== Infinity) dot(ctx, qStar, piStar, sx, sy, "Q*");
+        if (qStar !== Infinity && qStar <= qMax && piStar >= yMin && piStar <= yMax)
+          dot(ctx, qStar, piStar, sx, sy, "Q*");
         if (qStar === Infinity) {
-          ctx.fillStyle = "#e8ecf5";
-          ctx.font = "12px Segoe UI";
-          ctx.fillText("profit keeps increasing", sx(qMax * 0.46), sy(profit(qMax * 0.82)) - 10);
+          ctx.fillStyle = "#e8ecf5"; ctx.font = "12px Segoe UI";
+          ctx.fillText("profit keeps increasing", sx(qMax * 0.36), sy(yMax * 0.7) - 10);
         }
       } else {
         const mc = (q) => 2 * a * q + b;
-        const yMax = Math.max(32, p + 8, mc(qMax));
-        const { ctx, sx, sy } = setupCanvas($("profitCanvas"), qMax, yMax);
+        const yMax = 50; // fixed: covers price slider range (2–40) plus margin
+        const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("profitCanvas"), qMax, yMax);
+        addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (output)", "P, MC");
         drawLine(ctx, xs, mc, sx, sy, "#f5a623");
         drawLine(ctx, xs, () => p, sx, sy, "#5b8af5", true);
-        if (Number.isFinite(candidate)) dot(ctx, candidate, p, sx, sy, "p=MC");
+        if (Number.isFinite(candidate) && candidate <= qMax && p <= yMax)
+          dot(ctx, candidate, p, sx, sy, "p = MC");
         if (constantMC && p !== b) {
-          ctx.fillStyle = "#e8ecf5";
-          ctx.font = "12px Segoe UI";
-          ctx.fillText(p > b ? "p > constant MC" : "p < constant MC", sx(qMax * 0.48), sy(Math.max(p, b)) - 10);
+          ctx.fillStyle = "#e8ecf5"; ctx.font = "12px Segoe UI";
+          ctx.fillText(p > b ? "p > constant MC" : "p < constant MC", sx(qMax * 0.35), sy(Math.min(yMax * 0.9, Math.max(p, b))) - 10);
         }
       }
       $("profitAOut").textContent = fmt(a);
@@ -812,7 +1065,9 @@
       const pShutdown = b - (d * d) / (4 * a);
       const discr = d * d - 3 * a * (b - p);
       const supply = p > pShutdown && discr >= 0 ? (d + Math.sqrt(discr)) / (3 * a) : 0;
-      const qMax = Math.max(18, supply * 1.3, qShutdown * 2.3);
+      // Fixed scales — axis does not shift with sliders
+      const qMax = 18;
+      const yMax = 60;
       const xs = Array.from({ length: 180 }, (_, i) => qMax * (i + 1) / 180);
       const vc = (q) => a * q * q * q - d * q * q + b * q;
       const mc = (q) => 3 * a * q * q - 2 * d * q + b;
@@ -821,23 +1076,25 @@
       const acXs = xs.filter((q) => q > 0.05);
       const qBE = acXs.reduce((best, q) => ac(q) < ac(best) ? q : best, acXs[0]);
       const pBE = ac(qBE);
-      const yMax = Math.max(32, p + 8, pBE + 8, ...xs.map(mc), ...xs.map(avc), ...acXs.map(ac).filter((x) => x < 90));
-      const { ctx, sx, sy } = setupCanvas($("shortCanvas"), qMax, yMax);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("shortCanvas"), qMax, yMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (output)", "P, MC, AC");
       drawLine(ctx, xs, mc, sx, sy, "#f5a623");
       drawLine(ctx, xs, avc, sx, sy, "#5b8af5");
       drawLine(ctx, xs, ac, sx, sy, "#4ecb8d");
       drawLine(ctx, xs, () => p, sx, sy, "#e8ecf5", true);
-      if (supply > 0) dot(ctx, supply, p, sx, sy, "s(p)");
-      dot(ctx, qShutdown, pShutdown, sx, sy, "shutdown");
-      ctx.fillStyle = "#e8ecf5";
-      ctx.font = "12px Segoe UI";
+      if (supply > 0 && supply <= qMax && p <= yMax) dot(ctx, supply, p, sx, sy, "s(p)");
+      if (qShutdown <= qMax && pShutdown <= yMax) dot(ctx, qShutdown, pShutdown, sx, sy, "shutdown");
+      ctx.fillStyle = "#e8ecf5"; ctx.font = "12px Segoe UI";
       const qLabel = qMax * 0.74;
-      ctx.fillText("MC", sx(qLabel), sy(mc(qLabel)) - 8);
-      ctx.fillText("AVC", sx(qLabel), sy(avc(qLabel)) + 16);
-      ctx.fillText("AC", sx(qLabel * 0.72), sy(ac(qLabel * 0.72)) - 8);
+      if (mc(qLabel) <= yMax) ctx.fillText("MC", sx(qLabel), sy(mc(qLabel)) - 8);
+      if (avc(qLabel) <= yMax) ctx.fillText("AVC", sx(qLabel), sy(avc(qLabel)) + 16);
+      if (ac(qLabel * 0.72) <= yMax) ctx.fillText("AC", sx(qLabel * 0.72), sy(ac(qLabel * 0.72)) - 8);
       if (d > 0) {
-        ctx.fillStyle = "#7b85a3";
-        ctx.fillText("MC < AVC", sx(Math.max(0.4, qShutdown * 0.45)), sy(avc(Math.max(0.4, qShutdown * 0.45))) - 8);
+        const qAnnot = Math.max(0.4, qShutdown * 0.45);
+        if (avc(qAnnot) <= yMax) {
+          ctx.fillStyle = "#7b85a3";
+          ctx.fillText("MC < AVC", sx(qAnnot), sy(avc(qAnnot)) - 8);
+        }
       }
       $("shortAOut").textContent = fmt(a);
       $("shortDOut").textContent = fmt(d);
@@ -853,14 +1110,16 @@
       const lStar = q * Math.pow((alpha / (1 - alpha)) * (r / w), 1 - alpha);
       const kStar = q * Math.pow(((1 - alpha) / alpha) * (w / r), alpha);
       const minCost = w * lStar + r * kStar;
-      const lMax = Math.max(24, lStar * 2.1), kMax = Math.max(24, kStar * 2.1);
+      // Fixed scales — axis does not shift with sliders
+      const lMax = 30, kMax = 30;
       const xs = Array.from({ length: 180 }, (_, i) => lMax * (i + 1) / 180);
       const iso = (l) => Math.pow(q / Math.pow(l, alpha), 1 / (1 - alpha));
       const isocost = (l) => (minCost - w * l) / r;
-      const { ctx, sx, sy } = setupCanvas($("isoCanvas"), lMax, kMax);
-      drawLine(ctx, xs.filter((l) => iso(l) < kMax * 1.5), iso, sx, sy, "#5b8af5");
+      const { ctx, sx, sy, m, w: mw, h, cssW, cssH } = setupCanvas($("isoCanvas"), lMax, kMax);
+      addAxisLabels(ctx, m, mw, h, cssW, cssH, "L (labor)", "K (capital)");
+      drawLine(ctx, xs.filter((l) => iso(l) <= kMax * 1.1), iso, sx, sy, "#5b8af5");
       drawLine(ctx, xs.filter((l) => isocost(l) >= 0 && isocost(l) <= kMax), isocost, sx, sy, "#f5a623");
-      dot(ctx, lStar, kStar, sx, sy, "tangency");
+      if (lStar <= lMax && kStar <= kMax) dot(ctx, lStar, kStar, sx, sy, "tangency");
       $("wOut").textContent = fmt(w);
       $("rOut").textContent = fmt(r);
       $("alphaOut").textContent = fmt(alpha);
@@ -871,14 +1130,295 @@
       $("mrtOut").textContent = fmt(w / r);
     }
 
+    function drawDiff() {
+      const l = val("diffL");
+      const k = val("diffK");
+      const alpha = val("diffAlpha");
+      const dl = val("diffDL");
+      const dk = val("diffDK");
+      const l2 = l + dl;
+      const k2 = k + dk;
+      const f = (labor, capital) => Math.pow(labor, alpha) * Math.pow(capital, 1 - alpha);
+      const fl = alpha * Math.pow(l, alpha - 1) * Math.pow(k, 1 - alpha);
+      const fk = (1 - alpha) * Math.pow(l, alpha) * Math.pow(k, -alpha);
+      const q0 = f(l, k);
+      const q1 = f(l2, k2);
+      const linearDf = fl * dl + fk * dk;
+      const exactDf = q1 - q0;
+      const lMax = 24, kMax = 24;
+      const xs = Array.from({ length: 220 }, (_, i) => lMax * (i + 1) / 220);
+      const isoAt = (q) => (labor) => Math.pow(q / Math.pow(labor, alpha), 1 / (1 - alpha));
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("diffCanvas"), lMax, kMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "L (labor)", "K (capital)");
+
+      [q0 * 0.7, q0, q0 * 1.3].forEach((q, i) => {
+        const color = i === 1 ? "#5b8af5" : "rgba(91, 138, 245, 0.45)";
+        drawLine(ctx, xs.filter((labor) => {
+          const capital = isoAt(q)(labor);
+          return capital >= 0 && capital <= kMax * 1.05;
+        }), isoAt(q), sx, sy, color, i !== 1);
+      });
+      drawLine(ctx, xs.filter((labor) => {
+        const capital = isoAt(q1)(labor);
+        return capital >= 0 && capital <= kMax * 1.05;
+      }), isoAt(q1), sx, sy, "#f5a623", true);
+
+      const tangentSlope = -fl / fk;
+      const tangent = (labor) => k + tangentSlope * (labor - l);
+      drawLine(ctx, xs.filter((labor) => {
+        const capital = tangent(labor);
+        return Math.abs(labor - l) <= 5 && capital >= 0 && capital <= kMax;
+      }), tangent, sx, sy, "rgba(232, 236, 245, 0.7)", true);
+
+      const arrow = (x1, y1, x2, y2, color, label, labelDx = 8, labelDy = -8) => {
+        const ax = sx(x1), ay = sy(y1), bx = sx(x2), by = sy(y2);
+        const angle = Math.atan2(by - ay, bx - ax);
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx - 10 * Math.cos(angle - 0.45), by - 10 * Math.sin(angle - 0.45));
+        ctx.lineTo(bx - 10 * Math.cos(angle + 0.45), by - 10 * Math.sin(angle + 0.45));
+        ctx.closePath();
+        ctx.fill();
+        ctx.font = "12px Segoe UI";
+        ctx.fillText(label, bx + labelDx, by + labelDy);
+        ctx.restore();
+      };
+
+      arrow(l, k, l2, k, "#5b8af5", "dL", 8, -18);
+      arrow(l, k, l, k2, "#4ecb8d", "dK", -34, 18);
+      arrow(l, k, l2, k2, "#f5a623", "total", 8, 20);
+      const mark = (x, y, color, label, dx, dy) => {
+        ctx.fillStyle = color;
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(sx(x), sy(y), 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#e8ecf5";
+        ctx.font = "12px Segoe UI";
+        ctx.fillText(label, sx(x) + dx, sy(y) + dy);
+      };
+      mark(l, k, "#e8ecf5", "(L,K)", -38, -10);
+      mark(l2, k2, "#f5a623", "new", 8, 18);
+
+      $("diffLOut").textContent = fmt(l);
+      $("diffKOut").textContent = fmt(k);
+      $("diffAlphaOut").textContent = fmt(alpha);
+      $("diffDLOut").textContent = fmt(dl);
+      $("diffDKOut").textContent = fmt(dk);
+      $("flOut").textContent = fmt(fl, 3);
+      $("fkOut").textContent = fmt(fk, 3);
+      $("dfOut").textContent = fmt(linearDf, 3);
+      $("exactDfOut").textContent = fmt(exactDf, 3);
+      $("diffExplain").innerHTML =
+        "\\(f_L\\) measures the slope when only labor changes; \\(f_K\\) measures the slope when only capital changes. " +
+        "The total differential adds both local effects: \\(df \\approx f_L dL + f_K dK = " +
+        fmt(fl, 3) + "\\cdot(" + fmt(dl) + ") + " + fmt(fk, 3) + "\\cdot(" + fmt(dk) + ") = " +
+        fmt(linearDf, 3) + "\\).";
+      if (window.renderMathInElement) {
+        renderMathInElement($("diffExplain"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ]
+        });
+      }
+    }
+
+    function concaveF(x1, x2) {
+      return 18 * x1 + 18 * x2 - x1 * x1 - x1 * x2 - x2 * x2;
+    }
+
+    function concavePartialX2(x1, x2) {
+      return 18 - x1 - 2 * x2;
+    }
+
+    function drawConcave3D(x1, x2) {
+      const canvas = $("concave3d");
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const cssW = Number(canvas.dataset.cssWidth || canvas.getAttribute("width") || canvas.width);
+      const cssH = Number(canvas.dataset.cssHeight || canvas.getAttribute("height") || canvas.height);
+      canvas.dataset.cssWidth = cssW;
+      canvas.dataset.cssHeight = cssH;
+      canvas.style.width = cssW + "px";
+      canvas.style.height = cssH + "px";
+      canvas.width = cssW * dpr;
+      canvas.height = cssH * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#151a28";
+      ctx.fillRect(0, 0, cssW, cssH);
+
+      const XMAX = 12;
+      const FMAX = concaveF(6, 6);
+      const N = 24;
+      const rotX = -0.6;
+      const rotY = 0.72;
+      const px = 10.8;
+      const focal = 420;
+      const zOff = 120;
+
+      const proj = (a, fVal, b) => {
+        const x = a - XMAX / 2;
+        const y = (fVal - FMAX / 2) * 0.36;
+        const z = b - XMAX / 2;
+        const cY = Math.cos(rotY), sY = Math.sin(rotY);
+        const xr = x * cY + z * sY;
+        const zr = -x * sY + z * cY;
+        const cX = Math.cos(rotX), sX = Math.sin(rotX);
+        const yr = y * cX - zr * sX;
+        const zrr = y * sX + zr * cX;
+        const scale = focal / (focal + zrr + zOff);
+        return {
+          sx: cssW / 2 + xr * scale * px,
+          sy: cssH / 2 + 12 - yr * scale * px,
+          depth: zrr
+        };
+      };
+
+      const items = [];
+      for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+          const x1a = i * XMAX / N;
+          const x1b = (i + 1) * XMAX / N;
+          const x2a = j * XMAX / N;
+          const x2b = (j + 1) * XMAX / N;
+          const fAA = concaveF(x1a, x2a), fBA = concaveF(x1b, x2a);
+          const fBB = concaveF(x1b, x2b), fAB = concaveF(x1a, x2b);
+          const A = proj(x1a, fAA, x2a), B = proj(x1b, fBA, x2a);
+          const C = proj(x1b, fBB, x2b), D = proj(x1a, fAB, x2b);
+          items.push({
+            pts: [A, B, C, D],
+            depth: (A.depth + B.depth + C.depth + D.depth) / 4,
+            t: (fAA + fBA + fBB + fAB) / (4 * FMAX)
+          });
+        }
+      }
+      items.sort((a, b) => b.depth - a.depth);
+      items.forEach((item) => {
+        const [A, B, C, D] = item.pts;
+        const t = Math.max(0, Math.min(1, item.t));
+        ctx.beginPath();
+        ctx.moveTo(A.sx, A.sy);
+        ctx.lineTo(B.sx, B.sy);
+        ctx.lineTo(C.sx, C.sy);
+        ctx.lineTo(D.sx, D.sy);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${Math.round(64 + 30 * t)},${Math.round(105 + 100 * t)},${Math.round(220 - 80 * t)},0.80)`;
+        ctx.strokeStyle = "rgba(8,10,20,0.24)";
+        ctx.lineWidth = 0.45;
+        ctx.fill();
+        ctx.stroke();
+      });
+
+      ctx.strokeStyle = "rgba(42,48,80,0.78)";
+      ctx.lineWidth = 0.8;
+      for (let k = 0; k <= 4; k++) {
+        const q = k * XMAX / 4;
+        const a = proj(q, 0, 0), b = proj(q, 0, XMAX);
+        const c = proj(0, 0, q), d = proj(XMAX, 0, q);
+        ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(c.sx, c.sy); ctx.lineTo(d.sx, d.sy); ctx.stroke();
+      }
+
+      const O = proj(0, 0, 0);
+      const AX1 = proj(XMAX + 1, 0, 0);
+      const AX2 = proj(0, 0, XMAX + 1);
+      const AXF = proj(0, FMAX + 8, 0);
+      ctx.strokeStyle = "#7b85a3";
+      ctx.lineWidth = 1.6;
+      [[O, AX1], [O, AX2], [O, AXF]].forEach(([a, b]) => {
+        ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
+      });
+      ctx.fillStyle = "#a0aac0";
+      ctx.font = "italic 12px serif";
+      ctx.textAlign = "left";
+      ctx.fillText("x1", AX1.sx + 3, AX1.sy + 4);
+      ctx.fillText("x2", AX2.sx + 3, AX2.sy + 4);
+      ctx.fillText("F", AXF.sx + 3, AXF.sy - 3);
+
+      const slicePts = [];
+      for (let i = 0; i <= 80; i++) {
+        const z = i * XMAX / 80;
+        slicePts.push(proj(x1, concaveF(x1, z), z));
+      }
+      ctx.strokeStyle = "#f5a623";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      slicePts.forEach((p, i) => i === 0 ? ctx.moveTo(p.sx, p.sy) : ctx.lineTo(p.sx, p.sy));
+      ctx.stroke();
+
+      const point = proj(x1, concaveF(x1, x2), x2);
+      const base = proj(x1, 0, x2);
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = "rgba(245,166,35,0.50)";
+      ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(point.sx, point.sy); ctx.lineTo(base.sx, base.sy); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(point.sx, point.sy, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#f5a623";
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 1.7;
+      ctx.stroke();
+    }
+
+    function drawConcaveSlice() {
+      const x1 = val("sliceX1");
+      const x2 = val("sliceX2");
+      const f0 = concaveF(x1, x2);
+      const partial = concavePartialX2(x1, x2);
+      const xMax = 12;
+      const yMax = 115;
+      const xs = Array.from({ length: 180 }, (_, i) => xMax * i / 179);
+      const slice = (z) => concaveF(x1, z);
+      const tangent = (z) => f0 + partial * (z - x2);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("concaveSlice"), xMax, yMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "x2", "F");
+      drawLine(ctx, xs, slice, sx, sy, "#5b8af5");
+      drawLine(ctx, xs.filter((z) => Math.abs(z - x2) <= 5 && tangent(z) >= 0 && tangent(z) <= yMax), tangent, sx, sy, "#f5a623", true);
+      dot(ctx, x2, f0, sx, sy, "slope");
+
+      const dx = x2 <= 8 ? 2.5 : -2.5;
+      const xB = x2 + dx;
+      const yB = f0 + partial * dx;
+      ctx.save();
+      ctx.strokeStyle = "#4ecb8d";
+      ctx.fillStyle = "#4ecb8d";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(sx(x2), sy(f0)); ctx.lineTo(sx(xB), sy(f0)); ctx.lineTo(sx(xB), sy(yB)); ctx.stroke();
+      ctx.font = "11px Segoe UI";
+      ctx.fillText("rise/run = partial", Math.min(sx(xB), sx(x2)) + 8, sy((f0 + yB) / 2) - 6);
+      ctx.restore();
+
+      drawConcave3D(x1, x2);
+      $("sliceX1Out").textContent = fmt(x1);
+      $("sliceX2Out").textContent = fmt(x2);
+      $("sliceFOut").textContent = fmt(f0);
+      $("slicePartialOut").textContent = fmt(partial, 3);
+    }
+
     function drawMarket() {
       const p = val("marketP");
       const firms = [{ a: 0.8, b: 5 }, { a: 1.25, b: 3 }, { a: 0.55, b: 11 }];
       const s = (f, price) => Math.max(0, (price - f.b) / (2 * f.a));
       const market = (price) => firms.reduce((sum, f) => sum + s(f, price), 0);
-      const pMax = 40, qMax = Math.max(36, market(pMax) * 1.08);
+      // Fixed scales — axis does not shift when price slider moves
+      const pMax = 40, qMax = 70;
       const prices = Array.from({ length: 180 }, (_, i) => pMax * i / 179);
-      const { ctx, sx, sy } = setupCanvas($("marketCanvas"), qMax, pMax);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("marketCanvas"), qMax, pMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (quantity)", "P (price)");
       const inversePath = (fn, color, dashed = false) => {
         ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.setLineDash(dashed ? [7, 6] : []);
         ctx.beginPath();
@@ -893,7 +1433,8 @@
       inversePath((price) => s(firms[2], price), "#4ecb8d", true);
       inversePath(market, "#5b8af5");
       drawLine(ctx, Array.from({ length: 80 }, (_, i) => qMax * i / 79), () => p, sx, sy, "#e8ecf5", true);
-      dot(ctx, market(p), p, sx, sy, "S(p)");
+      const mktQ = market(p);
+      if (mktQ <= qMax) dot(ctx, mktQ, p, sx, sy, "S(p)");
       $("marketPOut").textContent = fmt(p);
       $("f1Out").textContent = fmt(s(firms[0], p));
       $("f2Out").textContent = fmt(s(firms[1], p));
@@ -906,6 +1447,8 @@
       drawProfit();
       drawShortRun();
       drawIso();
+      drawDiff();
+      drawConcaveSlice();
       drawMarket();
     }
 
@@ -913,6 +1456,8 @@
     ["profitA", "profitB", "profitFc", "p"].forEach((id) => $(id).addEventListener("input", drawProfit));
     ["shortA", "shortD", "shortB", "shortFc", "shortP"].forEach((id) => $(id).addEventListener("input", drawShortRun));
     ["w", "r", "alpha", "qTarget"].forEach((id) => $(id).addEventListener("input", drawIso));
+    ["diffL", "diffK", "diffAlpha", "diffDL", "diffDK"].forEach((id) => $(id).addEventListener("input", drawDiff));
+    ["sliceX1", "sliceX2"].forEach((id) => $(id).addEventListener("input", drawConcaveSlice));
     $("marketP").addEventListener("input", drawMarket);
     $("showProfit").addEventListener("click", () => {
       profitMode = "profit";
@@ -929,6 +1474,237 @@
 
     window.addEventListener("load", () => {
       redraw();
+
+      // ── 3.5  Two-Product Profit Surface (3-D canvas) ──────────────
+      (function () {
+        const cvs = document.getElementById('surface3d');
+        if (!cvs) return;
+
+        const CSS_W = 500, CSS_H = 420;
+        const dpr = window.devicePixelRatio || 1;
+        cvs.width  = CSS_W * dpr;
+        cvs.height = CSS_H * dpr;
+        cvs.style.width  = CSS_W + 'px';
+        cvs.style.height = CSS_H + 'px';
+        const ctx = cvs.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        const DEF_ROT_X = -0.52, DEF_ROT_Y = 0.68;
+        let rotX = DEF_ROT_X, rotY = DEF_ROT_Y;
+        let drag = false, lastMX = 0, lastMY = 0;
+        let p1 = 6, p2 = 6;
+
+        const N        = 26;    // grid cells per axis
+        const QMAX     = 7;     // Q range [0, QMAX]
+        const PI_FLOOR = -12;   // clip very negative profits
+        const Y_SCALE  = 0.45;  // compress profit axis
+        const PX       = 38;    // pixels per world unit
+        const FOCAL    = 480;
+        const Z_OFF    = 160;
+
+        const piF = (q1, q2) => p1*q1 + p2*q2 - q1*q1 - q1*q2 - q2*q2;
+
+        function optima() {
+          const q1 = (2*p1 - p2) / 3;
+          const q2 = (2*p2 - p1) / 3;
+          return { q1: Math.max(0, q1), q2: Math.max(0, q2), pi: piF(Math.max(0,q1), Math.max(0,q2)) };
+        }
+
+        function proj(q1, piVal, q2) {
+          const x = q1 - QMAX/2;
+          const y = Math.max(PI_FLOOR, piVal) * Y_SCALE;
+          const z = q2 - QMAX/2;
+          const cY = Math.cos(rotY), sY = Math.sin(rotY);
+          const xr  =  x*cY + z*sY,  zr  = -x*sY + z*cY;
+          const cX = Math.cos(rotX), sX = Math.sin(rotX);
+          const yr  =  y*cX - zr*sX, zrr =  y*sX + zr*cX;
+          const sc = FOCAL / (FOCAL + zrr + Z_OFF);
+          return {
+            sx: CSS_W/2 + xr*sc*PX,
+            sy: CSS_H/2 + 30 - yr*sc*PX,
+            depth: zrr
+          };
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, CSS_W, CSS_H);
+          ctx.fillStyle = '#151a28';
+          ctx.fillRect(0, 0, CSS_W, CSS_H);
+
+          const opt = optima();
+          const piCeil = opt.pi;
+          const piRange = Math.max(1, piCeil - PI_FLOOR);
+
+          // Build surface quads
+          const items = [];
+          for (let i = 0; i < N; i++) {
+            for (let j = 0; j < N; j++) {
+              const q1a = i*QMAX/N,   q1b = (i+1)*QMAX/N;
+              const q2a = j*QMAX/N,   q2b = (j+1)*QMAX/N;
+              const pAA = piF(q1a,q2a), pBA = piF(q1b,q2a);
+              const pBB = piF(q1b,q2b), pAB = piF(q1a,q2b);
+              const avg = (pAA+pBA+pBB+pAB)/4;
+              const A = proj(q1a,pAA,q2a), B = proj(q1b,pBA,q2a);
+              const C = proj(q1b,pBB,q2b), D = proj(q1a,pAB,q2b);
+              const depth = (A.depth+B.depth+C.depth+D.depth)/4;
+              const t = Math.max(0, Math.min(1, (avg-PI_FLOOR)/piRange));
+              items.push({ type:'surf', pts:[A,B,C,D], depth, t });
+            }
+          }
+
+          // Tangent plane at optimum (horizontal — all four corners share the same y = π*)
+          const TR = 2.0;
+          const tpPts = [
+            proj(opt.q1-TR, opt.pi, opt.q2-TR), proj(opt.q1+TR, opt.pi, opt.q2-TR),
+            proj(opt.q1+TR, opt.pi, opt.q2+TR), proj(opt.q1-TR, opt.pi, opt.q2+TR),
+          ];
+          items.push({ type:'tp', pts:tpPts, depth: tpPts.reduce((s,p)=>s+p.depth,0)/4 });
+
+          // Painter sort: far → near
+          items.sort((a,b) => b.depth - a.depth);
+
+          for (const item of items) {
+            const [A,B,C,D] = item.pts;
+            ctx.beginPath();
+            ctx.moveTo(A.sx,A.sy); ctx.lineTo(B.sx,B.sy);
+            ctx.lineTo(C.sx,C.sy); ctx.lineTo(D.sx,D.sy);
+            ctx.closePath();
+            if (item.type === 'tp') {
+              ctx.fillStyle   = 'rgba(245,166,35,0.22)';
+              ctx.strokeStyle = 'rgba(245,166,35,0.90)';
+              ctx.lineWidth   = 1.8;
+              ctx.fill(); ctx.stroke();
+            } else {
+              const t = item.t;
+              // dark-blue (low profit) → teal-green (high profit)
+              ctx.fillStyle   = `rgba(${Math.round(55+23*t)},${Math.round(90+113*t)},${Math.round(190-49*t)},0.78)`;
+              ctx.strokeStyle = 'rgba(8,10,20,0.28)';
+              ctx.lineWidth   = 0.5;
+              ctx.fill(); ctx.stroke();
+            }
+          }
+
+          // Base grid on Q1-Q2 plane
+          ctx.strokeStyle = 'rgba(42,48,80,0.75)';
+          ctx.lineWidth   = 0.8;
+          for (let k = 0; k <= 3; k++) {
+            const q = k * QMAX/3;
+            const a = proj(q,PI_FLOOR,0),    b = proj(q,PI_FLOOR,QMAX);
+            const c = proj(0,PI_FLOOR,q),     d = proj(QMAX,PI_FLOOR,q);
+            ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(c.sx,c.sy); ctx.lineTo(d.sx,d.sy); ctx.stroke();
+          }
+
+          // Axes
+          const O   = proj(0, PI_FLOOR,    0);
+          const AX1 = proj(QMAX+1, PI_FLOOR, 0);
+          const AX2 = proj(0, PI_FLOOR,    QMAX+1);
+          const AXP = proj(0, piCeil+2,    0);
+          ctx.lineWidth = 1.8; ctx.strokeStyle = '#7b85a3';
+          [[O,AX1],[O,AX2],[O,AXP]].forEach(([a,b]) => {
+            ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+          });
+          ctx.fillStyle = '#a0aac0'; ctx.font = 'italic 14px serif';
+          ctx.textAlign = 'left';
+          ctx.fillText('Q₁', AX1.sx+4, AX1.sy+5);
+          ctx.fillText('Q₂', AX2.sx+4, AX2.sy+5);
+          ctx.textAlign = 'center';
+          ctx.fillText('π', AXP.sx, AXP.sy-8);
+
+          // Dashed drop-line from optimal point to base
+          const optPt   = proj(opt.q1, opt.pi,   opt.q2);
+          const optBase = proj(opt.q1, PI_FLOOR, opt.q2);
+          ctx.setLineDash([5,4]);
+          ctx.beginPath(); ctx.moveTo(optPt.sx,optPt.sy); ctx.lineTo(optBase.sx,optBase.sy);
+          ctx.strokeStyle = 'rgba(245,166,35,0.45)'; ctx.lineWidth = 1.5;
+          ctx.stroke(); ctx.setLineDash([]);
+
+          // Optimal point dot
+          ctx.beginPath(); ctx.arc(optPt.sx, optPt.sy, 7, 0, Math.PI*2);
+          ctx.fillStyle = '#f5a623'; ctx.fill();
+          ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+
+          // Annotation near the tangent plane
+          const lbl = proj(opt.q1+1.8, opt.pi+2.2, opt.q2-1.0);
+          ctx.font      = '10.5px "Segoe UI",sans-serif';
+          ctx.fillStyle = 'rgba(245,166,35,0.95)';
+          ctx.textAlign = 'left';
+          ctx.fillText('∂π/∂Q₁ = ∂π/∂Q₂ = 0', lbl.sx, lbl.sy);
+        }
+
+        function update() {
+          const s1 = document.getElementById('p1Slider');
+          const s2 = document.getElementById('p2Slider');
+          if (!s1 || !s2) return;
+          p1 = parseFloat(s1.value);
+          p2 = parseFloat(s2.value);
+          document.getElementById('p1Out').textContent = p1.toFixed(1);
+          document.getElementById('p2Out').textContent = p2.toFixed(1);
+          const opt = optima();
+          document.getElementById('q1StarOut').textContent = opt.q1.toFixed(2);
+          document.getElementById('q2StarOut').textContent = opt.q2.toFixed(2);
+          document.getElementById('piStarOut').textContent = opt.pi.toFixed(2);
+          const ex = document.getElementById('surfaceExplain');
+          if (ex) {
+            const q1r = (2*p1-p2)/3, q2r = (2*p2-p1)/3;
+            if (q1r < 0.01 || q2r < 0.01) {
+              ex.textContent = 'Interior solution requires ½eQ₂ < 2p₁ and p₁ < 2p₂. Adjust sliders to move the optimum into the interior (both Q₁*, Q₂* > 0).';
+            } else {
+              ex.textContent =
+                'At (Q₁*, Q₂*) = (' + opt.q1.toFixed(2) + ', ' + opt.q2.toFixed(2) + '): ' +
+                '∂π/∂Q₁ = p₁ − 2Q₁ − Q₂ = ' +
+                (p1 - 2*opt.q1 - opt.q2).toFixed(2) + ', ' +
+                '∂π/∂Q₂ = p₂ − Q₁ − 2Q₂ = ' +
+                (p2 - opt.q1 - 2*opt.q2).toFixed(2) +
+                '. Both are zero — the tangent plane is flat.';
+            }
+          }
+          draw();
+        }
+
+        // Mouse drag
+        cvs.addEventListener('mousedown', e => {
+          drag = true; lastMX = e.clientX; lastMY = e.clientY;
+          cvs.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mousemove', e => {
+          if (!drag) return;
+          rotY += (e.clientX - lastMX) * 0.012;
+          rotX += (e.clientY - lastMY) * 0.012;
+          rotX  = Math.max(-1.40, Math.min(0.05, rotX));
+          lastMX = e.clientX; lastMY = e.clientY;
+          draw();
+        });
+        window.addEventListener('mouseup', () => { drag = false; cvs.style.cursor = 'grab'; });
+
+        // Touch drag
+        cvs.addEventListener('touchstart', e => {
+          drag = true; lastMX = e.touches[0].clientX; lastMY = e.touches[0].clientY;
+          e.preventDefault();
+        }, { passive: false });
+        cvs.addEventListener('touchmove', e => {
+          if (!drag) return;
+          rotY += (e.touches[0].clientX - lastMX) * 0.012;
+          rotX += (e.touches[0].clientY - lastMY) * 0.012;
+          rotX  = Math.max(-1.40, Math.min(0.05, rotX));
+          lastMX = e.touches[0].clientX; lastMY = e.touches[0].clientY;
+          draw(); e.preventDefault();
+        }, { passive: false });
+        cvs.addEventListener('touchend', () => { drag = false; });
+
+        // Reset view
+        const rvBtn = document.getElementById('resetViewBtn');
+        if (rvBtn) rvBtn.addEventListener('click', () => { rotX = DEF_ROT_X; rotY = DEF_ROT_Y; draw(); });
+
+        // Sliders
+        ['p1Slider','p2Slider'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', update);
+        });
+
+        update();
+      })();
+
       if (window.renderMathInElement) {
         renderMathInElement(document.body, {
           delimiters: [
