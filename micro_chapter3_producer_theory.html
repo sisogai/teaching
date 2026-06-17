@@ -575,14 +575,15 @@
             <div class="graph-pair">
               <div>
                 <div class="graph-title">3D concave production surface</div>
-                <div class="canvas-wrap">
-                  <canvas id="concave3d" width="300" height="270"></canvas>
+                <div class="canvas-wrap" style="position:relative;">
+                  <canvas id="concave3d" width="300" height="340" style="cursor:grab;"></canvas>
+                  <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:11px;pointer-events:none;white-space:nowrap;">drag to rotate</div>
                 </div>
               </div>
               <div>
                 <div class="graph-title">2D slice at fixed \(x_1\)</div>
                 <div class="canvas-wrap">
-                  <canvas id="concaveSlice" width="300" height="270"></canvas>
+                  <canvas id="concaveSlice" width="300" height="340"></canvas>
                 </div>
               </div>
             </div>
@@ -815,6 +816,10 @@
     const fmt = (x, n = 2) => Number.isFinite(x) ? Number(x).toFixed(n).replace(/\.?0+$/, "") : "n/a";
     const val = (id) => parseFloat($(id).value);
     let profitMode = "profit";
+    const CONCAVE_DEFAULT_ROT_X = -0.62;
+    const CONCAVE_DEFAULT_ROT_Y = 1.12;
+    let concaveRotX = CONCAVE_DEFAULT_ROT_X;
+    let concaveRotY = CONCAVE_DEFAULT_ROT_Y;
 
     function getCostParams(prefix) {
       return {
@@ -1189,15 +1194,14 @@
       const XMAX = 12;
       const FMAX = concaveF(6, 6);
       const N = 24;
-      const rotX = -0.6;
-      const rotY = 0.72;
-      const px = 10.8;
+      const rotX = concaveRotX;
+      const rotY = concaveRotY;
       const focal = 420;
       const zOff = 120;
 
-      const proj = (a, fVal, b) => {
+      const rawProject = (a, fVal, b) => {
         const x = a - XMAX / 2;
-        const y = (fVal - FMAX / 2) * 0.36;
+        const y = (fVal - FMAX / 2) * 0.3;
         const z = b - XMAX / 2;
         const cY = Math.cos(rotY), sY = Math.sin(rotY);
         const xr = x * cY + z * sY;
@@ -1206,10 +1210,43 @@
         const yr = y * cX - zr * sX;
         const zrr = y * sX + zr * cX;
         const scale = focal / (focal + zrr + zOff);
+        return { rx: xr * scale, ry: -yr * scale, depth: zrr };
+      };
+
+      const fitPoints = [];
+      for (let i = 0; i <= N; i++) {
+        for (let j = 0; j <= N; j++) {
+          const a = i * XMAX / N;
+          const b = j * XMAX / N;
+          fitPoints.push(rawProject(a, concaveF(a, b), b));
+        }
+      }
+      [
+        [0, 0, 0],
+        [XMAX + 1, 0, 0],
+        [0, 0, XMAX + 1],
+        [0, FMAX + 8, 0],
+        [6, FMAX, 6]
+      ].forEach(([a, fVal, b]) => fitPoints.push(rawProject(a, fVal, b)));
+
+      const minX = Math.min(...fitPoints.map((p) => p.rx));
+      const maxX = Math.max(...fitPoints.map((p) => p.rx));
+      const minY = Math.min(...fitPoints.map((p) => p.ry));
+      const maxY = Math.max(...fitPoints.map((p) => p.ry));
+      const pad = 24;
+      const fitScale = Math.min(
+        (cssW - pad * 2) / Math.max(0.1, maxX - minX),
+        (cssH - pad * 2) / Math.max(0.1, maxY - minY)
+      );
+      const offsetX = pad + (cssW - pad * 2 - (maxX - minX) * fitScale) / 2 - minX * fitScale;
+      const offsetY = pad + (cssH - pad * 2 - (maxY - minY) * fitScale) / 2 - minY * fitScale;
+
+      const proj = (a, fVal, b) => {
+        const p = rawProject(a, fVal, b);
         return {
-          sx: cssW / 2 + xr * scale * px,
-          sy: cssH / 2 + 12 - yr * scale * px,
-          depth: zrr
+          sx: offsetX + p.rx * fitScale,
+          sy: offsetY + p.ry * fitScale,
+          depth: p.depth
         };
       };
 
@@ -1262,15 +1299,33 @@
       const AX1 = proj(XMAX + 1, 0, 0);
       const AX2 = proj(0, 0, XMAX + 1);
       const AXF = proj(0, FMAX + 8, 0);
-      ctx.strokeStyle = "#7b85a3";
-      ctx.lineWidth = 1.6;
-      [[O, AX1], [O, AX2], [O, AXF]].forEach(([a, b]) => {
-        ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
-      });
+      const drawAxis = (from, to, color, width = 1.8) => {
+        const angle = Math.atan2(to.sy - from.sy, to.sx - from.sx);
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        ctx.moveTo(from.sx, from.sy);
+        ctx.lineTo(to.sx, to.sy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(to.sx, to.sy);
+        ctx.lineTo(to.sx - 8 * Math.cos(angle - 0.45), to.sy - 8 * Math.sin(angle - 0.45));
+        ctx.lineTo(to.sx - 8 * Math.cos(angle + 0.45), to.sy - 8 * Math.sin(angle + 0.45));
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      };
+      drawAxis(O, AX1, "#5b8af5", 2.7);
+      drawAxis(O, AX2, "#7b85a3", 1.7);
+      drawAxis(O, AXF, "#7b85a3", 1.7);
       ctx.fillStyle = "#a0aac0";
       ctx.font = "italic 12px serif";
       ctx.textAlign = "left";
-      ctx.fillText("x1", AX1.sx + 3, AX1.sy + 4);
+      ctx.fillStyle = "#9bb6ff";
+      ctx.fillText("x1", AX1.sx + 6, AX1.sy + 4);
+      ctx.fillStyle = "#a0aac0";
       ctx.fillText("x2", AX2.sx + 3, AX2.sy + 4);
       ctx.fillText("F", AXF.sx + 3, AXF.sy - 3);
 
@@ -1336,6 +1391,52 @@
       $("slicePartialOut").textContent = fmt(partial, 3);
     }
 
+    function setupConcaveRotation() {
+      const canvas = $("concave3d");
+      if (!canvas) return;
+      let dragging = false;
+      let lastX = 0;
+      let lastY = 0;
+      const redraw3D = () => drawConcave3D(val("sliceX1"), val("sliceX2"));
+      const startDrag = (x, y) => {
+        dragging = true;
+        lastX = x;
+        lastY = y;
+        canvas.style.cursor = "grabbing";
+      };
+      const moveDrag = (x, y) => {
+        if (!dragging) return;
+        concaveRotY += (x - lastX) * 0.012;
+        concaveRotX += (y - lastY) * 0.012;
+        concaveRotX = Math.max(-1.35, Math.min(0.08, concaveRotX));
+        lastX = x;
+        lastY = y;
+        redraw3D();
+      };
+      const endDrag = () => {
+        dragging = false;
+        canvas.style.cursor = "grab";
+      };
+
+      canvas.addEventListener("mousedown", (event) => startDrag(event.clientX, event.clientY));
+      window.addEventListener("mousemove", (event) => moveDrag(event.clientX, event.clientY));
+      window.addEventListener("mouseup", endDrag);
+      canvas.addEventListener("touchstart", (event) => {
+        startDrag(event.touches[0].clientX, event.touches[0].clientY);
+        event.preventDefault();
+      }, { passive: false });
+      canvas.addEventListener("touchmove", (event) => {
+        moveDrag(event.touches[0].clientX, event.touches[0].clientY);
+        event.preventDefault();
+      }, { passive: false });
+      canvas.addEventListener("touchend", endDrag);
+      canvas.addEventListener("dblclick", () => {
+        concaveRotX = CONCAVE_DEFAULT_ROT_X;
+        concaveRotY = CONCAVE_DEFAULT_ROT_Y;
+        redraw3D();
+      });
+    }
+
     function drawMarket() {
       const p = val("marketP");
       const firms = [{ a: 0.8, b: 5 }, { a: 1.25, b: 3 }, { a: 0.55, b: 11 }];
@@ -1385,6 +1486,7 @@
     ["w", "r", "alpha", "qTarget"].forEach((id) => $(id).addEventListener("input", drawIso));
     ["diffL", "diffK", "diffAlpha", "diffDL", "diffDK"].forEach((id) => $(id).addEventListener("input", drawDiff));
     ["sliceX1", "sliceX2"].forEach((id) => $(id).addEventListener("input", drawConcaveSlice));
+    setupConcaveRotation();
     $("marketP").addEventListener("input", drawMarket);
     $("showProfit").addEventListener("click", () => {
       profitMode = "profit";
