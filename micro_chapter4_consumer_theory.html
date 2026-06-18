@@ -276,6 +276,61 @@
     .two-col { grid-template-columns: 1fr; }
   }
 
+  .path-layout {
+    display: grid;
+    grid-template-columns: minmax(340px, 1fr) minmax(300px, 340px);
+    gap: 16px;
+    align-items: start;
+  }
+  .path-chart-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .path-side-panel {
+    position: sticky;
+    top: 16px;
+  }
+  .path-chart {
+    background: #111521;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+  .path-chart h4 {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin: 0 0 5px;
+  }
+  .path-chart canvas {
+    width: 100% !important;
+    max-width: 100%;
+    height: auto !important;
+  }
+  .path-side-panel .result-grid {
+    grid-template-columns: 1fr;
+  }
+  .path-side-panel .control-row {
+    gap: 10px;
+  }
+  .path-side-panel .control-row label {
+    min-width: 92px;
+  }
+  .path-side-panel .result-card {
+    padding: 11px 14px;
+  }
+  .path-side-panel .result-card .r-val {
+    font-size: 1.25rem;
+  }
+  @media (max-width: 760px) {
+    .path-layout { grid-template-columns: 1fr; }
+    .path-side-panel {
+      position: static;
+      order: -1;
+    }
+  }
+
   /* ── Tab selector ── */
   .tabs {
     display: flex;
@@ -858,6 +913,76 @@
                 <div class="r-val" id="sl_total">—</div>
                 <div class="r-eq">$\Delta x_1^{\text{total}}$</div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive: Demand Paths -->
+    <div class="interactive-panel" style="margin-top:20px">
+      <div class="panel-header">
+        <span class="icon">P</span>
+        <h3>Interactive: Demand Paths</h3>
+      </div>
+      <div class="panel-body">
+        <div class="path-layout">
+          <div class="path-chart-stack">
+            <div class="path-chart">
+              <h4>Wealth expansion path</h4>
+              <canvas id="pathWealthCanvas" width="560" height="190"></canvas>
+            </div>
+            <div class="path-chart">
+              <h4>Price-consumption path</h4>
+              <canvas id="pathPriceCanvas" width="560" height="190"></canvas>
+            </div>
+            <div class="path-chart">
+              <h4>Ordinary demand curve</h4>
+              <canvas id="pathDemandCanvas" width="560" height="190"></canvas>
+            </div>
+          </div>
+          <div class="path-side-panel">
+            <div class="controls">
+              <div class="control-row">
+                <label>Preference $\alpha$</label>
+                <input type="range" id="pathAlpha" min="0.1" max="0.9" step="0.05" value="0.4">
+                <span class="val-badge" id="pathAlphaVal">0.4</span>
+              </div>
+              <div class="control-row">
+                <label>Wealth $w$</label>
+                <input type="range" id="pathW" min="10" max="100" step="5" value="60">
+                <span class="val-badge" id="pathWVal">60</span>
+              </div>
+              <div class="control-row">
+                <label>Price $p_1$</label>
+                <input type="range" id="pathP1" min="1" max="10" step="0.5" value="4">
+                <span class="val-badge" id="pathP1Val">4</span>
+              </div>
+              <div class="control-row">
+                <label>Price $p_2$</label>
+                <input type="range" id="pathP2" min="1" max="10" step="0.5" value="3">
+                <span class="val-badge" id="pathP2Val">3</span>
+              </div>
+            </div>
+            <div class="result-grid">
+              <div class="result-card">
+                <div class="r-label">$x_1^*(w)$</div>
+                <div class="r-val" id="pathX1">—</div>
+                <div class="r-eq">$=\alpha w/p_1$</div>
+              </div>
+              <div class="result-card">
+                <div class="r-label">$x_2^*(p_1)$</div>
+                <div class="r-val" id="pathX2">—</div>
+                <div class="r-eq">$=(1-\alpha)w/p_2$</div>
+              </div>
+              <div class="result-card">
+                <div class="r-label">Demand point</div>
+                <div class="r-val" id="pathDemandPoint">—</div>
+                <div class="r-eq">$(x_1^*,p_1)$</div>
+              </div>
+            </div>
+            <div class="note" style="margin-top:16px">
+              The first chart traces optimal bundles as wealth changes. The second traces optimal bundles as $p_1$ changes, holding $p_2$ and $w$ fixed. The third redraws the $p_1$ response in the usual demand-curve plane.
             </div>
           </div>
         </div>
@@ -1729,6 +1854,238 @@ function drawSlutsky() {
 }
 
 // ─────────────────────────────────────────────────
+// CHART 4b — Demand Paths
+const pathWealthCanvas = document.getElementById('pathWealthCanvas');
+const { ctx: pathWctx, w: pathWW, h: pathWH } = setupHDCanvas(pathWealthCanvas);
+const pathPriceCanvas = document.getElementById('pathPriceCanvas');
+const { ctx: pathPctx, w: pathPW, h: pathPH } = setupHDCanvas(pathPriceCanvas);
+const pathDemandCanvas = document.getElementById('pathDemandCanvas');
+const { ctx: pathDctx, w: pathDW, h: pathDH } = setupHDCanvas(pathDemandCanvas);
+
+const PATH_PAD = { t: 28, r: 16, b: 42, l: 48 };
+const PATH_AXES = {
+  wealth: { xmax: 25, ymax: 30 },
+  price: { xmax: 50, ymax: 30 },
+  demand: { xmax: 50, ymax: 10 }
+};
+
+function fmtPathTick(v) {
+  if (v >= 20) return Math.round(v).toString();
+  if (v >= 5) return v.toFixed(1).replace(/\.0$/, '');
+  return v.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+function toPathXY(x, y, W, H, xmax, ymax) {
+  const pw = W - PATH_PAD.l - PATH_PAD.r;
+  const ph = H - PATH_PAD.t - PATH_PAD.b;
+  return [
+    PATH_PAD.l + (x / xmax) * pw,
+    H - PATH_PAD.b - (y / ymax) * ph
+  ];
+}
+
+function drawPathAxes(ctx, W, H, xmax, ymax, xLabel, yLabel) {
+  const pw = W - PATH_PAD.l - PATH_PAD.r;
+  const ph = H - PATH_PAD.t - PATH_PAD.b;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = '#1e2336';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 5]);
+  for (let i = 1; i <= 4; i++) {
+    const gx = PATH_PAD.l + pw * i / 4;
+    const gy = PATH_PAD.t + ph * i / 4;
+    ctx.beginPath(); ctx.moveTo(gx, PATH_PAD.t); ctx.lineTo(gx, H - PATH_PAD.b); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PATH_PAD.l, gy); ctx.lineTo(W - PATH_PAD.r, gy); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  ctx.strokeStyle = '#3a4060';
+  ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(PATH_PAD.l, PATH_PAD.t); ctx.lineTo(PATH_PAD.l, H - PATH_PAD.b); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(PATH_PAD.l, H - PATH_PAD.b); ctx.lineTo(W - PATH_PAD.r, H - PATH_PAD.b); ctx.stroke();
+
+  ctx.fillStyle = '#7b85a3';
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= 4; i++) {
+    const xVal = xmax * i / 4;
+    const yVal = ymax * i / 4;
+    const gx = PATH_PAD.l + pw * i / 4;
+    const gy = H - PATH_PAD.b - ph * i / 4;
+    ctx.fillText(fmtPathTick(xVal), gx, H - PATH_PAD.b + 17);
+    ctx.textAlign = 'right';
+    ctx.fillText(fmtPathTick(yVal), PATH_PAD.l - 6, gy + 4);
+    ctx.textAlign = 'center';
+  }
+
+  ctx.fillStyle = '#a0aac0';
+  ctx.font = 'italic 12px serif';
+  ctx.fillText(xLabel, PATH_PAD.l + pw / 2, H - 8);
+  ctx.save();
+  ctx.translate(13, PATH_PAD.t + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText(yLabel, 0, 0);
+  ctx.restore();
+}
+
+function drawPathLine(ctx, W, H, xmax, ymax, points, color, width, dash) {
+  ctx.save();
+  ctx.beginPath();
+  points.forEach((pt, i) => {
+    const p = toPathXY(pt[0], pt[1], W, H, xmax, ymax);
+    if (i === 0) ctx.moveTo(p[0], p[1]);
+    else ctx.lineTo(p[0], p[1]);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width || 2.4;
+  ctx.setLineDash(dash || []);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawPathICurve(ctx, W, H, xmax, ymax, alpha, utility, label) {
+  ctx.save();
+  ctx.beginPath();
+  let first = true;
+  for (let i = 1; i <= 460; i++) {
+    const ix = xmax * i / 460;
+    const iy = Math.pow(utility / Math.pow(ix, alpha), 1 / (1 - alpha));
+    if (Number.isFinite(iy) && iy > 0 && iy <= ymax * 1.05) {
+      const p = toPathXY(ix, iy, W, H, xmax, ymax);
+      if (first) {
+        ctx.moveTo(p[0], p[1]);
+        first = false;
+      } else {
+        ctx.lineTo(p[0], p[1]);
+      }
+    }
+  }
+  ctx.strokeStyle = '#4ecb8d';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+  ctx.stroke();
+
+  const labelXs = [0.74, 0.64, 0.54, 0.44, 0.34];
+  for (const frac of labelXs) {
+    const lx = xmax * frac;
+    const ly = Math.pow(utility / Math.pow(lx, alpha), 1 / (1 - alpha));
+    if (Number.isFinite(ly) && ly > 1 && ly < ymax - 1) {
+      const p = toPathXY(lx, ly, W, H, xmax, ymax);
+      ctx.fillStyle = '#4ecb8d';
+      ctx.font = 'italic 11px serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, p[0] + 5, p[1] + 4);
+      break;
+    }
+  }
+  ctx.restore();
+}
+
+function drawPathDot(ctx, W, H, xmax, ymax, x, y, color, label, dx = 8, dy = -8) {
+  const p = toPathXY(x, y, W, H, xmax, ymax);
+  ctx.beginPath();
+  ctx.arc(p[0], p[1], 5.5, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1.3;
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = dx < 0 ? 'right' : 'left';
+  ctx.fillText(label, p[0] + dx, p[1] + dy);
+}
+
+function drawPathBudgetSegment(ctx, W, H, xmax, ymax, p1, p2, wealth, color, width, dash) {
+  const xStart = Math.max(0, (wealth - p2 * ymax) / p1);
+  const xEnd = Math.min(xmax, wealth / p1);
+  if (xStart > xEnd) return;
+  const yStart = (wealth - p1 * xStart) / p2;
+  const yEnd = (wealth - p1 * xEnd) / p2;
+  const start = toPathXY(xStart, yStart, W, H, xmax, ymax);
+  const end = toPathXY(xEnd, yEnd, W, H, xmax, ymax);
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(start[0], start[1]);
+  ctx.lineTo(end[0], end[1]);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.setLineDash(dash || []);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawDemandPaths() {
+  const alpha = getSlider('pathAlpha');
+  const w = getSlider('pathW');
+  const p1 = getSlider('pathP1');
+  const p2 = getSlider('pathP2');
+  const x1 = alpha * w / p1;
+  const x2 = (1 - alpha) * w / p2;
+  const currentUtility = Math.pow(x1, alpha) * Math.pow(x2, 1 - alpha);
+
+  document.getElementById('pathAlphaVal').textContent = alpha.toFixed(2);
+  document.getElementById('pathWVal').textContent = w.toFixed(0);
+  document.getElementById('pathP1Val').textContent = p1.toFixed(1);
+  document.getElementById('pathP2Val').textContent = p2.toFixed(1);
+  document.getElementById('pathX1').textContent = x1.toFixed(2);
+  document.getElementById('pathX2').textContent = x2.toFixed(2);
+  document.getElementById('pathDemandPoint').textContent = `(${x1.toFixed(1)}, ${p1.toFixed(1)})`;
+
+  // Income expansion path in commodity space as wealth changes.
+  const wealthXmax = PATH_AXES.wealth.xmax;
+  const wealthYmax = PATH_AXES.wealth.ymax;
+  const wealthPts = [];
+  for (let wi = 0; wi <= 100; wi += 1) wealthPts.push([alpha * wi / p1, (1 - alpha) * wi / p2]);
+  drawPathAxes(pathWctx, pathWW, pathWH, wealthXmax, wealthYmax, 'x₁', 'x₂');
+  [20, w, 100].forEach((wv, i) => {
+    const current = Math.abs(wv - w) < 0.01;
+    const lineColor = current ? 'rgba(245,166,35,0.78)' : 'rgba(91,138,245,0.24)';
+    drawPathBudgetSegment(pathWctx, pathWW, pathWH, wealthXmax, wealthYmax, p1, p2, wv, lineColor, current ? 1.8 : 1.2, current ? [] : [4, 4]);
+  });
+  drawPathICurve(pathWctx, pathWW, pathWH, wealthXmax, wealthYmax, alpha, currentUtility, 'IC');
+  drawPathLine(pathWctx, pathWW, pathWH, wealthXmax, wealthYmax, wealthPts, '#5b8af5', 2.5);
+  drawPathDot(pathWctx, pathWW, pathWH, wealthXmax, wealthYmax, x1, x2, '#f5a623', 'current');
+  pathWctx.fillStyle = '#e8ecf5';
+  pathWctx.font = '12px sans-serif';
+  pathWctx.textAlign = 'left';
+  pathWctx.fillText(`w varies; p₁=${p1.toFixed(1)}, p₂=${p2.toFixed(1)}`, PATH_PAD.l + 4, PATH_PAD.t - 8);
+
+  // Price-consumption path in commodity space as p1 changes.
+  const priceXmax = PATH_AXES.price.xmax;
+  const priceYmax = PATH_AXES.price.ymax;
+  drawPathAxes(pathPctx, pathPW, pathPH, priceXmax, priceYmax, 'x₁', 'x₂');
+  [10, p1, 1].forEach((p1v, i) => {
+    const current = Math.abs(p1v - p1) < 0.01;
+    const lineColor = current ? 'rgba(245,166,35,0.78)' : 'rgba(91,138,245,0.24)';
+    drawPathBudgetSegment(pathPctx, pathPW, pathPH, priceXmax, priceYmax, p1v, p2, w, lineColor, current ? 1.8 : 1.2, current ? [] : [4, 4]);
+  });
+  const pricePts = [];
+  for (let p1v = 10; p1v >= 1; p1v -= 0.05) pricePts.push([alpha * w / p1v, (1 - alpha) * w / p2]);
+  drawPathICurve(pathPctx, pathPW, pathPH, priceXmax, priceYmax, alpha, currentUtility, 'IC');
+  drawPathLine(pathPctx, pathPW, pathPH, priceXmax, priceYmax, pricePts, '#a96cf5', 2.5);
+  drawPathDot(pathPctx, pathPW, pathPH, priceXmax, priceYmax, x1, x2, '#e05b8f', 'current', 8, -10);
+  pathPctx.fillStyle = '#e8ecf5';
+  pathPctx.font = '12px sans-serif';
+  pathPctx.textAlign = 'left';
+  pathPctx.fillText(`p₁ varies; p₂=${p2.toFixed(1)}, w=${w.toFixed(0)}`, PATH_PAD.l + 4, PATH_PAD.t - 8);
+
+  // Ordinary demand curve for good 1: p1=αw/x1.
+  const demandXmax = PATH_AXES.demand.xmax;
+  const demandYmax = PATH_AXES.demand.ymax;
+  const demandPts = [];
+  for (let p1v = 10; p1v >= 1; p1v -= 0.05) demandPts.push([alpha * w / p1v, p1v]);
+  drawPathAxes(pathDctx, pathDW, pathDH, demandXmax, demandYmax, 'x₁', 'p₁');
+  drawPathLine(pathDctx, pathDW, pathDH, demandXmax, demandYmax, demandPts, '#f5a623', 2.5);
+  drawPathDot(pathDctx, pathDW, pathDH, demandXmax, demandYmax, x1, p1, '#5b8af5', 'current', 8, -10);
+  pathDctx.fillStyle = '#e8ecf5';
+  pathDctx.font = '12px sans-serif';
+  pathDctx.textAlign = 'left';
+  pathDctx.fillText(`x₁(p₁) = αw/p₁`, PATH_PAD.l + 4, PATH_PAD.t - 8);
+}
+
+// ─────────────────────────────────────────────────
 // Tab UI
 document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1768,6 +2125,9 @@ document.getElementById('icLevel').addEventListener('input', drawIndifferenceExa
 ['sl_alpha','sl_p1h','sl_p1l'].forEach(id => {
   document.getElementById(id).addEventListener('input', drawSlutsky);
 });
+['pathAlpha','pathW','pathP1','pathP2'].forEach(id => {
+  document.getElementById(id).addEventListener('input', drawDemandPaths);
+});
 
 // Initial renders (after KaTeX loads)
 window.addEventListener('load', () => {
@@ -1778,6 +2138,7 @@ window.addEventListener('load', () => {
   drawExpenditure();
   drawElastic();
   drawSlutsky();
+  drawDemandPaths();
 });
 </script>
 
