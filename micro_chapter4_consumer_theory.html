@@ -331,6 +331,56 @@
     }
   }
 
+  .duality-layout {
+    display: grid;
+    grid-template-columns: minmax(340px, 1fr) minmax(290px, 330px);
+    gap: 18px;
+    align-items: start;
+  }
+  .duality-chart-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .duality-chart {
+    background: #111521;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 10px;
+  }
+  .duality-chart h4 {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin: 0 0 6px;
+  }
+  .duality-chart canvas {
+    width: 100% !important;
+    max-width: 100%;
+    height: auto !important;
+  }
+  .duality-side-panel .result-grid {
+    grid-template-columns: 1fr;
+  }
+  .duality-side-panel .control-row {
+    gap: 10px;
+  }
+  .duality-side-panel .control-row label {
+    min-width: 104px;
+  }
+  .duality-side-panel .result-card {
+    padding: 11px 14px;
+  }
+  .duality-side-panel .result-card .r-val {
+    font-size: 1.12rem;
+  }
+  @media (max-width: 760px) {
+    .duality-layout { grid-template-columns: 1fr; }
+    .duality-side-panel {
+      order: -1;
+    }
+  }
+
   /* ── Tab selector ── */
   .tabs {
     display: flex;
@@ -481,6 +531,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -539,6 +590,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -677,6 +729,11 @@
           <canvas id="utilCanvas" width="500" height="440"></canvas>
         </div>
         <div>
+          <div class="tabs" style="margin-bottom:16px">
+            <button class="tab-btn active" data-util-kind="cd">Cobb-Douglas</button>
+            <button class="tab-btn" data-util-kind="linear">Linear</button>
+            <button class="tab-btn" data-util-kind="leontief">Leontief</button>
+          </div>
           <div class="controls">
             <div class="control-row">
               <label>$p_1$ (price of good 1)</label>
@@ -694,7 +751,7 @@
               <span class="val-badge" id="uwval">60</span>
             </div>
             <div class="control-row">
-              <label>$\alpha$ (preference for good 1)</label>
+              <label>$\alpha$ (taste / share parameter)</label>
               <input type="range" id="alpha" min="0.1" max="0.9" step="0.05" value="0.4">
               <span class="val-badge" id="alphaval">0.4</span>
             </div>
@@ -728,11 +785,11 @@
             </div>
           </div>
 
-          <div class="note" style="margin-top:14px">
+          <div class="note" id="utilNote" style="margin-top:14px">
             <strong style="color:var(--accent)">●</strong> Blue = budget line &nbsp;
             <strong style="color:var(--accent3)">●</strong> Dashed green = optimal IC benchmark<br>
             <strong style="color:#e05b8f">●</strong> Colored curve = selected utility level<br>
-            <strong style="color:var(--accent2)">●</strong> Yellow = optimal bundle (MRS = price ratio)
+            <strong style="color:var(--accent2)">●</strong> Yellow = optimal bundle
           </div>
         </div>
       </div>
@@ -768,6 +825,11 @@
           <canvas id="expCanvas" width="500" height="440"></canvas>
         </div>
         <div>
+          <div class="tabs" style="margin-bottom:16px">
+            <button class="tab-btn active" data-emp-kind="cd">Cobb-Douglas</button>
+            <button class="tab-btn" data-emp-kind="linear">Linear</button>
+            <button class="tab-btn" data-emp-kind="leontief">Leontief</button>
+          </div>
           <div class="controls">
             <div class="control-row">
               <label>$p_1$ (price of good 1)</label>
@@ -780,7 +842,7 @@
               <span class="val-badge" id="empP2Val">3</span>
             </div>
             <div class="control-row">
-              <label>$\alpha$</label>
+              <label>$\alpha$ (taste / share parameter)</label>
               <input type="range" id="empAlpha" min="0.1" max="0.9" step="0.05" value="0.4">
               <span class="val-badge" id="empAlphaVal">0.4</span>
             </div>
@@ -814,7 +876,7 @@
               <div class="r-eq" id="empStatusEq"></div>
             </div>
           </div>
-          <div class="note">
+          <div class="note" id="empNote">
             The green curve is the target indifference curve. Move the orange isocost line by changing expenditure $E$. It is optimal exactly when it just touches the target curve at the yellow Hicksian bundle.
           </div>
         </div>
@@ -1057,6 +1119,87 @@
             </div>
             <div class="note" style="margin-top:16px">
               Demand is $Q=a-bP$. The two dots show the old and new prices. The bracket shows the percentage change in price and quantity, so elasticity is visible as a ratio: $\varepsilon=-\%\Delta Q/\%\Delta P$.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive: Duality -->
+    <div class="interactive-panel" style="margin-top:20px">
+      <div class="panel-header">
+        <span class="icon">DU</span>
+        <h3>Interactive: Duality of Utility Maximization and Expenditure Minimization</h3>
+      </div>
+      <div class="panel-body">
+        <div class="duality-layout">
+          <div class="duality-chart-stack">
+            <div class="duality-chart">
+              <h4>Utility maximization: the indifference curve moves</h4>
+              <canvas id="dualUtilCanvas" width="560" height="245"></canvas>
+            </div>
+            <div class="duality-chart">
+              <h4>Expenditure minimization: the budget line moves</h4>
+              <canvas id="dualExpCanvas" width="560" height="245"></canvas>
+            </div>
+          </div>
+          <div class="duality-side-panel">
+            <div class="controls">
+              <div class="control-row">
+                <label>Preference $\alpha$</label>
+                <input type="range" id="dualAlpha" min="0.1" max="0.9" step="0.05" value="0.4">
+                <span class="val-badge" id="dualAlphaVal">0.4</span>
+              </div>
+              <div class="control-row">
+                <label>Price $p_1$</label>
+                <input type="range" id="dualP1" min="1" max="10" step="0.5" value="4">
+                <span class="val-badge" id="dualP1Val">4</span>
+              </div>
+              <div class="control-row">
+                <label>Price $p_2$</label>
+                <input type="range" id="dualP2" min="1" max="10" step="0.5" value="3">
+                <span class="val-badge" id="dualP2Val">3</span>
+              </div>
+              <div class="control-row">
+                <label>Wealth $w$</label>
+                <input type="range" id="dualW" min="20" max="100" step="5" value="60">
+                <span class="val-badge" id="dualWVal">60</span>
+              </div>
+              <div class="control-row">
+                <label>Displayed IC</label>
+                <input type="range" id="dualUFactor" min="0.6" max="1.4" step="0.05" value="1">
+                <span class="val-badge" id="dualUFactorVal">1.00v</span>
+              </div>
+              <div class="control-row">
+                <label>Displayed $E$</label>
+                <input type="range" id="dualEFactor" min="0.6" max="1.4" step="0.05" value="1">
+                <span class="val-badge" id="dualEFactorVal">1.00e</span>
+              </div>
+            </div>
+            <div class="result-grid">
+              <div class="result-card">
+                <div class="r-label">Marshallian $x(p,w)$</div>
+                <div class="r-val" id="dualX">—</div>
+                <div class="r-eq">$x_1=\alpha w/p_1,\ x_2=(1-\alpha)w/p_2$</div>
+              </div>
+              <div class="result-card">
+                <div class="r-label">Hicksian $h(p,v)$</div>
+                <div class="r-val" id="dualH">—</div>
+                <div class="r-eq">$h(p,v(p,w))$</div>
+              </div>
+              <div class="result-card">
+                <div class="r-label">Indirect utility</div>
+                <div class="r-val" id="dualV">—</div>
+                <div class="r-eq">$v(p,w)$</div>
+              </div>
+              <div class="result-card">
+                <div class="r-label">Minimum expenditure</div>
+                <div class="r-val" id="dualE">—</div>
+                <div class="r-eq">$e(p,v(p,w))$</div>
+              </div>
+            </div>
+            <div class="note" style="margin-top:16px" id="dualNote">
+              At factor 1, the moving object just touches: the highest affordable indifference curve and the cheapest isocost line touch at the same bundle.
             </div>
           </div>
         </div>
@@ -1372,6 +1515,137 @@ function drawLeontiefCurve(ctx, W, H, xmax, ymax, U, color, width, dash) {
   ctx.restore();
 }
 
+function drawWeightedLinearCurve(ctx, W, H, xmax, ymax, U, alpha, color, width, dash) {
+  drawBudgetLineSegment(ctx, W, H, xmax, ymax, alpha, 1 - alpha, U, color, width, dash);
+}
+
+function drawWeightedLeontiefCurve(ctx, W, H, xmax, ymax, U, alpha, color, width, dash) {
+  const cx = alpha * U;
+  const cy = (1 - alpha) * U;
+  if (cx > xmax || cy > ymax) return;
+  const corner = toCanvasXY(cx, cy, W, H, xmax, ymax);
+  const right = toCanvasXY(xmax, cy, W, H, xmax, ymax);
+  const top = toCanvasXY(cx, ymax, W, H, xmax, ymax);
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(top[0], top[1]);
+  ctx.lineTo(corner[0], corner[1]);
+  ctx.lineTo(right[0], right[1]);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.setLineDash(dash || []);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawPreferenceCurve(ctx, W, H, xmax, ymax, U, alpha, kind, color, width, dash) {
+  if (kind === 'cd') drawCDCurve(ctx, W, H, xmax, ymax, U, alpha, color, width, dash);
+  if (kind === 'linear') drawWeightedLinearCurve(ctx, W, H, xmax, ymax, U, alpha, color, width, dash);
+  if (kind === 'leontief') drawWeightedLeontiefCurve(ctx, W, H, xmax, ymax, U, alpha, color, width, dash);
+}
+
+function optNiceMax(v) {
+  const step = v <= 40 ? 10 : v <= 120 ? 20 : v <= 300 ? 50 : 100;
+  return Math.ceil(v / step) * step;
+}
+
+function utilityFormula(kind) {
+  return {
+    cd: 'u=x₁^αx₂^(1−α)',
+    linear: 'u=αx₁+(1−α)x₂',
+    leontief: 'u=min{x₁/α,x₂/(1−α)}'
+  }[kind];
+}
+
+function utilityMaxSolution(kind, p1, p2, wealth, alpha) {
+  if (kind === 'cd') {
+    const x1 = alpha * wealth / p1;
+    const x2 = (1 - alpha) * wealth / p2;
+    return {
+      x1,
+      x2,
+      utility: Math.pow(x1, alpha) * Math.pow(x2, 1 - alpha),
+      x1eq: `αw/p₁ = ${alpha}×${wealth}/${p1}`,
+      x2eq: `(1−α)w/p₂ = ${(1 - alpha).toFixed(2)}×${wealth}/${p2}`,
+      note: 'Cobb-Douglas has an interior tangency when both goods are consumed.'
+    };
+  }
+  if (kind === 'linear') {
+    const bang1 = alpha / p1;
+    const bang2 = (1 - alpha) / p2;
+    const tie = Math.abs(bang1 - bang2) < 1e-8;
+    let x1 = 0, x2 = 0, note = '';
+    if (tie) {
+      x1 = wealth / (2 * p1);
+      x2 = wealth / (2 * p2);
+      note = 'Linear utility has a flat optimum here: every point on the budget line is optimal.';
+    } else if (bang1 > bang2) {
+      x1 = wealth / p1;
+      note = 'Linear utility chooses the corner with the higher utility per dollar.';
+    } else {
+      x2 = wealth / p2;
+      note = 'Linear utility chooses the corner with the higher utility per dollar.';
+    }
+    return {
+      x1,
+      x2,
+      utility: alpha * x1 + (1 - alpha) * x2,
+      x1eq: tie ? 'one optimal budget bundle' : (x1 > 0 ? 'all income on x₁' : 'corner solution'),
+      x2eq: tie ? 'one optimal budget bundle' : (x2 > 0 ? 'all income on x₂' : 'corner solution'),
+      note
+    };
+  }
+  const unitCost = alpha * p1 + (1 - alpha) * p2;
+  const utility = wealth / unitCost;
+  return {
+    x1: alpha * utility,
+    x2: (1 - alpha) * utility,
+    utility,
+    x1eq: `αv = ${alpha.toFixed(2)}×${utility.toFixed(2)}`,
+    x2eq: `(1−α)v = ${(1 - alpha).toFixed(2)}×${utility.toFixed(2)}`,
+    note: 'Leontief utility chooses the kink where goods are consumed in fixed proportions.'
+  };
+}
+
+function expenditureMinSolution(kind, p1, p2, U, alpha) {
+  if (kind === 'cd') {
+    const h1 = U * Math.pow((alpha / (1 - alpha)) * (p2 / p1), 1 - alpha);
+    const h2 = U * Math.pow(((1 - alpha) / alpha) * (p1 / p2), alpha);
+    return {
+      h1,
+      h2,
+      cost: p1 * h1 + p2 * h2,
+      note: 'Cobb-Douglas has a smooth tangency between the target IC and the cheapest isocost line.'
+    };
+  }
+  if (kind === 'linear') {
+    const c1 = p1 * U / alpha;
+    const c2 = p2 * U / (1 - alpha);
+    const tie = Math.abs(c1 - c2) < 1e-8;
+    let h1 = 0, h2 = 0, note = '';
+    if (tie) {
+      h1 = U / (2 * alpha);
+      h2 = U / (2 * (1 - alpha));
+      note = 'Linear utility has many cheapest bundles here; the yellow point shows one of them.';
+    } else if (c1 < c2) {
+      h1 = U / alpha;
+      note = 'Linear utility reaches the target by buying only the cheapest source of utility.';
+    } else {
+      h2 = U / (1 - alpha);
+      note = 'Linear utility reaches the target by buying only the cheapest source of utility.';
+    }
+    return { h1, h2, cost: Math.min(c1, c2), note };
+  }
+  const h1 = alpha * U;
+  const h2 = (1 - alpha) * U;
+  return {
+    h1,
+    h2,
+    cost: p1 * h1 + p2 * h2,
+    note: 'Leontief utility reaches the target at the kink of the L-shaped indifference curve.'
+  };
+}
+
 function drawIndifferenceExamples() {
   const U = getSlider('icLevel');
   const xmax = 30, ymax = 30;
@@ -1401,11 +1675,18 @@ function drawIndifferenceExamples() {
 // CHART 2 — Utility Maximization
 const uc = document.getElementById('utilCanvas');
 const { ctx: uctx, w: UW, h: UH } = setupHDCanvas(uc);
+let utilKind = 'cd';
 
 function drawUtil() {
   const p1 = getSlider('up1'), p2 = getSlider('up2'),
         w  = getSlider('uw'),  al = getSlider('alpha'),
         selectedU = getSlider('uLevel');
+  const solution = utilityMaxSolution(utilKind, p1, p2, w, al);
+  const x1s = solution.x1;
+  const x2s = solution.x2;
+  const ustar = solution.utility;
+  const tolerance = Math.max(0.25, ustar * 0.015);
+  const isOptimal = Math.abs(selectedU - ustar) <= tolerance;
 
   document.getElementById('up1val').textContent = p1;
   document.getElementById('up2val').textContent = p2;
@@ -1413,46 +1694,36 @@ function drawUtil() {
   document.getElementById('alphaval').textContent = al;
   document.getElementById('uLevelVal').textContent = selectedU.toFixed(1).replace(/\.0$/, '');
 
-  const x1s = al * w / p1;
-  const x2s = (1 - al) * w / p2;
-  const ustar = Math.pow(x1s, al) * Math.pow(x2s, 1 - al);
-  const tolerance = Math.max(0.25, ustar * 0.015);
-  const isTangent = Math.abs(selectedU - ustar) <= tolerance;
-
   document.getElementById('rx1').textContent = x1s.toFixed(2);
-  document.getElementById('rx1eq').textContent = `αw/p₁ = ${al}×${w}/${p1}`;
+  document.getElementById('rx1eq').textContent = solution.x1eq;
   document.getElementById('rx2').textContent = x2s.toFixed(2);
-  document.getElementById('rx2eq').textContent = `(1−α)w/p₂ = ${(1-al).toFixed(2)}×${w}/${p2}`;
+  document.getElementById('rx2eq').textContent = solution.x2eq;
   document.getElementById('rv').textContent = ustar.toFixed(3);
-  document.getElementById('rveq').textContent = `u(x₁*,x₂*)`;
-  document.getElementById('uStatus').textContent = isTangent ? 'Optimal' : (selectedU < ustar ? 'Below optimum' : 'Unaffordable');
-  document.getElementById('uStatus').style.color = isTangent ? '#4ecb8d' : (selectedU < ustar ? '#f5a623' : '#e05b8f');
+  document.getElementById('rveq').textContent = utilityFormula(utilKind);
+  document.getElementById('uStatus').textContent = isOptimal ? 'Optimal' : (selectedU < ustar ? 'Below optimum' : 'Unaffordable');
+  document.getElementById('uStatus').style.color = isOptimal ? '#4ecb8d' : (selectedU < ustar ? '#f5a623' : '#e05b8f');
   document.getElementById('uStatusEq').textContent = `v = ${ustar.toFixed(2)}`;
 
   uctx.clearRect(0, 0, UW, UH);
 
-  // Fixed scales — axis does not shift when sliders move
-  const xmax = 60, ymax = 60;
+  const linearX = utilKind === 'linear' ? selectedU / al : 0;
+  const linearY = utilKind === 'linear' ? selectedU / (1 - al) : 0;
+  const leontiefX = utilKind === 'leontief' ? al * selectedU : 0;
+  const leontiefY = utilKind === 'leontief' ? (1 - al) * selectedU : 0;
+  const xmax = optNiceMax(Math.max(60, w / p1, x1s, linearX, leontiefX) * 1.08);
+  const ymax = optNiceMax(Math.max(60, w / p2, x2s, linearY, leontiefY) * 1.08);
 
   drawAxes(uctx, UW, UH, xmax, ymax);
 
   // Selected indifference curve and optimal benchmark curve
-  if (!isTangent) {
-    drawCDCurve(uctx, UW, UH, xmax, ymax, ustar, al, 'rgba(78,203,141,0.35)', 1.6, [5, 5]);
+  if (!isOptimal) {
+    drawPreferenceCurve(uctx, UW, UH, xmax, ymax, ustar, al, utilKind, 'rgba(78,203,141,0.35)', 1.6, [5, 5]);
   }
-  const selectedColor = isTangent ? '#4ecb8d' : (selectedU < ustar ? '#f5a623' : '#e05b8f');
-  drawCDCurve(uctx, UW, UH, xmax, ymax, selectedU, al, selectedColor, 2.8, []);
+  const selectedColor = isOptimal ? '#4ecb8d' : (selectedU < ustar ? '#f5a623' : '#e05b8f');
+  drawPreferenceCurve(uctx, UW, UH, xmax, ymax, selectedU, al, utilKind, selectedColor, 2.8, []);
 
   // Budget line
-  const bx0 = w / p1, by0 = w / p2;
-  const [bcx0, bcy0] = toCanvasXY(bx0, 0, UW, UH, xmax, ymax);
-  const [bcx1, bcy1] = toCanvasXY(0, by0, UW, UH, xmax, ymax);
-  uctx.beginPath();
-  uctx.moveTo(bcx0, bcy0);
-  uctx.lineTo(bcx1, bcy1);
-  uctx.strokeStyle = '#5b8af5';
-  uctx.lineWidth = 2;
-  uctx.stroke();
+  drawBudgetLineSegment(uctx, UW, UH, xmax, ymax, p1, p2, w, '#5b8af5', 2, []);
 
   // Optimal point
   const [ox, oy] = toCanvasXY(x1s, x2s, UW, UH, xmax, ymax);
@@ -1478,13 +1749,21 @@ function drawUtil() {
   uctx.fillStyle = '#f5a623';
   uctx.font = '12px sans-serif';
   uctx.textAlign = 'left';
-  uctx.fillText(isTangent ? `Optimal: tangent at (${x1s.toFixed(1)}, ${x2s.toFixed(1)})` : `Optimum (${x1s.toFixed(1)}, ${x2s.toFixed(1)})`, ox + 10, oy - 8);
+  const geometry = utilKind === 'cd' ? 'tangent' : (utilKind === 'linear' ? 'corner/supporting line' : 'kink');
+  uctx.fillText(`Optimal ${geometry}: (${x1s.toFixed(1)}, ${x2s.toFixed(1)})`, ox + 10, oy - 8);
+
+  document.getElementById('utilNote').innerHTML =
+    `<strong style="color:var(--accent)">●</strong> Blue = budget line &nbsp; ` +
+    `<strong style="color:var(--accent3)">●</strong> Dashed green = optimal IC benchmark<br>` +
+    `<strong style="color:#e05b8f">●</strong> Colored curve = selected utility level<br>` +
+    `<strong style="color:var(--accent2)">●</strong> Yellow = optimal bundle. ${solution.note}`;
 }
 
 // ─────────────────────────────────────────────────
 // CHART 2b — Expenditure Minimization
 const xc = document.getElementById('expCanvas');
 const { ctx: xctx, w: XW, h: XH } = setupHDCanvas(xc);
+let empKind = 'cd';
 
 function drawExpenditure() {
   const p1 = getSlider('empP1');
@@ -1492,18 +1771,19 @@ function drawExpenditure() {
   const alpha = getSlider('empAlpha');
   const U = getSlider('empU');
   const selectedCost = getSlider('empSpend');
-  const h1 = U * Math.pow((alpha / (1 - alpha)) * (p2 / p1), 1 - alpha);
-  const h2 = U * Math.pow(((1 - alpha) / alpha) * (p1 / p2), alpha);
-  const cost = p1 * h1 + p2 * h2;
+  const solution = expenditureMinSolution(empKind, p1, p2, U, alpha);
+  const h1 = solution.h1;
+  const h2 = solution.h2;
+  const cost = solution.cost;
   const tolerance = Math.max(1, cost * 0.012);
   const isOptimal = Math.abs(selectedCost - cost) <= tolerance;
   const status = isOptimal ? 'Optimal' : (selectedCost < cost ? 'Too low' : 'Not minimal');
-  function niceMax(v) {
-    const step = v <= 40 ? 10 : v <= 120 ? 20 : v <= 300 ? 50 : 100;
-    return Math.ceil(v / step) * step;
-  }
-  const xmax = niceMax(Math.max(80, selectedCost / p1, cost / p1, h1) * 1.08);
-  const ymax = niceMax(Math.max(80, selectedCost / p2, cost / p2, h2) * 1.08);
+  const linearX = empKind === 'linear' ? U / alpha : 0;
+  const linearY = empKind === 'linear' ? U / (1 - alpha) : 0;
+  const leontiefX = empKind === 'leontief' ? alpha * U : 0;
+  const leontiefY = empKind === 'leontief' ? (1 - alpha) * U : 0;
+  const xmax = optNiceMax(Math.max(80, selectedCost / p1, cost / p1, h1, linearX, leontiefX) * 1.08);
+  const ymax = optNiceMax(Math.max(80, selectedCost / p2, cost / p2, h2, linearY, leontiefY) * 1.08);
 
   document.getElementById('empP1Val').textContent = p1.toFixed(1).replace(/\.0$/, '');
   document.getElementById('empP2Val').textContent = p2.toFixed(1).replace(/\.0$/, '');
@@ -1519,14 +1799,26 @@ function drawExpenditure() {
 
   xctx.clearRect(0, 0, XW, XH);
   drawAxes(xctx, XW, XH, xmax, ymax);
-  drawCDCurve(xctx, XW, XH, xmax, ymax, U, alpha, '#4ecb8d', 2.7, []);
+  drawPreferenceCurve(xctx, XW, XH, xmax, ymax, U, alpha, empKind, '#4ecb8d', 2.7, []);
   drawBudgetLineSegment(xctx, XW, XH, xmax, ymax, p1, p2, selectedCost, '#f5a623', 2.6, []);
+  if (!isOptimal) {
+    drawBudgetLineSegment(xctx, XW, XH, xmax, ymax, p1, p2, cost, 'rgba(91,138,245,0.45)', 1.8, [5, 5]);
+  }
   markBundle(xctx, XW, XH, xmax, ymax, h1, h2, '#f5a623', 'h(p,u)', 8, -10);
 
   xctx.fillStyle = '#a0aac0';
   xctx.font = '12px sans-serif';
   xctx.textAlign = 'left';
-  xctx.fillText(isOptimal ? 'Optimal: selected line is tangent to the target IC' : `Selected E = ${selectedCost.toFixed(0)}; min E = ${cost.toFixed(1)}`, PAD.l + 8, PAD.t + 20);
+  const expOptimalText = {
+    cd: 'Optimal: selected line is tangent to the target IC',
+    linear: 'Optimal: selected line supports the target IC',
+    leontief: 'Optimal: selected line reaches the kink of the target IC'
+  }[empKind];
+  xctx.fillText(isOptimal ? expOptimalText : `Selected E = ${selectedCost.toFixed(0)}; min E = ${cost.toFixed(1)}`, PAD.l + 8, PAD.t + 20);
+  document.getElementById('empNote').innerHTML =
+    `The green curve is the target indifference curve for ${utilityFormula(empKind)}. ` +
+    `Move the orange isocost line by changing expenditure E. ` +
+    `The yellow point is the Hicksian bundle. ${solution.note}`;
 }
 
 // ─────────────────────────────────────────────────
@@ -1689,6 +1981,95 @@ function drawElastic() {
   ectx.fillText(`Elasticity = −%ΔQ/%ΔP = ${elasticity.toFixed(2)}`, PAD2.l + 10, PAD2.t + 20);
   ectx.fillStyle = elasticity > 1 ? '#4ecb8d' : '#f5a623';
   ectx.fillText(type, PAD2.l + 10, PAD2.t + 38);
+}
+
+// ─────────────────────────────────────────────────
+// CHART 3b — Duality
+const dualUtilCanvas = document.getElementById('dualUtilCanvas');
+const { ctx: dualUctx, w: dualUW, h: dualUH } = setupHDCanvas(dualUtilCanvas);
+const dualExpCanvas = document.getElementById('dualExpCanvas');
+const { ctx: dualXctx, w: dualXW, h: dualXH } = setupHDCanvas(dualExpCanvas);
+
+function dualNiceMax(v) {
+  const step = v <= 30 ? 5 : v <= 80 ? 10 : v <= 160 ? 20 : 50;
+  return Math.ceil(v / step) * step;
+}
+
+function drawDualCaption(ctx, text, color, W) {
+  ctx.fillStyle = color;
+  ctx.font = '12px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(text, PAD.l + 8, PAD.t + 18);
+  ctx.fillStyle = '#7b85a3';
+  ctx.textAlign = 'right';
+  ctx.fillText('same yellow bundle in both problems', W - PAD.r - 8, PAD.t + 18);
+}
+
+function drawDuality() {
+  const alpha = getSlider('dualAlpha');
+  const p1 = getSlider('dualP1');
+  const p2 = getSlider('dualP2');
+  const wealth = getSlider('dualW');
+  const uFactor = getSlider('dualUFactor');
+  const eFactor = getSlider('dualEFactor');
+
+  const x1 = alpha * wealth / p1;
+  const x2 = (1 - alpha) * wealth / p2;
+  const utility = Math.pow(x1, alpha) * Math.pow(x2, 1 - alpha);
+  const h1 = utility * Math.pow((alpha / (1 - alpha)) * (p2 / p1), 1 - alpha);
+  const h2 = utility * Math.pow(((1 - alpha) / alpha) * (p1 / p2), alpha);
+  const minCost = p1 * h1 + p2 * h2;
+  const selectedU = utility * uFactor;
+  const selectedE = minCost * eFactor;
+  const uIsTangent = Math.abs(uFactor - 1) < 0.01;
+  const eIsTangent = Math.abs(eFactor - 1) < 0.01;
+
+  document.getElementById('dualAlphaVal').textContent = alpha.toFixed(2);
+  document.getElementById('dualP1Val').textContent = p1.toFixed(1).replace(/\.0$/, '');
+  document.getElementById('dualP2Val').textContent = p2.toFixed(1).replace(/\.0$/, '');
+  document.getElementById('dualWVal').textContent = wealth.toFixed(0);
+  document.getElementById('dualUFactorVal').textContent = `${uFactor.toFixed(2)}v`;
+  document.getElementById('dualEFactorVal').textContent = `${eFactor.toFixed(2)}e`;
+  document.getElementById('dualX').textContent = `(${x1.toFixed(2)}, ${x2.toFixed(2)})`;
+  document.getElementById('dualH').textContent = `(${h1.toFixed(2)}, ${h2.toFixed(2)})`;
+  document.getElementById('dualV').textContent = utility.toFixed(2);
+  document.getElementById('dualE').textContent = `${minCost.toFixed(2)} = w`;
+
+  const uStatus = uIsTangent ? 'IC is tangent' : (uFactor < 1 ? 'IC can move outward' : 'IC is unaffordable');
+  const eStatus = eIsTangent ? 'line is tangent' : (eFactor < 1 ? 'budget is too low' : 'budget is not minimal');
+  document.getElementById('dualNote').innerHTML =
+    `Utility max: ${uStatus}. Expenditure min: ${eStatus}. ` +
+    `At factor 1, x(p,w) and h(p,v(p,w)) coincide, and e(p,v(p,w)) = w.`;
+
+  const scaledH1 = h1 * Math.max(1, uFactor);
+  const scaledH2 = h2 * Math.max(1, uFactor);
+  const utilXmax = dualNiceMax(Math.max(20, wealth / p1, x1 * 1.7, scaledH1 * 1.35));
+  const utilYmax = dualNiceMax(Math.max(20, wealth / p2, x2 * 1.7, scaledH2 * 1.35));
+
+  dualUctx.clearRect(0, 0, dualUW, dualUH);
+  drawAxes(dualUctx, dualUW, dualUH, utilXmax, utilYmax);
+  drawBudgetLineSegment(dualUctx, dualUW, dualUH, utilXmax, utilYmax, p1, p2, wealth, '#5b8af5', 2.5, []);
+  if (!uIsTangent) {
+    drawCDCurve(dualUctx, dualUW, dualUH, utilXmax, utilYmax, utility, alpha, 'rgba(78,203,141,0.38)', 1.7, [5, 5]);
+  }
+  const selectedUColor = uIsTangent ? '#4ecb8d' : (uFactor < 1 ? '#f5a623' : '#e05b8f');
+  drawCDCurve(dualUctx, dualUW, dualUH, utilXmax, utilYmax, selectedU, alpha, selectedUColor, 2.7, []);
+  markBundle(dualUctx, dualUW, dualUH, utilXmax, utilYmax, x1, x2, '#f5a623', 'x(p,w)', 8, -10);
+  drawDualCaption(dualUctx, `fixed budget w=${wealth.toFixed(0)}; displayed IC=${selectedU.toFixed(2)}`, selectedUColor, dualUW);
+
+  const expXmax = dualNiceMax(Math.max(20, selectedE / p1, minCost / p1, h1 * 1.7));
+  const expYmax = dualNiceMax(Math.max(20, selectedE / p2, minCost / p2, h2 * 1.7));
+  const selectedEColor = eIsTangent ? '#5b8af5' : (eFactor < 1 ? '#e05b8f' : '#f5a623');
+
+  dualXctx.clearRect(0, 0, dualXW, dualXH);
+  drawAxes(dualXctx, dualXW, dualXH, expXmax, expYmax);
+  drawCDCurve(dualXctx, dualXW, dualXH, expXmax, expYmax, utility, alpha, '#4ecb8d', 2.7, []);
+  drawBudgetLineSegment(dualXctx, dualXW, dualXH, expXmax, expYmax, p1, p2, selectedE, selectedEColor, 2.5, []);
+  if (!eIsTangent) {
+    drawBudgetLineSegment(dualXctx, dualXW, dualXH, expXmax, expYmax, p1, p2, minCost, 'rgba(91,138,245,0.45)', 1.8, [5, 5]);
+  }
+  markBundle(dualXctx, dualXW, dualXH, expXmax, expYmax, h1, h2, '#f5a623', 'h(p,v)', 8, -10);
+  drawDualCaption(dualXctx, `target IC v=${utility.toFixed(2)}; displayed E=${selectedE.toFixed(1)}`, selectedEColor, dualXW);
 }
 
 // ─────────────────────────────────────────────────
@@ -2106,6 +2487,24 @@ document.querySelectorAll('.tab-btn[data-ic]').forEach(btn => {
   });
 });
 
+document.querySelectorAll('.tab-btn[data-util-kind]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    utilKind = btn.dataset.utilKind;
+    document.querySelectorAll('.tab-btn[data-util-kind]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    drawUtil();
+  });
+});
+
+document.querySelectorAll('.tab-btn[data-emp-kind]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    empKind = btn.dataset.empKind;
+    document.querySelectorAll('.tab-btn[data-emp-kind]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    drawExpenditure();
+  });
+});
+
 // ─────────────────────────────────────────────────
 // Wire up sliders
 ['p1','p2','w'].forEach(id => {
@@ -2122,6 +2521,9 @@ document.getElementById('icLevel').addEventListener('input', drawIndifferenceExa
 ['eIntercept','eSlope','ePrice','eDeltaP'].forEach(id => {
   document.getElementById(id).addEventListener('input', drawElastic);
 });
+['dualAlpha','dualP1','dualP2','dualW','dualUFactor','dualEFactor'].forEach(id => {
+  document.getElementById(id).addEventListener('input', drawDuality);
+});
 ['sl_alpha','sl_p1h','sl_p1l'].forEach(id => {
   document.getElementById(id).addEventListener('input', drawSlutsky);
 });
@@ -2137,6 +2539,7 @@ window.addEventListener('load', () => {
   drawUtil();
   drawExpenditure();
   drawElastic();
+  drawDuality();
   drawSlutsky();
   drawDemandPaths();
 });
