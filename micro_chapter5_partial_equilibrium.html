@@ -385,6 +385,12 @@
       <div class="card">
         <p>Partial equilibrium analysis focuses on one market. In a perfectly competitive benchmark, equilibrium is where demand intersects marginal cost, and total surplus is maximized under the maintained assumptions.</p>
         <p>Commodity taxes and binding price regulations move the market away from the efficient quantity and create deadweight loss.</p>
+        <div class="def-box">
+          <div class="label">Model: Linear Demand and Marginal Cost</div>
+          <p>Inverse demand: \(P_D(Q)=a-bQ\). Marginal cost (supply): \(MC(Q)=c+dQ\). The competitive equilibrium satisfies \(P_D(Q^*)=MC(Q^*)\):
+          $$ Q^* = \frac{a-c}{b+d}, \quad P^* = a - b Q^*. $$
+          A unit tax \(t\) drives a wedge: consumer price rises to \(P_D = P^*_{tax}\) and producer price falls to \(P_D - t\), reducing traded quantity and creating deadweight loss equal to \(\frac{1}{2}t\Delta Q\).</p>
+        </div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">P</span><h3>Interactive: Tax, Price Floor, and Price Cap</h3></div>
@@ -425,6 +431,12 @@
       <h2 class="section-title">5.2 Monopoly</h2>
       <div class="card">
         <p>A monopolist recognizes that selling more units lowers the market price. Therefore marginal revenue lies below the demand curve, and the monopoly quantity solves \(MR(Q)=MC(Q)\).</p>
+        <div class="thm-box">
+          <div class="label">Monopoly Optimum (linear case)</div>
+          <p>With inverse demand \(P(Q)=a-bQ\), marginal revenue is \(MR(Q)=a-2bQ\). Setting \(MR=MC\):
+          $$ Q_m = \frac{a-c}{2b+d}, \quad P_m = a - b Q_m. $$
+          The monopoly markup is \(P_m - MC(Q_m) > 0\). Compared with the competitive outcome, output is lower and price is higher, generating deadweight loss equal to the area of the triangle between the demand curve and MC between \(Q_m\) and \(Q^*\).</p>
+        </div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">MR</span><h3>Interactive: Monopoly versus Competition</h3></div>
@@ -460,7 +472,13 @@
         </div>
       </div>
     </div>
-    <div class="section"><div class="card"><a class="link-button" href="https://colab.research.google.com/drive/1J-nkH52srNUMZB4xeBGxUnYONEazFKed?usp=drive_link" target="_blank" rel="noopener">Open the Chapter 5 Colab notebook file</a></div></div>
+    <div class="section">
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Try It in Google Colab</div>
+        <p style="font-size:14px;color:var(--muted)">Open the Google Colab notebook below to compute equilibria, analyze tax incidence, and compare competitive versus monopoly outcomes in Python.</p>
+        <a class="link-button" href="https://colab.research.google.com/drive/1J-nkH52srNUMZB4xeBGxUnYONEazFKed?usp=drive_link" target="_blank" rel="noopener">Open the Chapter 5 Colab notebook file</a>
+      </div>
+    </div>
 
 
   <nav class="site-nav bottom" aria-label="Site navigation">
@@ -487,6 +505,19 @@
     const colors = { blue: "#5b8af5", orange: "#f5a623", green: "#4ecb8d", red: "#e05c6a", text: "#e8ecf5", muted: "#7b85a3" };
     let policyArea = "none";
     let monopolyArea = "none";
+
+    function addAxisLabels(ctx, m, w, h, cssW, cssH, xLabel, yLabel) {
+      ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
+      if (xLabel) {
+        ctx.textAlign = "right";
+        ctx.fillText(xLabel, cssW - m.r + 2, cssH - m.b + 14);
+      }
+      if (yLabel) {
+        ctx.save(); ctx.textAlign = "center";
+        ctx.translate(12, m.t + h / 2); ctx.rotate(-Math.PI / 2);
+        ctx.fillText(yLabel, 0, 0); ctx.restore();
+      }
+    }
 
     function setupCanvas(canvas, xMax, yMax, xMin = 0, yMin = 0) {
       const ctx = canvas.getContext("2d");
@@ -641,12 +672,13 @@
       const cs = consumerSurplus(a, b, q, pc);
       const ps = producerSurplus(c, d, q, pp);
       const dwl = Math.max(0, totalSurplus(a, b, c, d, base.q) - totalSurplus(a, b, c, d, q));
-      const qMax = Math.max(80, a / b * 1.05, base.q * 1.4);
-      const pMax = Math.max(100, a * 1.05, pc + 10);
+      // Fixed scales — axis does not shift when parameters change
+      const qMax = 120, pMax = 130;
       const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
       const demand = (x) => Math.max(0, a - b * x);
       const mc = (x) => c + d * x;
-      const { ctx, sx, sy } = setupCanvas($("policyCanvas"), qMax, pMax);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("policyCanvas"), qMax, pMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (quantity)", "P (price)");
       if (policyArea === "cs") {
         fillBetween(ctx, sx, sy, 0, q, demand, () => pc, colors.orange);
       } else if (policyArea === "ps") {
@@ -677,10 +709,11 @@
       const csM = consumerSurplus(a, b, qm, pm);
       const psM = producerSurplus(c, d, qm, pm);
       const dwlM = Math.max(0, totalSurplus(a, b, c, d, qc) - totalSurplus(a, b, c, d, qm));
-      const qMax = Math.max(80, a / b * 1.05, qc * 1.35);
-      const pMax = Math.max(100, a * 1.05);
+      // Fixed scales — axis does not shift when parameters change
+      const qMax = 120, pMax = 130;
       const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
-      const { ctx, sx, sy } = setupCanvas($("monopolyCanvas"), qMax, pMax);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("monopolyCanvas"), qMax, pMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (quantity)", "P (price)");
       const demand = (x) => Math.max(0, a - b * x);
       const mr = (x) => Math.max(0, a - 2 * b * x);
       const mc = (x) => c + d * x;

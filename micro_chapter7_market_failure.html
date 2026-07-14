@@ -209,6 +209,45 @@
       min-height: 38px;
       padding: 6px 10px;
     }
+    .surplus-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .surplus-btn {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      min-height: 38px;
+      padding: 7px 8px;
+    }
+    .surplus-btn:hover,
+    .surplus-btn:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .surplus-btn.active {
+      background: rgba(91, 138, 245, 0.16);
+      border-color: var(--accent);
+    }
+    .surplus-btn[data-external-area="cs"].active {
+      background: rgba(245, 166, 35, 0.18);
+      border-color: var(--accent2);
+    }
+    .surplus-btn[data-external-area="ps"].active {
+      background: rgba(91, 138, 245, 0.18);
+      border-color: var(--accent);
+    }
+    .surplus-btn[data-external-area="dwl"].active {
+      background: rgba(224, 92, 106, 0.18);
+      border-color: var(--danger);
+    }
     .stats {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -339,11 +378,17 @@
       <h2 class="section-title">7.1 Externality</h2>
       <div class="card">
         <p>An externality occurs when an economic activity affects other agents' welfare without passing through the market mechanism. The key distinction is between private marginal cost and social marginal cost.</p>
+        <div class="def-box">
+          <div class="label">Model: Production Externality</div>
+          <p>Inverse demand: \(P_D(Q)=a-bQ\). Private marginal cost: \(PMC(Q)=c+dQ\). If each unit of output creates a constant marginal external effect \(m\), the marginal social cost is:
+          $$ MSC(Q) = PMC(Q) + m = c + m + dQ. $$
+          The private equilibrium sets \(P_D = PMC\): \(Q_{\text{private}} = \frac{a-c}{b+d}\). The social optimum sets \(P_D = MSC\): \(Q_{\text{social}} = \frac{a-c-m}{b+d}\). A Pigouvian tax equal to \(m\) per unit restores the social optimum; when \(m&lt;0\), this is a subsidy for a positive externality.</p>
+        </div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">EX</span><h3>Interactive: External Cost and Pigouvian Tax</h3></div>
         <div class="panel-body">
-          <div class="formula-strip">$$ P_D(Q)=a-bQ,\quad PMC(Q)=c+dQ,\quad SMC(Q)=PMC(Q)+mQ. $$</div>
+          <div class="formula-strip">$$ P_D(Q)=a-bQ,\quad PMC(Q)=c+dQ,\quad MSC(Q)=PMC(Q)+m. $$</div>
           <div class="two-col">
             <div class="canvas-wrap"><canvas id="externalCanvas" width="500" height="420"></canvas></div>
             <div>
@@ -352,15 +397,24 @@
                 <div class="control-row"><label>Demand slope \(b\) <output id="ebOut"></output></label><input id="eb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
                 <div class="control-row"><label>Private MC intercept \(c\) <output id="ecOut"></output></label><input id="ec" type="range" min="0" max="40" step="1" value="10"></div>
                 <div class="control-row"><label>Private MC slope \(d\) <output id="edOut"></output></label><input id="ed" type="range" min="0.2" max="2.5" step="0.1" value="0.6"></div>
-                <div class="control-row"><label>Marginal damage \(m\) <output id="emOut"></output></label><input id="em" type="range" min="0" max="2.5" step="0.1" value="0.8"></div>
+                <div class="control-row"><label>Marginal external cost \(m\) <output id="emOut"></output></label><input id="em" type="range" min="-30" max="40" step="1" value="12"></div>
+              </div>
+              <div class="surplus-buttons" aria-label="Externality graph area display">
+                <button class="surplus-btn active" type="button" data-external-area="none">None</button>
+                <button class="surplus-btn" type="button" data-external-area="cs">CS</button>
+                <button class="surplus-btn" type="button" data-external-area="ps">PS</button>
+                <button class="surplus-btn" type="button" data-external-area="dwl">WL</button>
               </div>
               <div class="stats">
                 <div class="stat"><span class="name">Private quantity</span><span class="value" id="qPrivateOut"></span></div>
                 <div class="stat"><span class="name">Social quantity</span><span class="value" id="qSocialOut"></span></div>
-                <div class="stat"><span class="name">Pigouvian tax</span><span class="value" id="taxOut"></span></div>
-                <div class="stat"><span class="name">Overproduction</span><span class="value" id="overOut"></span></div>
+                <div class="stat"><span class="name">Pigouvian tax/subsidy</span><span class="value" id="taxOut"></span></div>
+                <div class="stat"><span class="name">Quantity gap</span><span class="value" id="overOut"></span></div>
+                <div class="stat"><span class="name">Consumer surplus</span><span class="value" id="csExternalOut"></span></div>
+                <div class="stat"><span class="name">Producer surplus</span><span class="value" id="psExternalOut"></span></div>
+                <div class="stat" style="grid-column:1/-1"><span class="name">Welfare loss</span><span class="value" id="wlExternalOut"></span></div>
               </div>
-              <p class="explain">The Pigouvian tax equals marginal external damage at the socially optimal quantity in this linear example.</p>
+              <p class="explain" id="externalText">The Pigouvian policy equals the marginal external cost. A negative value represents a subsidy for a positive production externality.</p>
             </div>
           </div>
         </div>
@@ -369,7 +423,13 @@
     <div class="section">
       <h2 class="section-title">7.2 Public Goods</h2>
       <div class="card">
-        <p>Public goods are non-rival and non-excludable. Efficient provision vertically sums individual marginal values and compares that social marginal value with marginal cost.</p>
+        <p>Public goods are non-rival (one person's consumption does not reduce another's) and non-excludable (it is not possible to prevent anyone from consuming them). Because each consumer's benefit is independent, the efficient provision rule vertically sums individual marginal values and equates the total to marginal cost.</p>
+        <div class="thm-box">
+          <div class="label">Samuelson Rule</div>
+          <p>The socially efficient quantity \(Q^*\) satisfies:
+          $$ V_1(Q^*) + V_2(Q^*) = MC, $$
+          where \(V_i(Q)\) is consumer \(i\)'s marginal value of the public good. Unlike a private good, the efficient rule <em>adds</em> (vertically sums) individual marginal values rather than individual quantities. Free riding occurs when consumers underreport their valuations, shifting the reported social marginal value curve down and causing underprovision.</p>
+        </div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">PG</span><h3>Interactive: Lindahl Shares and Free Riding</h3></div>
@@ -396,7 +456,13 @@
         </div>
       </div>
     </div>
-    <div class="section"><div class="card"><a class="link-button" href="https://colab.research.google.com/drive/1mnbvnrEj6vQe9w3y2Vhw_6n9XSWOzQDU?usp=drive_link" target="_blank" rel="noopener">Open the Chapter 7 Colab notebook file</a></div></div>
+    <div class="section">
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Try It in Google Colab</div>
+        <p style="font-size:14px;color:var(--muted)">Open the Google Colab notebook below to compute Pigouvian taxes, analyze the deadweight loss from externalities, and explore the Samuelson rule for public goods in Python.</p>
+        <a class="link-button" href="https://colab.research.google.com/drive/1mnbvnrEj6vQe9w3y2Vhw_6n9XSWOzQDU?usp=drive_link" target="_blank" rel="noopener">Open the Chapter 7 Colab notebook file</a>
+      </div>
+    </div>
 
 
   <nav class="site-nav bottom" aria-label="Site navigation">
@@ -421,6 +487,20 @@
     const fmt = (x, n = 2) => Number.isFinite(x) ? Number(x).toFixed(n).replace(/\.?0+$/, "") : "n/a";
     const val = (id) => parseFloat($(id).value);
     const colors = { blue: "#5b8af5", orange: "#f5a623", green: "#4ecb8d", red: "#e05c6a", text: "#e8ecf5", muted: "#7b85a3" };
+    let externalArea = "none";
+
+    function addAxisLabels(ctx, m, w, h, cssW, cssH, xLabel, yLabel) {
+      ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
+      if (xLabel) {
+        ctx.textAlign = "right";
+        ctx.fillText(xLabel, cssW - m.r + 2, cssH - m.b + 14);
+      }
+      if (yLabel) {
+        ctx.save(); ctx.textAlign = "center";
+        ctx.translate(12, m.t + h / 2); ctx.rotate(-Math.PI / 2);
+        ctx.fillText(yLabel, 0, 0); ctx.restore();
+      }
+    }
 
     function setupCanvas(canvas, xMax, yMax, xMin = 0, yMin = 0) {
       const ctx = canvas.getContext("2d");
@@ -506,26 +586,81 @@
       ctx.fillText(text, sx(x), sy(y));
     }
 
+    function fillBetween(ctx, sx, sy, x0, x1, topFn, bottomFn, color) {
+      if (!(x1 > x0)) return;
+      const steps = 80;
+      const xs = Array.from({ length: steps + 1 }, (_, i) => x0 + (x1 - x0) * i / steps);
+      ctx.save();
+      ctx.beginPath();
+      xs.forEach((x, i) => {
+        const y = topFn(x);
+        if (i === 0) ctx.moveTo(sx(x), sy(y));
+        else ctx.lineTo(sx(x), sy(y));
+      });
+      xs.slice().reverse().forEach((x) => ctx.lineTo(sx(x), sy(bottomFn(x))));
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.34;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function updateExternalAreaButtons() {
+      document.querySelectorAll("[data-external-area]").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.externalArea === externalArea);
+      });
+    }
+
 
     function drawExternality() {
       const a = val("ea"), b = val("eb"), c = val("ec"), d = val("ed"), m = val("em");
       const qPrivate = Math.max(0, (a - c) / (b + d));
-      const qSocial = Math.max(0, (a - c) / (b + d + m));
-      const tax = m * qSocial;
-      const qMax = Math.max(80, a / b * 1.05, qPrivate * 1.35);
-      const pMax = Math.max(100, a * 1.05);
+      const qSocial = Math.max(0, (a - c - m) / (b + d));
+      const pPrivate = a - b * qPrivate;
+      const tax = m;
+      const demand = (q) => Math.max(0, a - b * q);
+      const pmc = (q) => c + d * q;
+      const msc = (q) => pmc(q) + m;
+      const cs = Math.max(0, a * qPrivate - 0.5 * b * qPrivate * qPrivate - pPrivate * qPrivate);
+      const ps = Math.max(0, pPrivate * qPrivate - c * qPrivate - 0.5 * d * qPrivate * qPrivate);
+      const socialSurplus = (q) => (a - c - m) * q - 0.5 * (b + d) * q * q;
+      const wl = Math.max(0, socialSurplus(qSocial) - socialSurplus(qPrivate));
+      // Fixed scales — axis does not shift when parameters change
+      const qMax = 120, pMax = 130, pMin = -40;
       const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
-      const { ctx, sx, sy } = setupCanvas($("externalCanvas"), qMax, pMax);
-      drawPath(ctx, xs, (q) => Math.max(0, a - b * q), sx, sy, colors.blue);
-      drawPath(ctx, xs, (q) => c + d * q, sx, sy, colors.green);
-      drawPath(ctx, xs, (q) => c + (d + m) * q, sx, sy, colors.red);
-      dot(ctx, qPrivate, a - b * qPrivate, sx, sy, "private", colors.orange);
-      dot(ctx, qSocial, a - b * qSocial, sx, sy, "social", colors.red);
-      lineLabel(ctx, "D", qMax * 0.68, a - b * qMax * 0.68, sx, sy, colors.blue);
-      lineLabel(ctx, "PMC", qMax * 0.56, c + d * qMax * 0.56, sx, sy, colors.green);
-      lineLabel(ctx, "SMC", qMax * 0.5, c + (d + m) * qMax * 0.5, sx, sy, colors.red);
+      const { ctx, sx, sy, m: margins, w, h, cssW, cssH } = setupCanvas($("externalCanvas"), qMax, pMax, 0, pMin);
+      addAxisLabels(ctx, margins, w, h, cssW, cssH, "Q (quantity)", "P (price)");
+      if (externalArea === "cs") {
+        fillBetween(ctx, sx, sy, 0, qPrivate, demand, () => pPrivate, colors.orange);
+      } else if (externalArea === "ps") {
+        fillBetween(ctx, sx, sy, 0, qPrivate, () => pPrivate, pmc, colors.blue);
+      } else if (externalArea === "dwl") {
+        const q0 = Math.min(qPrivate, qSocial);
+        const q1 = Math.max(qPrivate, qSocial);
+        fillBetween(ctx, sx, sy, q0, q1, (q) => Math.max(demand(q), msc(q)), (q) => Math.min(demand(q), msc(q)), colors.red);
+      }
+      drawPath(ctx, xs, demand, sx, sy, colors.blue);
+      drawPath(ctx, xs, pmc, sx, sy, colors.green);
+      drawPath(ctx, xs, msc, sx, sy, colors.red);
+      drawPath(ctx, xs, () => pPrivate, sx, sy, colors.orange, true, 1.8);
+      dot(ctx, qPrivate, pPrivate, sx, sy, "private", colors.orange);
+      dot(ctx, qSocial, demand(qSocial), sx, sy, "social", colors.red);
+      lineLabel(ctx, "D", qMax * 0.68, demand(qMax * 0.68), sx, sy, colors.blue);
+      lineLabel(ctx, "PMC", qMax * 0.56, pmc(qMax * 0.56), sx, sy, colors.green);
+      lineLabel(ctx, "MSC", qMax * 0.5, msc(qMax * 0.5), sx, sy, colors.red);
       $("eaOut").textContent = fmt(a); $("ebOut").textContent = fmt(b); $("ecOut").textContent = fmt(c); $("edOut").textContent = fmt(d); $("emOut").textContent = fmt(m);
       $("qPrivateOut").textContent = fmt(qPrivate); $("qSocialOut").textContent = fmt(qSocial); $("taxOut").textContent = fmt(tax); $("overOut").textContent = fmt(qPrivate - qSocial);
+      $("csExternalOut").textContent = fmt(cs);
+      $("psExternalOut").textContent = fmt(ps);
+      $("wlExternalOut").textContent = fmt(wl);
+      $("externalText").textContent = m >= 0
+        ? "A positive external cost creates overproduction unless a per-unit Pigouvian tax shifts PMC up to MSC."
+        : "A negative external cost is a positive externality: the private market underproduces, and the Pigouvian policy is a subsidy.";
+      updateExternalAreaButtons();
     }
     function drawPublicGood() {
       const v1 = val("v1"), v2 = val("v2"), report = val("report1"), mc = val("pgMc");
@@ -538,8 +673,10 @@
       const qs = Array.from({ length: 220 }, (_, i) => 30 * i / 219);
       const qEff = qs.reduce((best, q) => Math.abs(social(q) - mc) < Math.abs(social(best) - mc) ? q : best, 0);
       const qRep = qs.reduce((best, q) => Math.abs(reported(q) - mc) < Math.abs(reported(best) - mc) ? q : best, 0);
-      const pMax = Math.max(100, v1 + v2 + 10);
-      const { ctx, sx, sy } = setupCanvas($("publicCanvas"), 30, pMax);
+      // Fixed scales — v1 and v2 sliders go up to 80 each; MC up to 80
+      const pMax = 170;
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("publicCanvas"), 30, pMax);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (public good)", "MV, MC");
       drawPath(ctx, qs, V1, sx, sy, colors.blue, true);
       drawPath(ctx, qs, V2, sx, sy, colors.green, true);
       drawPath(ctx, qs, social, sx, sy, colors.orange);
@@ -557,6 +694,12 @@
     function initPage() {
       ["ea", "eb", "ec", "ed", "em"].forEach((id) => $(id).addEventListener("input", drawExternality));
       ["v1", "v2", "report1", "pgMc"].forEach((id) => $(id).addEventListener("input", drawPublicGood));
+      document.querySelectorAll("[data-external-area]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          externalArea = btn.dataset.externalArea;
+          drawExternality();
+        });
+      });
       drawExternality(); drawPublicGood();
     }
 

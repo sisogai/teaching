@@ -317,7 +317,7 @@
   <div class="hero">
     <span class="chapter-badge">Chapter 1</span>
     <h1>Introduction</h1>
-    <p>A draft interactive page for the introductory and mathematical-preparation material: rational choice, functions, graphs, and derivatives.</p>
+    <p>This chapter covers the core mathematical tools used throughout the course — functions, graphs, and derivatives — alongside the basic concept of rational choice. Adjust the sliders to build intuition for how a function's shape relates to its slope.</p>
   </div>
 
   <nav class="site-nav" aria-label="Site navigation">
@@ -350,6 +350,10 @@
       <div class="card">
         <p>A function describes how one variable changes with another. For example, \(f(x)=140x\) converts US dollars into yen when the exchange rate is 140 yen per dollar.</p>
         <p>Differentiation measures the local slope of a function. In economics, the same idea appears as marginal cost, marginal revenue, marginal utility, and marginal willingness to pay.</p>
+        <div class="def-box">
+          <div class="label">Model: Quadratic Function and Linear Approximation</div>
+          <p>The quadratic function \(f(x)=ax^2+bx+c\) has derivative \(f'(x)=2ax+b\). At any point \(x_0\), the tangent line is \(y = f(x_0) + f'(x_0)(x - x_0)\), which gives the best linear approximation of \(f\) near \(x_0\). When \(a>0\) the parabola opens upward (the function is convex); when \(a<0\) it opens downward (concave).</p>
+        </div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">F</span><h3>Interactive: Function and Tangent Line</h3></div>
@@ -377,9 +381,9 @@
       </div>
     </div>
     <div class="section">
-      <h2 class="section-title">Draft Note</h2>
+      <h2 class="section-title">Try It in Google Colab</h2>
       <div class="card">
-        <p>This chapter is mostly conceptual and preparatory. The page therefore emphasizes the mathematical tools that students will repeatedly use later: functions, graphs, and slopes.</p>
+        <p style="font-size:14px;color:var(--muted)">Open the Google Colab notebook below to practice computing derivatives, plotting functions, and solving basic optimization problems in Python.</p>
         <a class="link-button" href="https://colab.research.google.com/drive/14EXXw9qBn_kWEX0GJDXBYwLQFGfgqKdI?usp=sharing" target="_blank" rel="noopener">Open the Chapter 1 Colab notebook file</a>
       </div>
     </div>
@@ -499,15 +503,25 @@
       const fp = (x) => 2 * a * x + b;
       const y0 = f(x0), slope = fp(x0);
       const xs = Array.from({ length: 300 }, (_, i) => -10 + 20 * i / 299);
-      const ys = xs.map(f);
-      const yMin = Math.min(-20, ...ys, y0 - 10);
-      const yMax = Math.max(20, ...ys, y0 + 10);
-      const { ctx, sx, sy } = setupCanvas($("functionCanvas"), 10, yMax, -10, yMin);
+      // Fixed y range so the axis does not jump when sliders move
+      const yMin = -80, yMax = 80;
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("functionCanvas"), 10, yMax, -10, yMin);
+      // Axis variable labels
+      ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
+      ctx.textAlign = "right";
+      ctx.fillText("x", cssW - m.r + 2, cssH - m.b + 14);
+      ctx.save(); ctx.translate(12, m.t + h / 2); ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = "center"; ctx.fillText("f (x)", 0, 0); ctx.restore();
       drawPath(ctx, xs, f, sx, sy, colors.blue);
       drawPath(ctx, xs, (x) => y0 + slope * (x - x0), sx, sy, colors.orange, true);
-      dot(ctx, x0, y0, sx, sy, "x0");
-      lineLabel(ctx, "f(x)", -9.5, f(-9.5), sx, sy, colors.blue);
-      lineLabel(ctx, "tangent", Math.max(-9.5, x0 - 4), y0 + slope * (Math.max(-9.5, x0 - 4) - x0), sx, sy, colors.orange);
+      dot(ctx, x0, y0, sx, sy, "x₀");
+      const fLabelX = -9.5;
+      if (f(fLabelX) >= yMin && f(fLabelX) <= yMax)
+        lineLabel(ctx, "f(x)", fLabelX, f(fLabelX), sx, sy, colors.blue);
+      const tLabelX = Math.max(-9.5, x0 - 4);
+      const tLabelY = y0 + slope * (tLabelX - x0);
+      if (tLabelY >= yMin && tLabelY <= yMax)
+        lineLabel(ctx, "tangent", tLabelX, tLabelY, sx, sy, colors.orange);
       $("aOut").textContent = fmt(a);
       $("bOut").textContent = fmt(b);
       $("cOut").textContent = fmt(c);

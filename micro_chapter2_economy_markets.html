@@ -349,6 +349,12 @@
       <h2 class="section-title">2.4 Demand, Supply, and Equilibrium</h2>
       <div class="card">
         <p>Equilibrium occurs where the quantity demanded equals the quantity supplied. If the price is too high, excess supply creates downward pressure; if it is too low, excess demand creates upward pressure.</p>
+        <div class="def-box">
+          <div class="label">Model: Linear Demand and Supply</div>
+          <p>The quantity demanded is \(Q_D(p) = A - Bp\) (downward sloping in price) and the quantity supplied is \(Q_S(p) = C + Dp\) (upward sloping). Setting \(Q_D = Q_S\) gives the market-clearing price:
+          $$ p^* = \frac{A - C}{B + D}, \qquad Q^* = A - B p^*. $$
+          The trial-price slider lets you explore whether the market has excess demand or excess supply at prices other than \(p^*\).</p>
+        </div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">M</span><h3>Interactive: Market-Clearing Price</h3></div>
@@ -376,7 +382,13 @@
         </div>
       </div>
     </div>
-    <div class="section"><div class="card"><a class="link-button" href="https://colab.research.google.com/drive/1lFHc449FdOweKFArrh2Iy3PGkmMhcUzU?usp=sharing" target="_blank" rel="noopener">Open the Chapter 2 Colab notebook file</a></div></div>
+    <div class="section">
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Try It in Google Colab</div>
+        <p style="font-size:14px;color:var(--muted)">Open the Google Colab notebook below to solve for market-clearing prices algebraically, plot demand and supply curves, and analyze the effects of shifts in parameters.</p>
+        <a class="link-button" href="https://colab.research.google.com/drive/1lFHc449FdOweKFArrh2Iy3PGkmMhcUzU?usp=sharing" target="_blank" rel="noopener">Open the Chapter 2 Colab notebook file</a>
+      </div>
+    </div>
 
 
   <nav class="site-nav bottom" aria-label="Site navigation">
@@ -493,10 +505,17 @@
       const qStar = A - B * pStar;
       const qd = (p) => Math.max(0, A - B * p);
       const qs = (p) => Math.max(0, C + D * p);
-      const pMax = 42;
-      const qMax = Math.max(100, A + 10, C + D * pMax + 10);
+      // Fixed scales — axis does not shift when parameters change
+      const pMax = 45;
+      const qMax = 140;
       const ps = Array.from({ length: 240 }, (_, i) => pMax * i / 239);
-      const { ctx, sx, sy } = setupCanvas($("marketCanvas"), qMax, pMax);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("marketCanvas"), qMax, pMax);
+      // Axis variable labels
+      ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
+      ctx.textAlign = "right";
+      ctx.fillText("Q", cssW - m.r + 2, cssH - m.b + 14);
+      ctx.save(); ctx.translate(12, m.t + h / 2); ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = "center"; ctx.fillText("P", 0, 0); ctx.restore();
       function inversePath(qOfP, color) {
         ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.beginPath();
         ps.forEach((p, i) => { const x = sx(qOfP(p)), y = sy(p); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
@@ -505,9 +524,9 @@
       inversePath(qd, colors.blue);
       inversePath(qs, colors.green);
       drawPath(ctx, Array.from({ length: 80 }, (_, i) => qMax * i / 79), () => trial, sx, sy, colors.orange, true);
-      dot(ctx, qStar, pStar, sx, sy, "E");
-      lineLabel(ctx, "D", qd(6), 6, sx, sy, colors.blue);
-      lineLabel(ctx, "S", qs(35), 35, sx, sy, colors.green);
+      if (qStar >= 0 && qStar <= qMax && pStar >= 0 && pStar <= pMax) dot(ctx, qStar, pStar, sx, sy, "E*");
+      if (qd(6) <= qMax) lineLabel(ctx, "D", qd(6), 6, sx, sy, colors.blue);
+      if (qs(35) <= qMax) lineLabel(ctx, "S", qs(35), 35, sx, sy, colors.green);
       const gap = qd(trial) - qs(trial);
       $("dAOut").textContent = fmt(A);
       $("dBOut").textContent = fmt(B);

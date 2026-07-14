@@ -364,8 +364,14 @@
     <div class="section">
       <h2 class="section-title">6.2 Pure Exchange Economy</h2>
       <div class="card">
-        <p>In a two-good, two-consumer exchange economy, an allocation can be represented in an Edgeworth box. A Walrasian equilibrium is a price vector such that the two consumers' demands are mutually feasible.</p>
-        <div class="thm-box"><div class="label">Welfare theorems</div><p>Under standard conditions, Walrasian equilibrium allocations are Pareto efficient. Conversely, a desired Pareto-efficient allocation can be decentralized by suitable redistribution of initial endowments.</p></div>
+        <p>In a two-good, two-consumer exchange economy, an allocation can be represented in an Edgeworth box. A Walrasian equilibrium is a price vector such that the two consumers' demands are mutually feasible — their chosen bundles sum to the total endowment.</p>
+        <div class="def-box">
+          <div class="label">Model: Cobb–Douglas Exchange Economy</div>
+          <p>Consumer \(i\) has Cobb–Douglas utility \(u_i(x_i,y_i)=x_i^{\alpha_i}y_i^{1-\alpha_i}\) and initial endowment \((\omega^i_x,\omega^i_y)\). At price ratio \(p=p_1/p_2\), wealth is \(w_i = p\,\omega^i_x + \omega^i_y\), and demand is:
+          $$ x_i^* = \frac{\alpha_i\,w_i}{p}, \quad y_i^* = (1-\alpha_i)\,w_i. $$
+          The Walrasian equilibrium price clears the market: \(x_1^*+x_2^*=\omega^1_x+\omega^2_x\). Use the price slider to explore excess demand, and the "Show equilibrium" button to jump to the clearing price.</p>
+        </div>
+        <div class="thm-box"><div class="label">Welfare Theorems</div><p>Under standard conditions, every Walrasian equilibrium allocation is Pareto efficient (First Welfare Theorem). Conversely, any Pareto-efficient allocation can be supported as a Walrasian equilibrium after a suitable lump-sum redistribution of endowments (Second Welfare Theorem).</p></div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">GE</span><h3>Interactive: Edgeworth Box and Market Clearing</h3></div>
@@ -394,7 +400,13 @@
         </div>
       </div>
     </div>
-    <div class="section"><div class="card"><a class="link-button" href="https://colab.research.google.com/drive/1KN4EIjBCYxGW1Cl3mSDRiGvye9qQkNeN?usp=drive_link" target="_blank" rel="noopener">Open the Chapter 6 Colab notebook file</a></div></div>
+    <div class="section">
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Try It in Google Colab</div>
+        <p style="font-size:14px;color:var(--muted)">Open the Google Colab notebook below to solve for Walrasian equilibria, verify the welfare theorems numerically, and explore how endowment redistribution affects equilibrium allocations.</p>
+        <a class="link-button" href="https://colab.research.google.com/drive/1KN4EIjBCYxGW1Cl3mSDRiGvye9qQkNeN?usp=drive_link" target="_blank" rel="noopener">Open the Chapter 6 Colab notebook file</a>
+      </div>
+    </div>
 
 
   <nav class="site-nav bottom" aria-label="Site navigation">
@@ -419,6 +431,19 @@
     const fmt = (x, n = 2) => Number.isFinite(x) ? Number(x).toFixed(n).replace(/\.?0+$/, "") : "n/a";
     const val = (id) => parseFloat($(id).value);
     const colors = { blue: "#5b8af5", orange: "#f5a623", green: "#4ecb8d", red: "#e05c6a", text: "#e8ecf5", muted: "#7b85a3" };
+
+    function addAxisLabels(ctx, m, w, h, cssW, cssH, xLabel, yLabel) {
+      ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
+      if (xLabel) {
+        ctx.textAlign = "right";
+        ctx.fillText(xLabel, cssW - m.r + 2, cssH - m.b + 14);
+      }
+      if (yLabel) {
+        ctx.save(); ctx.textAlign = "center";
+        ctx.translate(12, m.t + h / 2); ctx.rotate(-Math.PI / 2);
+        ctx.fillText(yLabel, 0, 0); ctx.restore();
+      }
+    }
 
     function setupCanvas(canvas, xMax, yMax, xMin = 0, yMin = 0) {
       const ctx = canvas.getContext("2d");
@@ -572,10 +597,11 @@
       const y2Own = (1 - a2) * wealth2;
       const excess = x1 + x2Own - X;
       const eqP = equilibriumPrice(a1, a2, wx1, wy1, X, Y);
-      const { ctx, sx, sy, m, w, h } = setupCanvas($("boxCanvas"), X, Y);
+      const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("boxCanvas"), X, Y);
+      addAxisLabels(ctx, m, w, h, cssW, cssH, "Good 1 (Consumer 1 →)", "Good 2 (Consumer 1 ↑)");
       ctx.strokeStyle = colors.text; ctx.lineWidth = 2; ctx.strokeRect(m.l, m.t, w, h);
-      ctx.fillStyle = colors.muted; ctx.font = "12px Segoe UI"; ctx.textAlign = "left"; ctx.fillText("O1", sx(0) + 4, sy(0) - 8);
-      ctx.textAlign = "right"; ctx.fillText("O2", sx(X) - 4, sy(Y) + 16);
+      ctx.fillStyle = colors.muted; ctx.font = "12px Segoe UI"; ctx.textAlign = "left"; ctx.fillText("O₁", sx(0) + 4, sy(0) - 8);
+      ctx.textAlign = "right"; ctx.fillText("O₂", sx(X) - 4, sy(Y) + 16);
       const budgetY = (x) => wealth1 - p * x;
       drawPath(ctx, Array.from({ length: 200 }, (_, i) => X * i / 199), budgetY, sx, sy, colors.blue);
       const u1 = Math.pow(Math.max(x1, 0), a1) * Math.pow(Math.max(y1, 0), 1 - a1);
