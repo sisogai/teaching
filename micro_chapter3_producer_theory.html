@@ -1110,6 +1110,7 @@
       // Fixed scales — axis does not shift with sliders
       const qMax = 18;
       const yMax = 60;
+      const supplyOnChart = supply <= qMax + 1e-9;
       const xs = Array.from({ length: 180 }, (_, i) => qMax * (i + 1) / 180);
       const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("shortCanvas"), qMax, yMax);
       addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (output)", "P, MC, AC");
@@ -1117,7 +1118,7 @@
       drawLine(ctx, xs, avc, sx, sy, "#5b8af5");
       drawLine(ctx, xs, ac, sx, sy, "#4ecb8d");
       drawLine(ctx, xs, () => p, sx, sy, "#e8ecf5", true);
-      if (supply > 0 && supply <= qMax && p <= yMax) dot(ctx, supply, p, sx, sy, "s(p)");
+      if (supply > 0 && supplyOnChart && p <= yMax) dot(ctx, Math.min(supply, qMax), p, sx, sy, "s(p)");
       if (qShutdown <= qMax && pShutdown >= 0 && pShutdown <= yMax) dot(ctx, qShutdown, pShutdown, sx, sy, "shutdown");
       ctx.fillStyle = "#e8ecf5"; ctx.font = "12px Segoe UI";
       const qLabel = qMax * 0.74;
@@ -1140,7 +1141,7 @@
       $("decisionOut").textContent = decision;
       $("shortProfitOut").textContent = fmt(profit);
       $("shortBEOut").textContent = fmt(pBE);
-      $("shortPlotNote").textContent = supply > qMax
+      $("shortPlotNote").textContent = !supplyOnChart
         ? `Optimal supply s(p) = ${fmt(supply)} lies beyond the displayed range Q ≤ ${qMax}. The decision and profit use this full output.`
         : "";
     }

@@ -110,4 +110,16 @@ test('drawShortRun uses the actual profit and identifies an off-chart optimum', 
   assert.equal(elements.decisionOut.textContent, 'Shutdown');
   assert.equal(elements.shortProfitOut.textContent, '-24.00');
   assert.equal(elements.shortPlotNote.textContent, '');
+  // An exact Q = 18 can be computed as 18.000000000000004.
+  params.shortA = 0.04;
+  params.shortD = 0.8;
+  params.shortB = 8;
+  for (const q of [17.999, 18, 18.001]) {
+    params.shortP = 3 * params.shortA * q * q - 2 * params.shortD * q + params.shortB;
+    dots.length = 0;
+    sandbox.drawShortRun();
+    assert.equal(elements.shortPlotNote.textContent !== '', q > 18);
+    assert.equal(dots.some((args) => args[5] === 's(p)'), q <= 18);
+    assert.ok(dots.every((args) => args[1] <= 18));
+  }
 });
