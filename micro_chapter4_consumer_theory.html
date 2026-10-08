@@ -535,6 +535,11 @@
 
 <div class="container">
 
+<nav class="note" aria-label="Chapter 4 sections" style="margin-top:20px">
+  <a href="#comparative-analysis" style="color:var(--accent)">§4.5 Comparative Analysis of Demand Functions</a> &nbsp;·&nbsp;
+  <a href="#expenditure-minimization" style="color:var(--accent)">§4.6 Expenditure Minimization Problem</a>
+</nav>
+
 <!-- ═══════════════════════════════════════════════ SECTION 1 -->
 <div class="section">
   <div class="section-title">4.1 Consumption Bundles and Budget Constraints</div>
@@ -855,109 +860,21 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ SECTION 4 -->
-<div class="section">
-  <div class="section-title">4.5 Expenditure-Minimization Problem</div>
-
-  <div class="card">
-    <div class="def-box">
-      <div class="label">Definition 4.5.1 — Expenditure-Minimization Problem (EMP)</div>
-      <p>Given prices and a target utility level $\bar u$, the consumer solves:
-      $$\min_{x_1,x_2}\; p_1x_1+p_2x_2 \quad \text{s.t.}\quad u(x_1,x_2)\geq \bar u.$$
-      The solution is the <strong>Hicksian demand</strong> $h(p_1,p_2,\bar u)$, and the minimized cost is the <strong>expenditure function</strong> $e(p_1,p_2,\bar u)$.</p>
-    </div>
-    <p style="margin-top:12px"><strong>Cobb-Douglas case:</strong> for $u(x_1,x_2)=x_1^\alpha x_2^{1-\alpha}$, the cheapest bundle reaches the target indifference curve exactly and has an isocost line tangent to it:</p>
-    $$h_1=\bar u\left(\frac{\alpha}{1-\alpha}\frac{p_2}{p_1}\right)^{1-\alpha},\qquad
-      h_2=\bar u\left(\frac{1-\alpha}{\alpha}\frac{p_1}{p_2}\right)^\alpha.$$
-    <p style="font-size:13px;color:var(--muted);margin-top:8px">The expenditure function gives the minimum wealth needed to reach $\bar u$ at the given prices.</p>
-  </div>
-
-  <div class="interactive-panel">
-    <div class="panel-header">
-      <span class="icon">E</span>
-      <h3>Interactive: Expenditure Minimization</h3>
-    </div>
-    <div class="panel-body">
-      <div class="two-col">
-        <div class="canvas-wrap">
-          <canvas id="expCanvas" width="500" height="440"></canvas>
-        </div>
-        <div>
-          <div class="tabs" style="margin-bottom:16px">
-            <button class="tab-btn active" data-emp-kind="cd">Cobb-Douglas</button>
-            <button class="tab-btn" data-emp-kind="linear">Linear</button>
-            <button class="tab-btn" data-emp-kind="leontief">Leontief</button>
-          </div>
-          <div class="controls">
-            <div class="control-row">
-              <label>$p_1$ (price of good 1)</label>
-              <input type="range" id="empP1" min="1" max="10" step="0.5" value="2">
-              <span class="val-badge" id="empP1Val">2</span>
-            </div>
-            <div class="control-row">
-              <label>$p_2$ (price of good 2)</label>
-              <input type="range" id="empP2" min="1" max="10" step="0.5" value="3">
-              <span class="val-badge" id="empP2Val">3</span>
-            </div>
-            <div class="control-row">
-              <label>$\alpha$ (taste / share parameter)</label>
-              <input type="range" id="empAlpha" min="0.1" max="0.9" step="0.05" value="0.4">
-              <span class="val-badge" id="empAlphaVal">0.4</span>
-            </div>
-            <div class="control-row">
-              <label>Target utility $\bar u$</label>
-              <input type="range" id="empU" min="2" max="40" step="0.5" value="12">
-              <span class="val-badge" id="empUVal">12</span>
-            </div>
-            <div class="control-row">
-              <label>Displayed expenditure $E$</label>
-              <input type="range" id="empSpend" min="5" max="800" step="1" value="60">
-              <span class="val-badge" id="empSpendVal">60</span>
-            </div>
-          </div>
-          <div class="result-grid">
-            <div class="result-card">
-              <div class="r-label">Hicksian $h_1$</div>
-              <div class="r-val" id="empH1">—</div>
-            </div>
-            <div class="result-card">
-              <div class="r-label">Hicksian $h_2$</div>
-              <div class="r-val" id="empH2">—</div>
-            </div>
-            <div class="result-card">
-              <div class="r-label">Minimum expenditure</div>
-              <div class="r-val" id="empCost">—</div>
-            </div>
-            <div class="result-card">
-              <div class="r-label">Selected line</div>
-              <div class="r-val" id="empStatus">—</div>
-              <div class="r-eq" id="empStatusEq"></div>
-            </div>
-          </div>
-          <div class="note" id="empNote">
-            The green curve is the target indifference curve. Move the orange isocost line by changing expenditure $E$. It is optimal exactly when it just touches the target curve at the yellow Hicksian bundle.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ═══════════════════════════════════════════════ SECTION 5 -->
-<div class="section">
-  <div class="section-title">4.6 Comparative Analysis of Demand Functions</div>
+<div class="section" id="comparative-analysis">
+  <div class="section-title">4.5 Comparative Analysis of Demand Functions</div>
 
   <div class="card">
     <p>How does the Walrasian demand $x_i(p_1,p_2,w)$ respond to changes in prices and income? The answers are often non-trivial because budget constraints create interactions between goods.</p>
 
     <div class="def-box">
-      <div class="label">4.6.1 — Wealth Changes: Normal and Inferior Goods</div>
+      <div class="label">4.5.1 — Wealth Changes: Normal and Inferior Goods</div>
       <p>When wealth $w$ increases (prices held fixed), the budget set expands in a parallel outward shift. If demand for good $i$ <em>rises</em> with wealth, it is a <strong>normal good</strong>; if it <em>falls</em>, it is an <strong>inferior good</strong>. Most goods are normal, but inferior goods arise when consumers substitute toward higher-quality alternatives as income grows.</p>
       <p style="margin-top:8px;font-size:13px;color:var(--muted)">For Cobb–Douglas utility, demand $x_1^* = \alpha w/p_1$ is linear in $w$, so good 1 is always a normal good with income elasticity exactly 1.</p>
     </div>
 
     <div class="def-box">
-      <div class="label">4.6.2 — Price Changes: Substitution and Wealth Effects</div>
+      <div class="label">4.5.2 — Price Changes: Substitution and Wealth Effects</div>
       <p>When $p_1$ falls, demand for good 1 changes through two channels:</p>
       <ul style="margin:10px 0 0 20px;line-height:1.8">
         <li><strong>Substitution effect</strong>: Good 1 is now cheaper relative to good 2, so the consumer substitutes toward good 1. This effect always increases demand for the cheaper good.</li>
@@ -1114,7 +1031,7 @@
     <p>To measure the size of demand responses independently of units, we use <strong>elasticities</strong> — the ratio of percentage changes in demand to percentage changes in the variable of interest.</p>
 
     <div class="def-box">
-      <div class="label">Definition 4.6.3 — Elasticities of Demand</div>
+      <div class="label">Definition 4.5.3 — Elasticities of Demand</div>
       $$\varepsilon_w = \frac{\partial x_i}{\partial w}\cdot\frac{w}{x_i} \quad\text{(income elasticity)}$$
       $$\varepsilon_{ii} = -\frac{\partial x_i}{\partial p_i}\cdot\frac{p_i}{x_i} \quad\text{(own-price elasticity)}$$
       $$\varepsilon_{ij} = \frac{\partial x_i}{\partial p_j}\cdot\frac{p_j}{x_i} \quad\text{(cross-price elasticity, } j\neq i\text{)}$$
@@ -1311,6 +1228,94 @@
             <div class="note" style="margin-top:16px" id="dualNote">
               At factor 1, the moving object just touches: the highest affordable indifference curve and the cheapest isocost line touch at the same bundle.
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SECTION 6 -->
+<div class="section" id="expenditure-minimization">
+  <div class="section-title">4.6 Expenditure Minimization Problem</div>
+
+  <div class="card">
+    <div class="def-box">
+      <div class="label">Definition 4.6.1 — Expenditure Minimization Problem (EMP)</div>
+      <p>Given prices and a target utility level $\bar u$, the consumer solves:
+      $$\min_{x_1,x_2}\; p_1x_1+p_2x_2 \quad \text{s.t.}\quad u(x_1,x_2)\geq \bar u.$$
+      The solution is the <strong>Hicksian demand</strong> $h(p_1,p_2,\bar u)$, and the minimized cost is the <strong>expenditure function</strong> $e(p_1,p_2,\bar u)$.</p>
+    </div>
+    <p style="margin-top:12px"><strong>Cobb-Douglas case:</strong> for $u(x_1,x_2)=x_1^\alpha x_2^{1-\alpha}$, the cheapest bundle reaches the target indifference curve exactly and has an isocost line tangent to it:</p>
+    $$h_1=\bar u\left(\frac{\alpha}{1-\alpha}\frac{p_2}{p_1}\right)^{1-\alpha},\qquad
+      h_2=\bar u\left(\frac{1-\alpha}{\alpha}\frac{p_1}{p_2}\right)^\alpha.$$
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">The expenditure function gives the minimum wealth needed to reach $\bar u$ at the given prices.</p>
+  </div>
+
+  <div class="interactive-panel">
+    <div class="panel-header">
+      <span class="icon">E</span>
+      <h3>Interactive: Expenditure Minimization</h3>
+    </div>
+    <div class="panel-body">
+      <div class="two-col">
+        <div class="canvas-wrap">
+          <canvas id="expCanvas" width="500" height="440"></canvas>
+        </div>
+        <div>
+          <div class="tabs" style="margin-bottom:16px">
+            <button class="tab-btn active" data-emp-kind="cd">Cobb-Douglas</button>
+            <button class="tab-btn" data-emp-kind="linear">Linear</button>
+            <button class="tab-btn" data-emp-kind="leontief">Leontief</button>
+          </div>
+          <div class="controls">
+            <div class="control-row">
+              <label>$p_1$ (price of good 1)</label>
+              <input type="range" id="empP1" min="1" max="10" step="0.5" value="2">
+              <span class="val-badge" id="empP1Val">2</span>
+            </div>
+            <div class="control-row">
+              <label>$p_2$ (price of good 2)</label>
+              <input type="range" id="empP2" min="1" max="10" step="0.5" value="3">
+              <span class="val-badge" id="empP2Val">3</span>
+            </div>
+            <div class="control-row">
+              <label>$\alpha$ (taste / share parameter)</label>
+              <input type="range" id="empAlpha" min="0.1" max="0.9" step="0.05" value="0.4">
+              <span class="val-badge" id="empAlphaVal">0.4</span>
+            </div>
+            <div class="control-row">
+              <label>Target utility $\bar u$</label>
+              <input type="range" id="empU" min="2" max="40" step="0.5" value="12">
+              <span class="val-badge" id="empUVal">12</span>
+            </div>
+            <div class="control-row">
+              <label>Displayed expenditure $E$</label>
+              <input type="range" id="empSpend" min="5" max="800" step="1" value="60">
+              <span class="val-badge" id="empSpendVal">60</span>
+            </div>
+          </div>
+          <div class="result-grid">
+            <div class="result-card">
+              <div class="r-label">Hicksian $h_1$</div>
+              <div class="r-val" id="empH1">—</div>
+            </div>
+            <div class="result-card">
+              <div class="r-label">Hicksian $h_2$</div>
+              <div class="r-val" id="empH2">—</div>
+            </div>
+            <div class="result-card">
+              <div class="r-label">Minimum expenditure</div>
+              <div class="r-val" id="empCost">—</div>
+            </div>
+            <div class="result-card">
+              <div class="r-label">Selected line</div>
+              <div class="r-val" id="empStatus">—</div>
+              <div class="r-eq" id="empStatusEq"></div>
+            </div>
+          </div>
+          <div class="note" id="empNote">
+            The green curve is the target indifference curve. Move the orange isocost line by changing expenditure $E$. It is optimal exactly when it just touches the target curve at the yellow Hicksian bundle.
           </div>
         </div>
       </div>

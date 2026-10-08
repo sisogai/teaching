@@ -554,7 +554,7 @@
         <p>With fixed costs, the firm may choose not to produce. The marginal-cost condition gives the best positive production level, but the firm still compares producing with \(Q=0\).</p>
         <div class="def-box">
           <div class="label">Definition 3.4.2 — Short-Run Supply</div>
-          <p>The shutdown price is the price at which \(p=AVC(Q)\). The break-even price is the price at which \(p=AC(Q)\). Below the shutdown price, the firm supplies zero.</p>
+          <p>The shutdown price is \(\inf_{Q>0} AVC(Q)\), and the break-even price is \(\inf_{Q>0} AC(Q)\). Below the shutdown price, the firm supplies zero. At the shutdown price, this example selects zero output; a positive minimizer of AVC is equally optimal. Fixed cost is incurred even at zero output.</p>
         </div>
       </div>
 
@@ -595,7 +595,10 @@
               <div class="stats">
                 <div class="stat"><span class="name">Decision</span><span class="value" id="decisionOut"></span></div>
                 <div class="stat"><span class="name">Supply \(s(p)\)</span><span class="value" id="supplyOut"></span></div>
+                <div class="stat"><span class="name">Profit</span><span class="value" id="shortProfitOut"></span></div>
+                <div class="stat"><span class="name">Break-even price</span><span class="value" id="shortBEOut"></span></div>
               </div>
+              <p class="explain" id="shortPlotNote" aria-live="polite"></p>
               <p class="explain">If price covers average variable cost but not average cost, the firm produces in the short run while earning negative profit.</p>
             </div>
           </div>
@@ -1058,27 +1061,56 @@
           : "The best positive output does not beat Q = 0, so the firm shuts down in this example.");
     }
 
+    function solveShortRun(a, d, b, fc, p) {
+      const qShutdown = d / (2 * a);
+      const pShutdown = b - d * d / (4 * a);
+      const discr = d * d - 3 * a * (b - p);
+      // Compare revenue minus variable cost with zero; FC is sunk in the short run.
+      // At p = min AVC, select Q = 0 from the equally optimal quantities.
+      const supply = p > pShutdown && discr >= 0 ? (d + Math.sqrt(discr)) / (3 * a) : 0;
+      const vc = (q) => a * q * q * q - d * q * q + b * q;
+      const mc = (q) => 3 * a * q * q - 2 * d * q + b;
+      const avc = (q) => a * q * q - d * q + b;
+      const ac = (q) => avc(q) + fc / q;
+
+      // AC'(Q) = 0 iff Q^2 (2aQ - d) = FC. The left side is
+      // increasing for Q >= qShutdown, so bracket its unique root there.
+      // With FC = d = 0, inf AC = b is approached as Q tends to zero.
+      let qBE = qShutdown;
+      if (fc > 0) {
+        let lo = qShutdown;
+        let hi = Math.max(1, 2 * qShutdown, Math.cbrt(fc / a));
+        const residual = (q) => q * q * (2 * a * q - d) - fc;
+        while (residual(hi) < 0) hi *= 2;
+        for (let i = 0; i < 80; i++) {
+          const mid = (lo + hi) / 2;
+          if (residual(mid) < 0) lo = mid;
+          else hi = mid;
+        }
+        qBE = (lo + hi) / 2;
+      }
+      const pBE = qBE > 0 ? ac(qBE) : b;
+      const revenue = p * supply;
+      const variableCost = vc(supply);
+      const profit = revenue - variableCost - fc;
+      const tolerance = 1e-10 * Math.max(1, Math.abs(revenue), Math.abs(variableCost), fc);
+      const decision = supply === 0 ? "Shutdown"
+        : Math.abs(profit) <= tolerance ? "Produce, break even"
+        : profit < 0 ? "Produce, loss" : "Produce, profit";
+      return { qShutdown, pShutdown, supply, qBE, pBE, profit, decision, mc, avc, ac };
+    }
+
     function drawShortRun() {
       const a = val("shortA");
       const d = val("shortD");
       const b = val("shortB");
       const fc = val("shortFc");
       const p = val("shortP");
-      const qShutdown = d / (2 * a);
-      const pShutdown = b - (d * d) / (4 * a);
-      const discr = d * d - 3 * a * (b - p);
-      const supply = p > pShutdown && discr >= 0 ? (d + Math.sqrt(discr)) / (3 * a) : 0;
+      const { qShutdown, pShutdown, supply, pBE, profit, decision, mc, avc, ac } = solveShortRun(a, d, b, fc, p);
       // Fixed scales — axis does not shift with sliders
       const qMax = 18;
       const yMax = 60;
       const xs = Array.from({ length: 180 }, (_, i) => qMax * (i + 1) / 180);
-      const vc = (q) => a * q * q * q - d * q * q + b * q;
-      const mc = (q) => 3 * a * q * q - 2 * d * q + b;
-      const avc = (q) => vc(q) / q;
-      const ac = (q) => avc(q) + fc / q;
-      const acXs = xs.filter((q) => q > 0.05);
-      const qBE = acXs.reduce((best, q) => ac(q) < ac(best) ? q : best, acXs[0]);
-      const pBE = ac(qBE);
       const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("shortCanvas"), qMax, yMax);
       addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (output)", "P, MC, AC");
       drawLine(ctx, xs, mc, sx, sy, "#f5a623");
@@ -1086,7 +1118,7 @@
       drawLine(ctx, xs, ac, sx, sy, "#4ecb8d");
       drawLine(ctx, xs, () => p, sx, sy, "#e8ecf5", true);
       if (supply > 0 && supply <= qMax && p <= yMax) dot(ctx, supply, p, sx, sy, "s(p)");
-      if (qShutdown <= qMax && pShutdown <= yMax) dot(ctx, qShutdown, pShutdown, sx, sy, "shutdown");
+      if (qShutdown <= qMax && pShutdown >= 0 && pShutdown <= yMax) dot(ctx, qShutdown, pShutdown, sx, sy, "shutdown");
       ctx.fillStyle = "#e8ecf5"; ctx.font = "12px Segoe UI";
       const qLabel = qMax * 0.74;
       if (mc(qLabel) <= yMax) ctx.fillText("MC", sx(qLabel), sy(mc(qLabel)) - 8);
@@ -1105,7 +1137,12 @@
       $("shortFcOut").textContent = fmt(fc);
       $("shortPOut").textContent = fmt(p);
       $("supplyOut").textContent = fmt(supply);
-      $("decisionOut").textContent = p <= pShutdown ? "Shutdown" : (p < pBE ? "Produce, loss" : "Produce, profit");
+      $("decisionOut").textContent = decision;
+      $("shortProfitOut").textContent = fmt(profit);
+      $("shortBEOut").textContent = fmt(pBE);
+      $("shortPlotNote").textContent = supply > qMax
+        ? `Optimal supply s(p) = ${fmt(supply)} lies beyond the displayed range Q ≤ ${qMax}. The decision and profit use this full output.`
+        : "";
     }
 
     function drawIso() {
