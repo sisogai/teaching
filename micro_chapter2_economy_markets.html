@@ -348,18 +348,20 @@
     <div class="section">
       <h2 class="section-title">2.4 Demand, Supply, and Equilibrium</h2>
       <div class="card">
-        <p>Equilibrium occurs where the quantity demanded equals the quantity supplied. If the price is too high, excess supply creates downward pressure; if it is too low, excess demand creates upward pressure.</p>
+        <p>Equilibrium occurs where the quantity demanded equals the quantity supplied. Below the equilibrium price or price interval, excess demand creates upward pressure; above it, excess supply creates downward pressure. Every price in an equilibrium interval clears the market.</p>
         <div class="def-box">
           <div class="label">Model: Linear Demand and Supply</div>
-          <p>The quantity demanded is \(Q_D(p) = A - Bp\) (downward sloping in price) and the quantity supplied is \(Q_S(p) = C + Dp\) (upward sloping). Setting \(Q_D = Q_S\) gives the market-clearing price:
+          <p>Quantities are nonnegative: \(Q_D(p) = \max\{0,A-Bp\}\) and \(Q_S(p) = \max\{0,C+Dp\}\), with \(B,D>0\). If \(A/B>-C/D\), the market clears at a positive quantity:
           $$ p^* = \frac{A - C}{B + D}, \qquad Q^* = A - B p^*. $$
-          The trial-price slider lets you explore whether the market has excess demand or excess supply at prices other than \(p^*\).</p>
+          If \(A/B\leq -C/D\), both quantities are zero throughout the closed equilibrium price interval:
+          $$ Q^*=0, \qquad p^*\in\left[\frac{A}{B},-\frac{C}{D}\right]. $$
+          Equality of the two endpoints gives a single zero-trade equilibrium price. The trial-price slider shows excess demand, excess supply, or market clearing using these same nonnegative quantities.</p>
         </div>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">M</span><h3>Interactive: Market-Clearing Price</h3></div>
         <div class="panel-body">
-          <div class="formula-strip">$$ Q_D(p)=A-Bp,\qquad Q_S(p)=C+Dp,\qquad Q_D(p^*)=Q_S(p^*). $$</div>
+          <div class="formula-strip">$$ Q_D(p)=\max\{0,A-Bp\},\qquad Q_S(p)=\max\{0,C+Dp\},\qquad Q_D(p^*)=Q_S(p^*). $$</div>
           <div class="two-col">
             <div class="canvas-wrap"><canvas id="marketCanvas" width="500" height="420"></canvas></div>
             <div>
@@ -376,6 +378,7 @@
                 <div class="stat"><span class="name">At trial price</span><span class="value" id="gapOut"></span></div>
                 <div class="stat"><span class="name">Pressure</span><span class="value" id="pressureOut"></span></div>
               </div>
+              <p class="explain" id="marketExplain" aria-live="polite"></p>
               <p class="explain">The graph treats price as the vertical axis, matching the usual demand-supply diagram in the lecture note.</p>
             </div>
           </div>
@@ -498,17 +501,42 @@
       ctx.fillText(text, sx(x), sy(y));
     }
 
+    function solveMarket(A, B, C, D, trial) {
+      const qd = (p) => Math.max(0, A - B * p);
+      const qs = (p) => Math.max(0, C + D * p);
+      const demandChoke = A / B;
+      const supplyEntry = -C / D;
+      const priceTolerance = 1e-12 * Math.max(1, Math.abs(demandChoke), Math.abs(supplyEntry));
+      let pLow, pHigh, qStar;
+      if (Math.abs(demandChoke - supplyEntry) <= priceTolerance) {
+        pLow = pHigh = (demandChoke + supplyEntry) / 2;
+        qStar = 0;
+      } else if (demandChoke < supplyEntry) {
+        pLow = demandChoke;
+        pHigh = supplyEntry;
+        qStar = 0;
+      } else {
+        pLow = pHigh = (A - C) / (B + D);
+        qStar = (A * D + B * C) / (B + D);
+      }
+      const demand = qd(trial), supply = qs(trial);
+      const rawGap = demand - supply;
+      // Only numerical roundoff counts as clearing; a small real gap still
+      // produces pressure in the same direction as a larger gap.
+      const quantityTolerance = 1e-10 * Math.max(1, Math.abs(A), Math.abs(C), B * Math.abs(trial), D * Math.abs(trial));
+      const gap = Math.abs(rawGap) <= quantityTolerance ? 0 : rawGap;
+      const direction = Math.sign(gap);
+      return { qd, qs, demandChoke, supplyEntry, pLow, pHigh, qStar, demand, supply, gap, direction };
+    }
 
     function drawMarket() {
       const A = val("dA"), B = val("dB"), C = val("sC"), D = val("sD"), trial = val("trialP");
-      const pStar = (A - C) / (B + D);
-      const qStar = A - B * pStar;
-      const qd = (p) => Math.max(0, A - B * p);
-      const qs = (p) => Math.max(0, C + D * p);
+      const { qd, qs, demandChoke, supplyEntry, pLow, pHigh, qStar, gap, direction } = solveMarket(A, B, C, D, trial);
       // Fixed scales — axis does not shift when parameters change
       const pMax = 45;
       const qMax = 140;
-      const ps = Array.from({ length: 240 }, (_, i) => pMax * i / 239);
+      const ps = [...Array.from({ length: 240 }, (_, i) => pMax * i / 239), demandChoke, supplyEntry]
+        .filter((p) => p >= 0 && p <= pMax).sort((a, b) => a - b);
       const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("marketCanvas"), qMax, pMax);
       // Axis variable labels
       ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
@@ -517,26 +545,52 @@
       ctx.save(); ctx.translate(12, m.t + h / 2); ctx.rotate(-Math.PI / 2);
       ctx.textAlign = "center"; ctx.fillText("P", 0, 0); ctx.restore();
       function inversePath(qOfP, color) {
-        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.beginPath();
+        ctx.save();
+        ctx.beginPath(); ctx.rect(m.l, m.t, w, h); ctx.clip();
+        ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.beginPath();
         ps.forEach((p, i) => { const x = sx(qOfP(p)), y = sy(p); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
         ctx.stroke(); ctx.restore();
       }
       inversePath(qd, colors.blue);
       inversePath(qs, colors.green);
       drawPath(ctx, Array.from({ length: 80 }, (_, i) => qMax * i / 79), () => trial, sx, sy, colors.orange, true);
-      if (qStar >= 0 && qStar <= qMax && pStar >= 0 && pStar <= pMax) dot(ctx, qStar, pStar, sx, sy, "E*");
+      if (pLow < pHigh) {
+        // Both curves coincide at Q = 0 on this entire closed interval.
+        const visibleLow = Math.max(0, pLow), visibleHigh = Math.min(pMax, pHigh);
+        if (visibleLow <= visibleHigh) {
+          ctx.save(); ctx.strokeStyle = colors.orange; ctx.lineWidth = 6;
+          ctx.beginPath(); ctx.moveTo(sx(0), sy(visibleLow)); ctx.lineTo(sx(0), sy(visibleHigh)); ctx.stroke(); ctx.restore();
+          lineLabel(ctx, "E*: Q = 0", 2, (visibleLow + visibleHigh) / 2, sx, sy, colors.orange);
+        }
+        if (pLow >= 0 && pLow <= pMax) dot(ctx, 0, pLow, sx, sy, "E* lower");
+        if (pHigh >= 0 && pHigh <= pMax) dot(ctx, 0, pHigh, sx, sy, "E* upper");
+      } else if (qStar <= qMax && pLow >= 0 && pLow <= pMax) {
+        dot(ctx, qStar, pLow, sx, sy, "E*");
+      }
       if (qd(6) <= qMax) lineLabel(ctx, "D", qd(6), 6, sx, sy, colors.blue);
       if (qs(35) <= qMax) lineLabel(ctx, "S", qs(35), 35, sx, sy, colors.green);
-      const gap = qd(trial) - qs(trial);
       $("dAOut").textContent = fmt(A);
       $("dBOut").textContent = fmt(B);
       $("sCOut").textContent = fmt(C);
       $("sDOut").textContent = fmt(D);
       $("trialOut").textContent = fmt(trial);
-      $("pStarOut").textContent = fmt(pStar);
+      $("pStarOut").textContent = pLow < pHigh ? `${fmt(pLow)}–${fmt(pHigh)}` : fmt(pLow);
       $("qStarOut").textContent = fmt(qStar);
-      $("gapOut").textContent = gap > 0 ? "Excess demand " + fmt(gap) : gap < 0 ? "Excess supply " + fmt(-gap) : "Clears";
-      $("pressureOut").textContent = gap > 0.5 ? "Price rises" : gap < -0.5 ? "Price falls" : "Stable";
+      const gapSize = Math.abs(gap);
+      const gapText = gapSize >= 0.005 ? fmt(gapSize) : gapSize.toPrecision(2);
+      $("gapOut").textContent = direction > 0 ? "Excess demand " + gapText : direction < 0 ? "Excess supply " + gapText : "Clears";
+      $("pressureOut").textContent = direction > 0 ? "Price rises" : direction < 0 ? "Price falls" : "Stable";
+      const equilibriumText = pLow < pHigh
+        ? `Every price in the closed interval [${fmt(pLow)}, ${fmt(pHigh)}] is an equilibrium with Q = 0, including both endpoints. The orange segment on Q = 0 marks the visible equilibrium interval.`
+        : qStar === 0
+          ? `The zero-trade equilibrium interval has collapsed to p = ${fmt(pLow)}, with Q = 0.`
+          : `The market clears at p = ${fmt(pLow)} with Q = ${fmt(qStar)}.`;
+      const trialText = direction === 0
+        ? `Trial price ${fmt(trial)} clears the market; there is no price pressure.`
+        : `Trial price ${fmt(trial)} gives ${direction > 0 ? "excess demand and upward" : "excess supply and downward"} price pressure.`;
+      const plotText = pLow < 0 || pHigh > pMax || qStar > qMax
+        ? ` The displayed range is 0 ≤ p ≤ ${pMax}, 0 ≤ Q ≤ ${qMax}; equilibrium values are calculated over the full model.` : "";
+      $("marketExplain").textContent = `${equilibriumText} ${trialText}${plotText}`;
     }
     function initPage() {
       ["dA", "dB", "sC", "sD", "trialP"].forEach((id) => $(id).addEventListener("input", drawMarket));
