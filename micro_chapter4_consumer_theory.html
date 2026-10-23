@@ -1019,7 +1019,7 @@
               </div>
             </div>
             <div class="note" style="margin-top:16px">
-              The first chart traces optimal bundles as wealth changes. The second traces optimal bundles as $p_1$ changes, holding $p_2$ and $w$ fixed. The third redraws the $p_1$ response in the usual demand-curve plane.
+              The first chart traces optimal bundles as wealth varies from 0 to 100. The second traces optimal bundles as $p_1$ varies from 1 to 10, holding $p_2$ and $w$ fixed. Both use quantities $(x_1,x_2)$. The third shows the same price response with quantity $x_1$ horizontally and price $p_1$ vertically. Axes adjust to include the full paths and current points.
             </div>
           </div>
         </div>
@@ -1903,9 +1903,13 @@ function drawExpenditure() {
   const h1 = solution.h1;
   const h2 = solution.h2;
   const cost = solution.cost;
-  const tolerance = Math.max(1, cost * 0.012);
-  const isOptimal = Math.abs(selectedCost - cost) <= tolerance;
-  const status = isOptimal ? 'Optimal' : (selectedCost < cost ? 'Too low' : 'Not minimal');
+  // Only floating-point roundoff may blur feasibility or exact optimality.
+  const roundoff = 64 * Number.EPSILON * Math.max(1, cost, selectedCost);
+  const gap = selectedCost - cost;
+  const isFeasible = gap >= -roundoff;
+  const isOptimal = Math.abs(gap) <= roundoff;
+  const isNearOptimal = isFeasible && !isOptimal && gap <= Math.max(1, cost * 0.012) + roundoff;
+  const status = !isFeasible ? 'Too low' : (isOptimal ? 'Optimal' : (isNearOptimal ? 'Near optimal' : 'Not minimal'));
   const linearX = empKind === 'linear' ? U / alpha : 0;
   const linearY = empKind === 'linear' ? U / (1 - alpha) : 0;
   const leontiefX = empKind === 'leontief' ? alpha * U : 0;
@@ -1922,7 +1926,7 @@ function drawExpenditure() {
   document.getElementById('empH2').textContent = h2.toFixed(2);
   document.getElementById('empCost').textContent = cost.toFixed(2);
   document.getElementById('empStatus').textContent = status;
-  document.getElementById('empStatus').style.color = isOptimal ? '#4ecb8d' : (selectedCost < cost ? '#e05b8f' : '#f5a623');
+  document.getElementById('empStatus').style.color = isOptimal ? '#4ecb8d' : (!isFeasible ? '#e05b8f' : '#f5a623');
   document.getElementById('empStatusEq').textContent = `min E = ${cost.toFixed(2)}`;
 
   xctx.clearRect(0, 0, XW, XH);
@@ -1946,6 +1950,7 @@ function drawExpenditure() {
   document.getElementById('empNote').innerHTML =
     `The green curve is the target indifference curve for ${utilityFormula(empKind)}. ` +
     `Move the orange isocost line by changing expenditure E. ` +
+    `Too low means the target is unattainable. Near optimal means feasible expenditure above the minimum by at most max(1, 1.2% of the minimum); only Optimal indicates exact contact (up to numerical roundoff). ` +
     `The yellow point is the Hicksian bundle. ${solution.note}`;
 }
 
@@ -2498,11 +2503,19 @@ const pathDemandCanvas = document.getElementById('pathDemandCanvas');
 const { ctx: pathDctx, w: pathDW, h: pathDH } = setupHDCanvas(pathDemandCanvas);
 
 const PATH_PAD = { t: 28, r: 16, b: 42, l: 48 };
-const PATH_AXES = {
-  wealth: { xmax: 25, ymax: 30 },
-  price: { xmax: 50, ymax: 30 },
-  demand: { xmax: 50, ymax: 10 }
-};
+function demandPathAxes(alpha, w, p1, p2) {
+  // Include endpoints of the displayed w ∈ [0,100] and p₁ ∈ [1,10]
+  // paths, with room for the current markers and labels.
+  const priceXmax = optNiceMax(Math.max(50, alpha * w * 1.15));
+  return {
+    wealth: {
+      xmax: optNiceMax(Math.max(25, alpha * 100 / p1 * 1.15)),
+      ymax: optNiceMax(Math.max(30, (1 - alpha) * 100 / p2 * 1.15))
+    },
+    price: { xmax: priceXmax, ymax: optNiceMax(Math.max(30, (1 - alpha) * w / p2 * 1.15)) },
+    demand: { xmax: priceXmax, ymax: 12 }
+  };
+}
 
 function fmtPathTick(v) {
   if (v >= 20) return Math.round(v).toString();
@@ -2659,6 +2672,7 @@ function drawDemandPaths() {
   const x1 = alpha * w / p1;
   const x2 = (1 - alpha) * w / p2;
   const currentUtility = Math.pow(x1, alpha) * Math.pow(x2, 1 - alpha);
+  const axes = demandPathAxes(alpha, w, p1, p2);
 
   document.getElementById('pathAlphaVal').textContent = alpha.toFixed(2);
   document.getElementById('pathWVal').textContent = w.toFixed(0);
@@ -2669,8 +2683,8 @@ function drawDemandPaths() {
   document.getElementById('pathDemandPoint').textContent = `(${x1.toFixed(1)}, ${p1.toFixed(1)})`;
 
   // Income expansion path in commodity space as wealth changes.
-  const wealthXmax = PATH_AXES.wealth.xmax;
-  const wealthYmax = PATH_AXES.wealth.ymax;
+  const wealthXmax = axes.wealth.xmax;
+  const wealthYmax = axes.wealth.ymax;
   const wealthPts = [];
   for (let wi = 0; wi <= 100; wi += 1) wealthPts.push([alpha * wi / p1, (1 - alpha) * wi / p2]);
   drawPathAxes(pathWctx, pathWW, pathWH, wealthXmax, wealthYmax, 'x₁', 'x₂');
@@ -2688,8 +2702,8 @@ function drawDemandPaths() {
   pathWctx.fillText(`w varies; p₁=${p1.toFixed(1)}, p₂=${p2.toFixed(1)}`, PATH_PAD.l + 4, PATH_PAD.t - 8);
 
   // Price-consumption path in commodity space as p1 changes.
-  const priceXmax = PATH_AXES.price.xmax;
-  const priceYmax = PATH_AXES.price.ymax;
+  const priceXmax = axes.price.xmax;
+  const priceYmax = axes.price.ymax;
   drawPathAxes(pathPctx, pathPW, pathPH, priceXmax, priceYmax, 'x₁', 'x₂');
   [10, p1, 1].forEach((p1v, i) => {
     const current = Math.abs(p1v - p1) < 0.01;
@@ -2697,7 +2711,10 @@ function drawDemandPaths() {
     drawPathBudgetSegment(pathPctx, pathPW, pathPH, priceXmax, priceYmax, p1v, p2, w, lineColor, current ? 1.8 : 1.2, current ? [] : [4, 4]);
   });
   const pricePts = [];
-  for (let p1v = 10; p1v >= 1; p1v -= 0.05) pricePts.push([alpha * w / p1v, (1 - alpha) * w / p2]);
+  for (let i = 0; i <= 180; i++) {
+    const p1v = 10 - i / 20;
+    pricePts.push([alpha * w / p1v, (1 - alpha) * w / p2]);
+  }
   drawPathICurve(pathPctx, pathPW, pathPH, priceXmax, priceYmax, alpha, currentUtility, 'IC');
   drawPathLine(pathPctx, pathPW, pathPH, priceXmax, priceYmax, pricePts, '#a96cf5', 2.5);
   drawPathDot(pathPctx, pathPW, pathPH, priceXmax, priceYmax, x1, x2, '#e05b8f', 'current', 8, -10);
@@ -2707,10 +2724,13 @@ function drawDemandPaths() {
   pathPctx.fillText(`p₁ varies; p₂=${p2.toFixed(1)}, w=${w.toFixed(0)}`, PATH_PAD.l + 4, PATH_PAD.t - 8);
 
   // Ordinary demand curve for good 1: p1=αw/x1.
-  const demandXmax = PATH_AXES.demand.xmax;
-  const demandYmax = PATH_AXES.demand.ymax;
+  const demandXmax = axes.demand.xmax;
+  const demandYmax = axes.demand.ymax;
   const demandPts = [];
-  for (let p1v = 10; p1v >= 1; p1v -= 0.05) demandPts.push([alpha * w / p1v, p1v]);
+  for (let i = 0; i <= 180; i++) {
+    const p1v = 10 - i / 20;
+    demandPts.push([alpha * w / p1v, p1v]);
+  }
   drawPathAxes(pathDctx, pathDW, pathDH, demandXmax, demandYmax, 'x₁', 'p₁');
   drawPathLine(pathDctx, pathDW, pathDH, demandXmax, demandYmax, demandPts, '#f5a623', 2.5);
   drawPathDot(pathDctx, pathDW, pathDH, demandXmax, demandYmax, x1, p1, '#5b8af5', 'current', 8, -10);
