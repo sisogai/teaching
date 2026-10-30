@@ -389,8 +389,9 @@
           <div class="label">Model: Linear Demand and Marginal Cost</div>
           <p>Inverse demand: \(P_D(Q)=a-bQ\). Marginal cost (supply): \(MC(Q)=c+dQ\). The competitive equilibrium satisfies \(P_D(Q^*)=MC(Q^*)\):
           $$ Q^* = \frac{a-c}{b+d}, \quad P^* = a - b Q^*. $$
-          A unit tax \(t\) drives a wedge: consumer price rises to \(P_D = P^*_{tax}\) and producer price falls to \(P_D - t\), reducing traded quantity and creating deadweight loss equal to \(\frac{1}{2}t\Delta Q\).</p>
+          When trade remains positive, a unit tax \(t\) drives a wedge: consumer price rises to \(P_D = P^*_{tax}\) and producer price falls to \(P_D - t\), reducing traded quantity. For linear curves and positive trade (\(0 \leq t &lt; a-c\)), deadweight loss is \(\frac{1}{2}t\Delta Q\), where \(\Delta Q=Q^*-Q_t\). At or above the prohibitive tax \(t=a-c\), no units trade: consumer surplus, producer surplus, and tax revenue are zero, and deadweight loss equals the entire competitive total surplus \(\frac{1}{2}(a-c)Q^*\). The intercepts \(a\) and \(c\) are reservation prices for the first unit, not observed transaction prices when trade is zero.</p>
         </div>
+        <p>For a binding price cap, the graph and surplus figures assume efficient rationing: the available units go to consumers with the highest willingness to pay. At that traded quantity, this gives the upper bound on consumer surplus and the lower bound on deadweight loss. A lottery may allocate units to lower-value buyers; queues may also use up time and resources. Actual surplus can therefore be lower and welfare loss higher. A binding price floor similarly assumes that the lowest-cost producers supply the units sold, with no government purchase of excess supply.</p>
       </div>
       <div class="interactive-panel">
         <div class="panel-header"><span class="icon">P</span><h3>Interactive: Tax, Price Floor, and Price Cap</h3></div>
@@ -400,12 +401,12 @@
             <div class="canvas-wrap"><canvas id="policyCanvas" width="500" height="420"></canvas></div>
             <div>
               <div class="controls">
-                <div class="control-row"><label>Policy</label><select id="policy"><option value="none">No intervention</option><option value="tax">Unit tax</option><option value="floor">Price floor</option><option value="cap">Price cap</option></select></div>
-                <div class="control-row"><label>Demand intercept \(a\) <output id="paOut"></output></label><input id="pa" type="range" min="40" max="120" step="1" value="90"></div>
-                <div class="control-row"><label>Demand slope \(b\) <output id="pbOut"></output></label><input id="pb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
-                <div class="control-row"><label>MC intercept \(c\) <output id="pcOut"></output></label><input id="pc" type="range" min="0" max="40" step="1" value="10"></div>
-                <div class="control-row"><label>MC slope \(d\) <output id="pdOut"></output></label><input id="pd" type="range" min="0.2" max="2.5" step="0.1" value="0.8"></div>
-                <div class="control-row"><label>Policy size <output id="sizeOut"></output></label><input id="policySize" type="range" min="0" max="100" step="0.5" value="14"></div>
+                <div class="control-row"><label for="policy">Policy</label><select id="policy"><option value="none">No intervention</option><option value="tax">Unit tax</option><option value="floor">Price floor</option><option value="cap">Price cap</option></select></div>
+                <div class="control-row"><label for="pa">Demand intercept \(a\) <output id="paOut"></output></label><input id="pa" type="range" min="40" max="120" step="1" value="90"></div>
+                <div class="control-row"><label for="pb">Demand slope \(b\) <output id="pbOut"></output></label><input id="pb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
+                <div class="control-row"><label for="pc">MC intercept \(c\) <output id="pcOut"></output></label><input id="pc" type="range" min="0" max="40" step="1" value="10"></div>
+                <div class="control-row"><label for="pd">MC slope \(d\) <output id="pdOut"></output></label><input id="pd" type="range" min="0.2" max="2.5" step="0.1" value="0.8"></div>
+                <div class="control-row"><label for="policySize">Policy size <output id="sizeOut"></output></label><input id="policySize" type="range" min="0" max="100" step="0.5" value="14"></div>
               </div>
               <div class="surplus-buttons" aria-label="Policy graph area display">
                 <button class="surplus-btn active" type="button" data-policy-area="none">None</button>
@@ -446,10 +447,10 @@
             <div class="canvas-wrap"><canvas id="monopolyCanvas" width="500" height="420"></canvas></div>
             <div>
               <div class="controls">
-                <div class="control-row"><label>Demand intercept \(a\) <output id="maOut"></output></label><input id="ma" type="range" min="40" max="120" step="1" value="90"></div>
-                <div class="control-row"><label>Demand slope \(b\) <output id="mbOut"></output></label><input id="mb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
-                <div class="control-row"><label>MC intercept \(c\) <output id="mcOut"></output></label><input id="mc" type="range" min="0" max="40" step="1" value="10"></div>
-                <div class="control-row"><label>MC slope \(d\) <output id="mdOut"></output></label><input id="md" type="range" min="0.2" max="2.5" step="0.1" value="0.8"></div>
+                <div class="control-row"><label for="ma">Demand intercept \(a\) <output id="maOut"></output></label><input id="ma" type="range" min="40" max="120" step="1" value="90"></div>
+                <div class="control-row"><label for="mb">Demand slope \(b\) <output id="mbOut"></output></label><input id="mb" type="range" min="0.3" max="2.5" step="0.1" value="1"></div>
+                <div class="control-row"><label for="mc">MC intercept \(c\) <output id="mcOut"></output></label><input id="mc" type="range" min="0" max="40" step="1" value="10"></div>
+                <div class="control-row"><label for="md">MC slope \(d\) <output id="mdOut"></output></label><input id="md" type="range" min="0.2" max="2.5" step="0.1" value="0.8"></div>
               </div>
               <div class="surplus-buttons" aria-label="Monopoly graph area display">
                 <button class="surplus-btn active" type="button" data-monopoly-area="none">None</button>
@@ -510,7 +511,7 @@
       ctx.fillStyle = "#a0aac0"; ctx.font = "italic 13px serif";
       if (xLabel) {
         ctx.textAlign = "right";
-        ctx.fillText(xLabel, cssW - m.r + 2, cssH - m.b + 14);
+        ctx.fillText(xLabel, cssW - m.r + 2, cssH - 3);
       }
       if (yLabel) {
         ctx.save(); ctx.textAlign = "center";
@@ -527,7 +528,7 @@
       canvas.dataset.cssWidth = cssW;
       canvas.dataset.cssHeight = cssH;
       canvas.style.width = cssW + "px";
-      canvas.style.height = cssH + "px";
+      canvas.style.height = "auto";
       canvas.width = cssW * dpr;
       canvas.height = cssH * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -649,6 +650,16 @@
     function totalSurplus(a, b, c, d, q) {
       return (a - c) * q - 0.5 * (b + d) * q * q;
     }
+    // Five readable intervals; nonnegative quantities and headroom for point labels.
+    function axisMax(value) {
+      const target = Math.max(1, value) * 1.3 / 5;
+      const magnitude = 10 ** Math.floor(Math.log10(target));
+      const step = [1, 2, 2.5, 5, 10].find((n) => n * magnitude >= target) * magnitude;
+      return 5 * step;
+    }
+    function clipPlot(ctx, m, w, h) {
+      ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t, w, h); ctx.clip();
+    }
     function drawPolicy() {
       const { a, b, c, d } = marketParams("p");
       const size = val("policySize");
@@ -657,28 +668,33 @@
       let q = base.q, pc = base.p, pp = base.p, text = "The benchmark clears where demand equals marginal cost.";
       if (mode === "tax") {
         q = Math.max(0, (a - c - size) / (b + d)); pc = a - b * q; pp = c + d * q;
-        text = "A unit tax opens a wedge between the consumer price and producer price.";
+        text = q > 0
+          ? "A unit tax opens a wedge between the consumer price and producer price."
+          : `No trade: the tax is at or above the prohibitive level ${fmt(a - c)}. The first unit's reservation prices are ${fmt(a)} for buyers and ${fmt(c)} for sellers; these are not transaction prices. CS, PS, and tax revenue are zero. DWL equals the entire competitive total surplus.`;
       } else if (mode === "floor") {
         const floor = size;
         const qd = Math.max(0, (a - floor) / b);
         const qs = Math.max(0, (floor - c) / d);
-        if (floor > base.p) { q = qd; pc = floor; pp = floor; text = "A binding price floor creates excess supply; the traded quantity is demand-constrained."; }
+        if (floor > base.p) { q = qd; pc = floor; pp = floor; text = "A binding price floor creates excess supply; the traded quantity is demand-constrained. The figures assume the lowest-cost producers supply the units sold, without government purchases."; }
       } else if (mode === "cap") {
         const cap = size;
         const qd = Math.max(0, (a - cap) / b);
         const qs = Math.max(0, (cap - c) / d);
-        if (cap < base.p) { q = qs; pc = cap; pp = cap; text = "A binding price cap creates excess demand; allocation becomes a separate problem."; }
+        if (cap < base.p) { q = qs; pc = cap; pp = cap; text = "A binding price cap creates excess demand. With efficient rationing, units go to the consumers with the highest willingness to pay. At this quantity, the displayed CS is an upper bound and DWL a lower bound. A lottery or queues can lower surplus and raise welfare loss."; }
       }
+      const noTrade = q === 0;
+      if (noTrade && mode !== "tax") text += " No units trade, so there are no transaction prices.";
       const cs = consumerSurplus(a, b, q, pc);
       const ps = producerSurplus(c, d, q, pp);
       const dwl = Math.max(0, totalSurplus(a, b, c, d, base.q) - totalSurplus(a, b, c, d, q));
-      // Fixed scales — axis does not shift when parameters change
-      const qMax = 120, pMax = 130;
+      const qMax = axisMax(Math.max(base.q, q));
+      const pMax = axisMax(Math.max(a, c + (mode === "tax" ? size : 0), pc, pp));
       const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
       const demand = (x) => Math.max(0, a - b * x);
       const mc = (x) => c + d * x;
       const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("policyCanvas"), qMax, pMax);
       addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (quantity)", "P (price)");
+      clipPlot(ctx, m, w, h);
       if (policyArea === "cs") {
         fillBetween(ctx, sx, sy, 0, q, demand, () => pc, colors.orange);
       } else if (policyArea === "ps") {
@@ -689,13 +705,16 @@
       drawPath(ctx, xs, demand, sx, sy, colors.blue);
       drawPath(ctx, xs, mc, sx, sy, colors.green);
       if (mode === "tax") drawPath(ctx, xs, (x) => mc(x) + size, sx, sy, colors.orange, true);
-      drawPath(ctx, xs, () => pc, sx, sy, colors.orange, true);
+      if (!noTrade) drawPath(ctx, xs, () => pc, sx, sy, colors.orange, true);
+      ctx.restore();
       dot(ctx, base.q, base.p, sx, sy, "E0", colors.green);
-      dot(ctx, q, pc, sx, sy, "E1", colors.orange);
-      lineLabel(ctx, "D", qMax * 0.72, demand(qMax * 0.72), sx, sy, colors.blue);
-      lineLabel(ctx, "MC", qMax * 0.58, mc(qMax * 0.58), sx, sy, colors.green);
+      if (!noTrade && (q !== base.q || pc !== base.p)) dot(ctx, q, pc, sx, sy, "E1", colors.orange);
+      const demandLabelQ = Math.min(qMax * 0.72, a / b * 0.8);
+      const mcLabelQ = Math.min(qMax * 0.58, (pMax * 0.85 - c) / d);
+      lineLabel(ctx, "D", demandLabelQ, demand(demandLabelQ), sx, sy, colors.blue);
+      lineLabel(ctx, "MC", mcLabelQ, mc(mcLabelQ), sx, sy, colors.green);
       $("paOut").textContent = fmt(a); $("pbOut").textContent = fmt(b); $("pcOut").textContent = fmt(c); $("pdOut").textContent = fmt(d); $("sizeOut").textContent = fmt(size);
-      $("qPolicyOut").textContent = fmt(q); $("pcPolicyOut").textContent = fmt(pc); $("ppPolicyOut").textContent = fmt(pp); $("csPolicyOut").textContent = fmt(cs); $("psPolicyOut").textContent = fmt(ps); $("dwlPolicyOut").textContent = fmt(dwl);
+      $("qPolicyOut").textContent = fmt(q); $("pcPolicyOut").textContent = noTrade ? "No trade" : fmt(pc); $("ppPolicyOut").textContent = noTrade ? "No trade" : fmt(pp); $("csPolicyOut").textContent = fmt(cs); $("psPolicyOut").textContent = fmt(ps); $("dwlPolicyOut").textContent = fmt(dwl);
       $("policyText").textContent = text;
       updateAreaButtons("policy", policyArea);
     }
@@ -709,14 +728,15 @@
       const csM = consumerSurplus(a, b, qm, pm);
       const psM = producerSurplus(c, d, qm, pm);
       const dwlM = Math.max(0, totalSurplus(a, b, c, d, qc) - totalSurplus(a, b, c, d, qm));
-      // Fixed scales — axis does not shift when parameters change
-      const qMax = 120, pMax = 130;
+      const qMax = axisMax(Math.max(qc, qm));
+      const pMax = axisMax(Math.max(a, c, pc, pm));
       const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
       const { ctx, sx, sy, m, w, h, cssW, cssH } = setupCanvas($("monopolyCanvas"), qMax, pMax);
       addAxisLabels(ctx, m, w, h, cssW, cssH, "Q (quantity)", "P (price)");
       const demand = (x) => Math.max(0, a - b * x);
       const mr = (x) => Math.max(0, a - 2 * b * x);
       const mc = (x) => c + d * x;
+      clipPlot(ctx, m, w, h);
       if (monopolyArea === "cs") {
         fillBetween(ctx, sx, sy, 0, qm, demand, () => pm, colors.orange);
       } else if (monopolyArea === "ps") {
@@ -727,11 +747,15 @@
       drawPath(ctx, xs, demand, sx, sy, colors.blue);
       drawPath(ctx, xs, mr, sx, sy, colors.orange, true);
       drawPath(ctx, xs, mc, sx, sy, colors.green);
+      ctx.restore();
       dot(ctx, qc, pc, sx, sy, "Competition", colors.green);
       dot(ctx, qm, pm, sx, sy, "Monopoly", colors.orange);
-      lineLabel(ctx, "D", qMax * 0.7, a - b * qMax * 0.7, sx, sy, colors.blue);
-      lineLabel(ctx, "MR", qMax * 0.35, a - 2 * b * qMax * 0.35, sx, sy, colors.orange);
-      lineLabel(ctx, "MC", qMax * 0.62, c + d * qMax * 0.62, sx, sy, colors.green);
+      const demandLabelQ = Math.min(qMax * 0.7, a / b * 0.8);
+      const mrLabelQ = Math.min(qMax * 0.35, a / (2 * b) * 0.8);
+      const mcLabelQ = Math.min(qMax * 0.62, (pMax * 0.85 - c) / d);
+      lineLabel(ctx, "D", demandLabelQ, demand(demandLabelQ), sx, sy, colors.blue);
+      lineLabel(ctx, "MR", mrLabelQ, mr(mrLabelQ), sx, sy, colors.orange);
+      lineLabel(ctx, "MC", mcLabelQ, mc(mcLabelQ), sx, sy, colors.green);
       $("maOut").textContent = fmt(a); $("mbOut").textContent = fmt(b); $("mcOut").textContent = fmt(c); $("mdOut").textContent = fmt(d);
       $("qcOut").textContent = fmt(qc); $("qmOut").textContent = fmt(qm); $("pmOut").textContent = fmt(pm); $("markupOut").textContent = fmt(pm - mcAtM); $("csMonopolyOut").textContent = fmt(csM); $("psMonopolyOut").textContent = fmt(psM); $("dwlMonopolyOut").textContent = fmt(dwlM);
       updateAreaButtons("monopoly", monopolyArea);
