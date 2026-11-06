@@ -381,7 +381,7 @@
             <div class="canvas-wrap"><canvas id="boxCanvas" width="500" height="420"></canvas></div>
             <div>
               <div class="controls">
-                <div class="control-row"><label>Price ratio \(p_1/p_2\) <output id="priceOut"></output></label><input id="price" type="range" min="0.1" max="8" step="0.01" value="1.2"></div>
+                <div class="control-row"><label>Price ratio \(p_1/p_2\) <output id="priceOut"></output></label><input id="price" type="range" min="0.1" max="8" step="any" value="1.2"></div>
                 <div class="control-row"><label>Consumer 1 share \(\alpha_1\) <output id="alpha1Out"></output></label><input id="alpha1" type="range" min="0.15" max="0.85" step="0.01" value="0.45"></div>
                 <div class="control-row"><label>Consumer 2 share \(\alpha_2\) <output id="alpha2Out"></output></label><input id="alpha2" type="range" min="0.15" max="0.85" step="0.01" value="0.65"></div>
                 <div class="control-row"><label>Endowment \(\omega^1_x\) <output id="wxOut"></output></label><input id="wx1" type="range" min="0" max="10" step="0.1" value="3.5"></div>
@@ -394,7 +394,7 @@
                 <div class="stat"><span class="name">Consumer 1 demand</span><span class="value" id="d1Out"></span></div>
                 <div class="stat"><span class="name">Consumer 2 demand</span><span class="value" id="d2Out"></span></div>
               </div>
-              <p class="explain">Use the price slider to find market clearing. At the equilibrium price, the two demands coincide as a feasible point in the box.</p>
+              <p class="explain">Use the price slider to find market clearing. At the equilibrium price, the two demands coincide as a feasible point in the box. Displayed prices are rounded; calculations use the full-precision price.</p>
             </div>
           </div>
         </div>
@@ -585,6 +585,12 @@
     }
 
 
+    function contractCurveY(x, a1, a2, X, Y) {
+      const A = a1 / (1 - a1), B = a2 / (1 - a2);
+      // MRS1 = A*y/x = B*(Y-y)/(X-x) = MRS2.
+      return B * Y * x / (A * (X - x) + B * x);
+    }
+
     function drawBox() {
       const X = 10, Y = 10;
       const p = val("price"), a1 = val("alpha1"), a2 = val("alpha2"), wx1 = val("wx1"), wy1 = val("wy1");
@@ -611,15 +617,10 @@
       const contract = [];
       for (let i = 2; i <= 198; i++) {
         const x = X * i / 200;
-        const A = a1 / (1 - a1);
-        const B = a2 / (1 - a2);
-        const y = (A * B * Y * x) / (B * (X - x) + A * x);
+        const y = contractCurveY(x, a1, a2, X, Y);
         if (y > 0 && y < Y) contract.push(x);
       }
-      drawPath(ctx, contract, (x) => {
-        const A = a1 / (1 - a1), B = a2 / (1 - a2);
-        return (A * B * Y * x) / (B * (X - x) + A * x);
-      }, sx, sy, colors.green, true);
+      drawPath(ctx, contract, (x) => contractCurveY(x, a1, a2, X, Y), sx, sy, colors.green, true);
       dot(ctx, wx1, wy1, sx, sy, "omega", colors.blue);
       dot(ctx, Math.min(X, Math.max(0, x1)), Math.min(Y, Math.max(0, y1)), sx, sy, "d1", colors.orange);
       dot(ctx, Math.min(X, Math.max(0, X - x2Own)), Math.min(Y, Math.max(0, Y - y2Own)), sx, sy, "d2", colors.red);
@@ -628,7 +629,7 @@
       lineLabel(ctx, "u2", Math.min(8.6, Math.max(0.6, X - x2Own + 0.4)), Math.min(9.2, Math.max(0.8, Y - y2Own - 0.7)), sx, sy, colors.red);
       $("priceOut").textContent = fmt(p); $("alpha1Out").textContent = fmt(a1); $("alpha2Out").textContent = fmt(a2); $("wxOut").textContent = fmt(wx1); $("wyOut").textContent = fmt(wy1);
       $("eqPriceOut").textContent = fmt(eqP);
-      $("excessOut").textContent = Math.abs(excess) < 0.05 ? "0 (clears)" : fmt(excess);
+      $("excessOut").textContent = Math.abs(excess) < 1e-10 ? "0 (clears)" : (Math.abs(excess) < 0.005 ? excess.toExponential(2) : fmt(excess));
       $("d1Out").textContent = "(" + fmt(x1) + ", " + fmt(y1) + ")";
       $("d2Out").textContent = "(" + fmt(x2Own) + ", " + fmt(y2Own) + ")";
     }

@@ -382,7 +382,7 @@
           <div class="label">Model: Production Externality</div>
           <p>Inverse demand: \(P_D(Q)=a-bQ\). Private marginal cost: \(PMC(Q)=c+dQ\). If each unit of output creates a constant marginal external effect \(m\), the marginal social cost is:
           $$ MSC(Q) = PMC(Q) + m = c + m + dQ. $$
-          The private equilibrium sets \(P_D = PMC\): \(Q_{\text{private}} = \frac{a-c}{b+d}\). The social optimum sets \(P_D = MSC\): \(Q_{\text{social}} = \frac{a-c-m}{b+d}\). A Pigouvian tax equal to \(m\) per unit restores the social optimum; when \(m&lt;0\), this is a subsidy for a positive externality.</p>
+          The private equilibrium sets \(P_D = PMC\): \(Q_{\text{private}} = \max\{0,\frac{a-c}{b+d}\}\). The social optimum sets \(P_D = MSC\) at an interior solution: \(Q_{\text{social}} = \max\{0,\frac{a-c-m}{b+d}\}\). A Pigouvian tax equal to \(m\) per unit restores the social optimum; when \(m&lt;0\), this is a subsidy for a positive externality. The linear inverse demand curve continues below zero: a negative marginal value means consumers need compensation for additional units. A sufficiently large external benefit can make such units socially worthwhile.</p>
         </div>
       </div>
       <div class="interactive-panel">
@@ -622,7 +622,8 @@
       const qSocial = Math.max(0, (a - c - m) / (b + d));
       const pPrivate = a - b * qPrivate;
       const tax = m;
-      const demand = (q) => Math.max(0, a - b * q);
+      // Use the same linear marginal value in the graph and welfare calculation.
+      const demand = (q) => a - b * q;
       const pmc = (q) => c + d * q;
       const msc = (q) => pmc(q) + m;
       const cs = Math.max(0, a * qPrivate - 0.5 * b * qPrivate * qPrivate - pPrivate * qPrivate);
@@ -634,6 +635,8 @@
       const xs = Array.from({ length: 220 }, (_, i) => qMax * i / 219);
       const { ctx, sx, sy, m: margins, w, h, cssW, cssH } = setupCanvas($("externalCanvas"), qMax, pMax, 0, pMin);
       addAxisLabels(ctx, margins, w, h, cssW, cssH, "Q (quantity)", "P (price)");
+      ctx.save();
+      ctx.beginPath(); ctx.rect(margins.l, margins.t, w, h); ctx.clip();
       if (externalArea === "cs") {
         fillBetween(ctx, sx, sy, 0, qPrivate, demand, () => pPrivate, colors.orange);
       } else if (externalArea === "ps") {
@@ -649,7 +652,9 @@
       drawPath(ctx, xs, () => pPrivate, sx, sy, colors.orange, true, 1.8);
       dot(ctx, qPrivate, pPrivate, sx, sy, "private", colors.orange);
       dot(ctx, qSocial, demand(qSocial), sx, sy, "social", colors.red);
-      lineLabel(ctx, "D", qMax * 0.68, demand(qMax * 0.68), sx, sy, colors.blue);
+      ctx.restore();
+      const demandLabelQ = Math.min(qMax * 0.68, (a - pMin - 12) / b);
+      lineLabel(ctx, "D", demandLabelQ, demand(demandLabelQ), sx, sy, colors.blue);
       lineLabel(ctx, "PMC", qMax * 0.56, pmc(qMax * 0.56), sx, sy, colors.green);
       lineLabel(ctx, "MSC", qMax * 0.5, msc(qMax * 0.5), sx, sy, colors.red);
       $("eaOut").textContent = fmt(a); $("ebOut").textContent = fmt(b); $("ecOut").textContent = fmt(c); $("edOut").textContent = fmt(d); $("emOut").textContent = fmt(m);
